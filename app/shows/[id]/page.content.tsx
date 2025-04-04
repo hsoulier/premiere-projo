@@ -1,6 +1,6 @@
 "use client"
 
-import { MoviePopupRating } from "@/components/movie-popup.rating"
+import { type Provider } from "@/components/movie-popup.show"
 import {
   Accordion,
   AccordionContent,
@@ -13,11 +13,20 @@ import { getShowAggregated } from "@/lib/queries"
 import { cn, numToTime } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import { Calendar, ChevronLeft, Clock, UsersRound } from "lucide-react"
+import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { parseAsString, useQueryState } from "nuqs"
+import { UGCIcon } from "@/components/icons/ugc"
+import { PatheIcon } from "@/components/icons/pathe"
+import { Mk2Icon } from "@/components/icons/mk2"
+
+export const providers = {
+  ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
+  pathe: <PatheIcon className="w-6 text-white" />,
+  mk2: <Mk2Icon className="w-6 text-black dark:text-white" />,
+}
 
 export const Content = () => {
-  const router = useRouter()
   const { id } = useParams<{ id: string }>()
 
   const [avpType, setAvpType] = useQueryState(
@@ -65,6 +74,8 @@ export const Content = () => {
           >["shows"][keyof typeof SOURCE_PROVIDER]
         >
       )
+
+  const hasOnlyOneProvider = Object.keys(shows).length === 1
 
   if (!movie) {
     return <div>Movie not found</div>
@@ -142,37 +153,41 @@ export const Content = () => {
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={() => setAvpType(null)}
-            className={cn(
-              "h-10 px-3 rounded-lg border border-transparent bg-gray-100 font-medium text-sm transition-colors duration-200 ease-in-out",
-              avpType !== null && "bg-transparent border-gray-100"
-            )}
+            aria-pressed={avpType === "AVPE"}
+            className="h-10 px-3 rounded-lg border border-transparent bg-gray-100 font-medium text-sm transition-colors duration-200 ease-in-out aria-pressed:bg-transparent aria-pressed:border-gray-100 aria-pressed:text-gray-500"
           >
             Toutes les séances
           </button>
           <button
             onClick={() => setAvpType("AVPE")}
-            className={cn(
-              "h-10 px-3 rounded-lg border border-primary-yellow text-primary-yellow dark:border-primary-yellow/10 dark:text-primary-yellow/50 iline-flex items-center gap-2 transition-colors duration-200 ease-in-out",
-              avpType === "AVPE" && "bg-primary-yellow text-white"
-            )}
+            aria-pressed={avpType === "AVPE"}
+            className="h-10 px-3 rounded-lg border border-primary-yellow/50 text-primary-yellow/50 dark:border-primary-yellow/10 dark:text-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:bg-primary-yellow/10 aria-pressed:border-primary-yellow/0 aria-pressed:text-primary-yellow"
           >
-            <UsersRound className="inline size-4 mr-2" />
+            <UsersRound className="inline size-4" />
             Avec l'équipe du film
           </button>
         </div>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          {...(hasOnlyOneProvider && { defaultValue: Object.keys(shows)[0] })}
+        >
           {Object.entries(shows).map(([key, value]) => (
             <AccordionItem value={key} key={key} className="border-none py-0">
               <AccordionTrigger className="hover:no-underline py-4">
-                <div className="flex items-center justify-start w-full gap-1 hover:no-underline">
-                  <span className="text-2xl font-semibold">
+                <div className="flex items-center justify-start w-full gap-1 hover:no-underline text-2xl">
+                  <span className="font-semibold inline-flex items-center gap-2">
+                    {providers[key as Provider]}{" "}
                     {SOURCE_PROVIDER[key as keyof typeof SOURCE_PROVIDER]}
                   </span>
-                  <span className="text-2xl font-light">({value?.length})</span>
+                  <span className="font-light text-gray-500">
+                    ({value?.length})
+                  </span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
-                <div className="grid grid-cols-1 gap-6 pt-6 lg:grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
+                <div className="grid grid-cols-1 gap-6 pt-6 lg:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
                   {value?.map((show, index) => (
                     <div
                       key={index}
@@ -202,12 +217,14 @@ export const Content = () => {
                           )}
                         </span>
                       </div>
-                      <button
-                        onClick={() => router.push(show.linkShow || "")}
-                        className="mt-4 rounded-lg w-full bg-gray-100 h-10 text-sm font-light"
+                      <Link
+                        href={show.linkShow || ""}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 rounded-lg w-full bg-gray-100 h-10 text-sm font-light grid place-content-center"
                       >
                         Réserver
-                      </button>
+                      </Link>
                     </div>
                   ))}
                 </div>

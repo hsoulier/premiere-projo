@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { providers, type Provider } from "@/components/movie-popup.show"
 import type { ShowAggregated } from "@/lib/queries"
 import type { CSSProperties } from "react"
+import Link from "next/link"
 
 export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
   const router = useRouter()
@@ -17,14 +18,12 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
 
   const hasMultipleShows = movie.shows.length > 1
 
-  const toggleOpen = () => router.push(`/shows/${id}`)
-
   return (
-    <article
+    <Link
       id={`title-${id}`}
       style={{ "--img": cover } as CSSProperties}
-      className="group relative after:z-10 after:inset-0 rounded-xl w-full aspect-[27/40] cursor-pointer"
-      onClick={toggleOpen}
+      className="group relative after:z-10 after:inset-0 rounded-xl w-full aspect-[27/40] cursor-pointer block"
+      href={`/shows/${id}`}
     >
       <div className="size-full bg-center bg-cover rounded-[inherit] overflow-hidden">
         <img
@@ -57,6 +56,6 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
           {movie.shows.length} séance{hasMultipleShows && "s"}
         </p>
       </header>
-    </article>
+    </Link>
   )
 }
