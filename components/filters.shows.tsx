@@ -12,14 +12,14 @@ import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
 
 const values = [
   { value: "AVP", label: "AVP classiques", Icon: FilmIcon },
-  {
-    value: "AVP-real",
-    label: "AVP en présence du réalisateur",
-    Icon: UserIcon,
-  },
+  // {
+  //   value: "AVP-real",
+  //   label: "AVP en présence du réalisateur",
+  //   Icon: UserIcon,
+  // },
   {
     value: "AVPE",
-    label: "AVP en présence du casting",
+    label: "AVP en présence de l'équipe",
     Icon: UserGroupIcon,
   },
 ] as const
@@ -44,14 +44,14 @@ export const FilterShows = () => {
 
   return (
     <Popover>
-      <PopoverTrigger className="focus:outline-none flex items-center gap-2 px-3 py-[10px] border border-gray-200 rounded-xl text-gray-800">
+      <PopoverTrigger className="focus:outline-none flex items-center gap-2 px-3 py-[10px] border border-gray-200 rounded-xl text-gray-800 data-[state=open]:bg-gray-100 hover:bg-gray-100">
         Type de séances{" "}
         {hasValue && (
           <span className="bg-gray-100 rounded-lg px-2.5">
             {avpType?.length}
           </span>
         )}{" "}
-        <ChevronDownIcon className="size-4" />
+        <ChevronDownIcon className="size-4 transition-transform duration-100 ease-in-out [[data-state=open]_&]:rotate-180" />
       </PopoverTrigger>
       <PopoverContent
         align="start"

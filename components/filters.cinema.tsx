@@ -194,14 +194,14 @@ export const FilterCinema = () => {
 
   return (
     <Popover>
-      <PopoverTrigger className="focus:outline-none flex items-center gap-2 px-3 py-[10px] border border-gray-200 rounded-xl text-gray-800">
+      <PopoverTrigger className="focus:outline-none flex items-center gap-2 px-3 py-[10px] border border-gray-200 rounded-xl text-gray-800 data-[state=open]:bg-gray-100 hover:bg-gray-100">
         Cinéma{" "}
         {hasValue && (
           <span className="bg-gray-100 rounded-lg px-2.5">
             {cinemaQuery?.length}
           </span>
         )}{" "}
-        <ChevronDownIcon className="size-4" />
+        <ChevronDownIcon className="size-4 transition-transform duration-100 ease-in-out [[data-state=open]_&]:rotate-180" />
       </PopoverTrigger>
       <PopoverContent
         align="start"

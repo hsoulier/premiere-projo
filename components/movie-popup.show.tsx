@@ -1,11 +1,7 @@
 "use client"
 
 import { UGCIcon } from "@/components/icons/ugc"
-import { ArrowRightIcon } from "@heroicons/react/24/outline"
-import { useSearchParams } from "next/navigation"
 import { PatheIcon } from "@/components/icons/pathe"
-import Link from "next/link"
-import type { ShowAggregated } from "@/lib/queries"
 import { Mk2Icon } from "@/components/icons/mk2"
 
 export const providers = {
