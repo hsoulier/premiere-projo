@@ -150,6 +150,8 @@ export const scrapPathe = async () => {
           linkMovie: `https://www.pathe.fr/films/${slug}`,
         }
 
+        show.date.setHours(show.date.getHours() + 2)
+
         const existingShow = await getShow(show.id)
 
         if (existingShow) continue
