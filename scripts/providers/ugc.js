@@ -7,7 +7,7 @@ import {
   getShow,
   insertShow,
 } from "../db/requests.js"
-import { getTmDbInfo } from "../db/tmdb.js"
+import { getAllocineInfo } from "../db/allocine.js"
 
 const TYPE_SHOWS = ["Avant-première avec équipe", "Avant-première"]
 
@@ -128,11 +128,65 @@ export const scrapUGC = async () => {
     }
   })
 
-  const newMovies = await Promise.all(
-    moviesWithAVP.map(({ title, link }) =>
-      getTmDbInfo(title).then((m) => ({ ...m, link }))
+  const newMovies = []
+
+  for (const movie of moviesWithAVP) {
+    const page = await fetch(movie.link)
+
+    const html = await page.text()
+    const { document } = parseHTML(html)
+
+    const [meta, synopsis] = [
+      ...document.querySelectorAll(".group-info .color--dark-blue"),
+    ]
+
+    const text = meta?.innerHTML
+      .trim()
+      .replaceAll("\t", "")
+      .replaceAll("\n", "")
+      .split("<br>")
+      .splice(1)
+
+    const months = [
+      "janvier",
+      "février",
+      "mars",
+      "avril",
+      "mai",
+      "juin",
+      "juillet",
+      "août",
+      "septembre",
+      "octobre",
+      "novembre",
+      "décembre",
+    ]
+
+    const directors = text[1].toLowerCase().split("de ").slice(1)
+
+    const releaseSplitted = text[0]
+      .toLowerCase()
+      .split("sortie le ")
+      .at(-1)
+      .split(" ")
+    const release = new Date(
+      Date.UTC(
+        parseInt(releaseSplitted[2]),
+        months.indexOf(releaseSplitted[1]),
+        parseInt(releaseSplitted[0])
+      )
     )
-  )
+    release.setHours(release.getHours() + 1)
+
+    const m = await getAllocineInfo({ title: movie.title, release, directors })
+
+    newMovies.push({
+      ...m,
+      synopsis: synopsis?.textContent.trim(),
+      link: movie.link,
+    })
+  }
+
   for (const movie of newMovies) {
     const { link, ...m } = movie
 

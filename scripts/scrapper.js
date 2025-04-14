@@ -4,16 +4,16 @@ import { scrapPathe } from "./providers/pathe.js"
 import { scrapMk2 } from "./providers/mk2.js"
 
 const init = async () => {
-  console.group("🛠️ scrapping UGC")
-  await scrapUGC()
-  console.groupEnd()
-
   console.group("🛠️ scrapping Pathé")
   await scrapPathe()
   console.groupEnd()
 
   console.group("🛠️ scrapping Mk2")
   await scrapMk2()
+  console.groupEnd()
+
+  console.group("🛠️ scrapping UGC")
+  await scrapUGC()
   console.groupEnd()
 
   await sql.end()
