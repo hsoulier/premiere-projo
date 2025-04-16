@@ -19,6 +19,7 @@ import { parseAsString, useQueryState } from "nuqs"
 import { UGCIcon } from "@/components/icons/ugc"
 import { PatheIcon } from "@/components/icons/pathe"
 import { Mk2Icon } from "@/components/icons/mk2"
+import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
@@ -93,11 +94,18 @@ export const Content = () => {
       <div className="flex flex-col gap-8">
         <div className="mt-6 grid grid-cols-5 gap-4 lg:grid-cols-6 lg:gap-12">
           <div className="relative col-span-2 lg:col-span-2">
-            <img
-              src={movie.poster || ""}
-              alt="Movie cover"
-              className="object-cover w-64 aspect-[7/10] group-hover:scale-110 transition-transform duration-200 ease-out rounded-2xl lg:w-full"
-            />
+            {movie.poster && (
+              <img
+                src={movie.poster || ""}
+                alt="Movie cover"
+                className="object-cover w-64 aspect-[7/10] group-hover:scale-110 transition-transform duration-200 ease-out rounded-2xl lg:w-full"
+              />
+            )}
+            {!movie.poster && (
+              <div className="bg-gray-100 w-64 aspect-[7/10] rounded-2xl lg:w-full grid place-items-center">
+                <VideoCameraSlashIcon className="size-12 text-gray-200" />
+              </div>
+            )}
             <div
               className="opacity-75 bg-no-repeat bg-center bg-cover blur-2xl absolute saturate-200 inset-0 -z-10 transition-opacity duration-150 ease-out"
               style={{ backgroundImage: `url(${movie.poster || ""})` }}
@@ -188,45 +196,42 @@ export const Content = () => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="grid grid-cols-1 gap-6 pt-6 lg:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
-                  {value?.map((show, index) => (
-                    <div
-                      key={index}
-                      className="p-4 border border-gray-100 rounded-xl"
-                    >
-                      <p className="font-medium mb-3">
-                        {show.avpType === "AVPE" && (
-                          <UsersRound className="text-primary-yellow inline size-4 mr-2" />
-                        )}
-                        {show.cinemas.name}
-                      </p>
-                      <div className="flex justify-start gap-4 font-light">
-                        <span>
-                          <Calendar className="inline size-4 text-gray-500 mr-1" />
-                          {new Date(show.date || "").toLocaleDateString(
-                            "fr-FR"
-                          )}
-                        </span>
-                        <span>
-                          <Clock className="inline size-4 text-gray-500 mr-1" />
-                          {new Date(show.date || "").toLocaleTimeString(
-                            "fr-FR",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-                        </span>
-                      </div>
-                      <Link
-                        href={show.linkShow || ""}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 rounded-lg w-full bg-gray-100 h-10 text-sm font-light grid place-content-center"
+                  {value?.map((show, index) => {
+                    const [date, time] = new Date(show.date || "")
+                      .toLocaleString("fr-FR", { timeZone: "Europe/Paris" })
+                      .split(" ")
+                    return (
+                      <div
+                        key={index}
+                        className="p-4 border border-gray-100 rounded-xl"
                       >
-                        Réserver
-                      </Link>
-                    </div>
-                  ))}
+                        <p className="font-medium mb-3">
+                          {show.avpType === "AVPE" && (
+                            <UsersRound className="text-primary-yellow inline size-4 mr-2" />
+                          )}
+                          {show.cinemas.name}
+                        </p>
+                        <div className="flex justify-start gap-4 font-light">
+                          <span>
+                            <Calendar className="inline size-4 text-gray-500 mr-1" />
+                            {date}
+                          </span>
+                          <span>
+                            <Clock className="inline size-4 text-gray-500 mr-1" />
+                            {time.split(":").slice(0, 2).join(":")}
+                          </span>
+                        </div>
+                        <Link
+                          href={show.linkShow || ""}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-4 rounded-lg w-full bg-gray-100 h-10 text-sm font-light grid place-content-center"
+                        >
+                          Réserver
+                        </Link>
+                      </div>
+                    )
+                  })}
                 </div>
               </AccordionContent>
             </AccordionItem>

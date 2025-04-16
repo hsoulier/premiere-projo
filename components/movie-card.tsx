@@ -5,6 +5,7 @@ import { providers, type Provider } from "@/components/movie-popup.show"
 import type { ShowAggregated } from "@/lib/queries"
 import type { CSSProperties } from "react"
 import Link from "next/link"
+import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
 
 export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
   const router = useRouter()
@@ -26,11 +27,18 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
       href={`/shows/${id}`}
     >
       <div className="size-full bg-center bg-cover rounded-[inherit] overflow-hidden">
-        <img
-          src={cover || undefined}
-          alt="Movie cover"
-          className="object-cover size-full group-hover:scale-110 transition-transform duration-200 ease-out"
-        />
+        {cover && (
+          <img
+            src={cover || undefined}
+            alt="Movie cover"
+            className="object-cover size-full group-hover:scale-110 transition-transform duration-200 ease-out"
+          />
+        )}
+        {!cover && (
+          <div className="bg-gray-100 w-64 aspect-[7/10] rounded-2xl lg:w-full grid place-items-center">
+            <VideoCameraSlashIcon className="size-12 text-gray-200" />
+          </div>
+        )}
       </div>
       <div className="thumb rounded-b-xl inset-x-0 h-2/5 bottom-0 bg-cover absolute backdrop-blur-sm" />
       <div className="rounded-b-xl bg-gradient-to-b h-2/5 w-full absolute bottom-0 inset-x-0 from-transparent via-40% via-black/70 to-black" />

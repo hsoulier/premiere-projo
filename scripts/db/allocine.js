@@ -2,7 +2,7 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
   try {
     const query = new URLSearchParams({ title })
 
-    const sluggedTitle = query.get("title")
+    const sluggedTitle = query.toString().split("=")[1]
 
     const res = await fetch(
       `https://allocine.fr/_/autocomplete/mobile/movie/${sluggedTitle}`
@@ -58,7 +58,9 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
         results.map((movie) => movie.entity_id)
       )
     }
-    console.log("✅ [ALLOCINE] All movies have entity_id", sluggedTitle)
+    if (mapMatches.size === 1) {
+      console.log("✅ [ALLOCINE] All movies have entity_id", sluggedTitle)
+    }
 
     const movie = mapMatches.get(flattenedResults[0].entity_id)
 

@@ -97,8 +97,6 @@ const getShows = async (info) => {
         )
       }
 
-      console.log(details)
-
       await insertShow(details)
 
       debug.shows++
@@ -145,7 +143,12 @@ export const scrapUGC = async () => {
       .replaceAll("\t", "")
       .replaceAll("\n", "")
       .split("<br>")
-      .splice(1)
+
+    const [hours, minutes] = text[0]?.includes("· ")
+      ? text[0].split("· ").at(-1).split("h")
+      : [0, 0]
+
+    const duration = parseInt(hours) * 60 + parseInt(minutes)
 
     const months = [
       "janvier",
@@ -162,13 +165,19 @@ export const scrapUGC = async () => {
       "décembre",
     ]
 
-    const directors = text[1].toLowerCase().split("de ").slice(1)
+    const directors = text
+      .find((t) => t.startsWith("De "))
+      .toLowerCase()
+      .split("de ")
+      .slice(1)
 
-    const releaseSplitted = text[0]
+    const releaseSplitted = text
+      .find((t) => t.startsWith("Sortie le "))
       .toLowerCase()
       .split("sortie le ")
       .at(-1)
       .split(" ")
+
     const release = new Date(
       Date.UTC(
         parseInt(releaseSplitted[2]),
@@ -176,7 +185,6 @@ export const scrapUGC = async () => {
         parseInt(releaseSplitted[0])
       )
     )
-    release.setHours(release.getHours() + 1)
 
     const m = await getAllocineInfo({ title: movie.title, release, directors })
 
@@ -184,6 +192,8 @@ export const scrapUGC = async () => {
       ...m,
       synopsis: synopsis?.textContent.trim(),
       link: movie.link,
+      director: m.director || directors,
+      duration,
     })
   }
 
