@@ -1,4 +1,3 @@
-import { getTmDbInfo } from "../db/tmdb.js"
 import {
   getCinemaBySlug,
   getMovie,
@@ -6,6 +5,7 @@ import {
   insertMovie,
   insertShow,
 } from "../db/requests.js"
+import { getAllocineInfo } from "../db/allocine.js"
 
 const TAGS_AVP = [
   "avant-première",
@@ -14,7 +14,11 @@ const TAGS_AVP = [
   "avp-equipe",
 ]
 
-const specialTitles = ["séance all inclusive : ", "la séance live :"]
+const specialTitles = [
+  "séance all inclusive : ",
+  "la séance live :",
+  "horror cinéma club :",
+]
 
 const previewsList = new Map()
 const moviesUnique = new Set()
@@ -81,10 +85,14 @@ const getTitle = async (slug) => {
   )
 
   data.title = isSpecialTitle
-    ? data.title.split(":").slice(1).join(":")
-    : data.title
+    ? data.title.split(":").slice(1).join(":").trim()
+    : data.title.trim()
 
-  const movie = await getTmDbInfo(data.title)
+  const movie = await getAllocineInfo({
+    title: data.title,
+    release: data.releaseAt.FR_FR,
+    directors: data.directors,
+  })
 
   if (!movie) {
     const { title, synopsis, directors, duration, releaseAt, posterPath } = data
@@ -93,7 +101,7 @@ const getTitle = async (slug) => {
       id: slug.split("-").at(-1),
       title,
       synopsis,
-      director: directors,
+      director: directors || "",
       duration,
       release: releaseAt.FR_FR,
       imdbId: "",
@@ -101,7 +109,13 @@ const getTitle = async (slug) => {
     }
   }
 
-  return movie
+  return {
+    ...movie,
+    release: movie?.release || data.releaseAt.FR_FR,
+    synopsis: data.synopsis,
+    duration: data.duration,
+    poster: movie?.poster || data.posterPath?.lg || "",
+  }
 }
 
 export const scrapPathe = async () => {

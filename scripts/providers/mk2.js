@@ -1,5 +1,4 @@
 import { parseHTML } from "linkedom"
-import { getTmDbInfo } from "../db/tmdb.js"
 import {
   getMovie,
   getShow,
@@ -8,6 +7,7 @@ import {
   insertMovie,
   insertShow,
 } from "../db/requests.js"
+import { getAllocineInfo } from "../db/allocine.js"
 
 const listAVPs = [
   "avant-premieres-et-seances-exclusives",
@@ -42,54 +42,45 @@ export const scrapMk2 = async () => {
     ?.map((e) => e.events.filter((a) => a.type.id === "avant-premiere"))
     .flat()
 
-  const $movies = events?.map((m) => {
-    return {
-      title: m.name,
-      link: `https://www.mk2.com/ile-de-france/evenement/${m.slug}`,
-    }
-  })
+  const moviesData = []
 
-  const moviesData = await Promise.all(
-    $movies.map(({ title, link }) =>
-      getTmDbInfo(title).then((m) => ({ ...m, link }))
-    )
-  )
+  for (const event of events) {
+    const link = `https://www.mk2.com/ile-de-france/evenement/${event.slug}`
+    const props = await getDataFromPage(link)
 
-  for (const movie of moviesData) {
-    const { link, ...m } = movie
+    const sessionsByFilmAndCinema =
+      props.pageProps.event.sessionsByFilmAndCinema || []
 
-    if (Object.keys(m).length === 0) {
-      const props = await getDataFromPage(link)
+    const { title, cast, synopsis, runTime, openingDate } =
+      sessionsByFilmAndCinema?.[0]?.film || {}
 
-      const newMovie = {
-        id: parseInt(props.pageProps.event.id, 10),
-        title: props.pageProps.event.name,
-        synopsis: props.pageProps.event.description,
-        director: "",
-        duration: null,
-        release: new Date(props.pageProps.event.startDate).toLocaleDateString(
-          "en-GB"
-        ),
-        imdbId: "",
-        poster: props.pageProps.event.graphicUrl || "",
-      }
+    const fallback = props.pageProps.event
+    const directorNames = cast?.find((c) => c.personType === "Director")
 
-      const currentMovie = moviesData.findIndex((m) => m.link === link)
+    const directors = directorNames
+      ? directorNames?.firstName + " " + directorNames?.lastName
+      : ""
 
-      moviesData[currentMovie] = { ...newMovie, link }
+    const m = await getAllocineInfo({
+      title: title || fallback.name,
+      directors,
+      release: new Date(openingDate).getFullYear(),
+    })
 
-      const existingMovie = await getMovie(newMovie.id)
+    !Object.keys(sessionsByFilmAndCinema?.[0]?.film).length === 0 &&
+      console.warn("no film object, fallback used for", event.slug, link)
 
-      if (existingMovie) continue
-
-      await insertMovie(newMovie)
-
-      debug.movies++
-
-      continue
+    const movie = {
+      ...m,
+      synopsis: synopsis || fallback.description,
+      duration: runTime || 0,
+      link,
+      director: m?.director || directors,
     }
 
-    const existingMovie = await getMovie(m.id)
+    moviesData.push(movie)
+
+    const existingMovie = await getMovie(movie.id)
 
     if (existingMovie) continue
 
