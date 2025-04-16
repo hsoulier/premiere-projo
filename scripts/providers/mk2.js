@@ -84,7 +84,7 @@ export const scrapMk2 = async () => {
 
     if (existingMovie) continue
 
-    await insertMovie(m)
+    await insertMovie(movie)
 
     debug.movies++
   }
