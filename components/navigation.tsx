@@ -46,7 +46,7 @@ export const Navigation = () => {
               type="search"
               name="q"
               placeholder="Rechercher une avant-première..."
-              className="min-w-0 w-fit h-full lg:w-full bg-transparent outline-none placeholder:text-gray-400 text-gray-800 bg-red-20 placeholder-shown:text-ellipsis"
+              className="min-w-0 w-fit h-full lg:w-full bg-transparent outline-none placeholder:text-gray-400 text-gray-800 bg-red-20 placeholder-shown:text-ellipsis grow"
               value={dSearch}
               onChange={(e) => setDSearch(e.target.value)}
             />
