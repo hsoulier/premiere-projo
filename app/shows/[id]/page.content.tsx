@@ -38,7 +38,7 @@ export const Content = () => {
 
   const supabase = useSupabaseBrowser()
 
-  const { data, error, status } = useQuery({
+  const { data, error, status, isLoading } = useQuery({
     queryKey: [`show-${id}`],
     queryFn: async () => {
       const response = await getShowAggregated(supabase, id)
@@ -205,6 +205,7 @@ export const Content = () => {
                       return (
                         <div
                           key={index}
+                          data-id={show.id}
                           className="p-4 border border-gray-100 rounded-xl"
                         >
                           <p className="font-medium mb-3">
@@ -241,7 +242,7 @@ export const Content = () => {
           </Accordion>
         </section>
       </main>
-      <Footer />
+      {!isLoading && <Footer />}
     </>
   )
 }

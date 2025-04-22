@@ -165,7 +165,7 @@ const pathe = [
   },
 ] as const
 
-const values = [
+export const values = [
   { value: "pathe", label: "Pathé", cinemas: pathe },
   { value: "ugc", label: "UGC", cinemas: ugc },
   { value: "mk2", label: "MK2", cinemas: mk2 },
@@ -175,11 +175,14 @@ const values = [
 type Value =
   | (typeof values)[number]["value"]
   | (typeof values)[number]["cinemas"][number]["id"]
-
+// TODO: remove footer when is loading
+// TODO: Make it working with the request
 export const FilterCinema = () => {
   const [cinemaQuery, setCinemaQuery] = useQueryState(
     "c",
     parseAsArrayOf(parseAsString)
+      .withOptions({ clearOnDefault: true })
+      .withDefault([])
   )
 
   const hasValue = cinemaQuery && cinemaQuery?.length > 0
