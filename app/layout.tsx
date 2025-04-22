@@ -59,7 +59,7 @@ export default function RootLayout({
       <head />
       <body
         className={cn(
-          "dark:text-gray-white bg-gray-background min-h-screen font-sans antialiased",
+          "dark:text-gray-white bg-gray-background min-h-screen font-sans antialiased flex flex-col items-center",
           font.variable
         )}
       >
@@ -67,7 +67,7 @@ export default function RootLayout({
           <Providers>
             <Suspense>
               <Navigation />
-              <header className="mx-auto max-w-screen-2xl">
+              <header className="w-full max-w-screen-2xl">
                 <Filters />
               </header>
 

@@ -34,7 +34,7 @@ export const Content = () => {
   if (!isLoading && data?.length === 0) {
     return (
       <>
-        <main className="mx-auto px-4 lg:px-5 max-w-screen-2xl grid place-items-center">
+        <main className="grow w-full px-4 lg:px-5 max-w-screen-2xl grid place-items-center">
           <EmptyResponse />
         </main>
         <Footer />
@@ -44,7 +44,7 @@ export const Content = () => {
 
   return (
     <>
-      <main className="mx-auto px-4 lg:px-5 max-w-screen-2xl gap-x-4 gap-y-6 grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
+      <main className="mx-auto px-4 lg:px-5 max-w-screen-2xl gap-x-4 gap-y-6 grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] grow">
         {data?.map((movie) => (
           <MovieCard key={movie.movie_id} movie={movie} />
         ))}

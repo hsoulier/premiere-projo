@@ -79,9 +79,7 @@ export const Content = () => {
 
   const hasOnlyOneProvider = Object.keys(shows).length === 1
 
-  if (!movie) {
-    return <div>Movie not found</div>
-  }
+  if (!movie) return <div>Movie not found</div>
 
   return (
     <>
