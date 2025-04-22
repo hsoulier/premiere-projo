@@ -1,3 +1,4 @@
+import { values } from "@/components/filters.cinema"
 import type { SOURCE_PROVIDER } from "@/constants/mapping"
 import type { TypedSupabaseClient } from "@/types/supabase"
 
@@ -7,20 +8,33 @@ export const getShowsAggregated = async (
     [key: string]: string | string[] | undefined
   }
 ) => {
-  const { cinemaId, source, avpType, lang, q } = searchParams
+  const { c, avpType, lang, q } = searchParams
   const now = new Date().toISOString()
 
   let query = client
     .from("movies")
     .select(`movie_id:id,title, poster,release,shows(*)`)
 
-  // TODO: Reimplement
-  // if ("cinemaId" in searchParams && cinemaId) {
-  //   query = query.eq("cinemas.slug", cinemaId)
-  // }
-  // if ("source" in searchParams && source) {
-  //   query = query.eq("cinemas.source", source)
-  // }
+  console.log("searchParams", c)
+  const cinemasRaw = c?.toString().split(",") || []
+  const multiplexSource = values.map(({ value }) => value)
+
+  const cinemas = cinemasRaw.filter((cinema) => {
+    return !multiplexSource.includes(cinema as (typeof multiplexSource)[number])
+  })
+
+  const multiplexIndex = cinemasRaw.findIndex((cinema) => {
+    return multiplexSource.includes(cinema as (typeof multiplexSource)[number])
+  })
+
+  if (multiplexIndex !== -1) {
+    query = query.ilike("shows.cinemaId", `%${cinemasRaw[multiplexIndex]}%`)
+  }
+
+  if (cinemas.length > 0) {
+    query = query.in("shows.cinemaId", cinemas)
+  }
+
   if ("avpType" in searchParams && avpType) {
     query = query.eq("shows.avpType", avpType.toString())
   }
@@ -31,7 +45,6 @@ export const getShowsAggregated = async (
   if ("q" in searchParams && q) {
     query = query.ilike("title", `%${q}%`)
   }
-
 
   return query.gte("shows.date", now).order("release").not("shows", "is", null)
 }
@@ -44,7 +57,11 @@ export const getShowAggregated = async (
 
   const [movie, showsOriginal] = await Promise.all([
     client.from("movies").select("*").eq("id", parseInt(id)).single(),
-    client.from("shows").select("*,cinemas(*)").gte("date", now).eq("movieId", parseInt(id)),
+    client
+      .from("shows")
+      .select("*,cinemas(*)")
+      .gte("date", now)
+      .eq("movieId", parseInt(id)),
   ])
 
   const shows = (showsOriginal?.data || []).reduce((acc, show) => {

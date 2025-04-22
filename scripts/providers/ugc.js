@@ -38,11 +38,13 @@ function urlAVPMovie(id, firstDate) {
 }
 
 const getShows = async (info) => {
-  for (const { title, link, id: movieId } of info) {
+  for (const { link, id: movieId } of info) {
     const id = link.split("_").at(-1).replace(".html", "")
 
     const firstDate = await getFirstDate(id)
-    const res2 = await fetch(urlAVPMovie(id, firstDate))
+    const res2 = await fetch(urlAVPMovie(id, firstDate), {
+      headers: { "Content-Language": "fr-FR" },
+    })
     const html2 = await res2.text()
     const { document: document2 } = new JSDOM(html2).window
 
@@ -62,9 +64,9 @@ const getShows = async (info) => {
 
       if (!attributes) continue
 
-      const existingShow = await getShow(attributes?.showing)
+      // const existingShow = await getShow(attributes?.showing)
 
-      if (existingShow) continue
+      // if (existingShow) continue
 
       const cinemaId = (await getCinemaByName(attributes.cinema))?.id
 
@@ -97,7 +99,12 @@ const getShows = async (info) => {
         )
       }
 
-      await insertShow(details)
+      console.log(movieId, {
+        raw: attributes?.seancehour,
+        formatted: details.date,
+      })
+
+      // await insertShow(details)
 
       debug.shows++
     }

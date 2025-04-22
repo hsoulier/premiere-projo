@@ -12,11 +12,6 @@ import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
 
 const values = [
   { value: "AVP", label: "AVP classiques", Icon: FilmIcon },
-  // {
-  //   value: "AVP-real",
-  //   label: "AVP en présence du réalisateur",
-  //   Icon: UserIcon,
-  // },
   {
     value: "AVPE",
     label: "AVP en présence de l'équipe",
@@ -30,6 +25,8 @@ export const FilterShows = () => {
   const [avpType, setAvpType] = useQueryState(
     "avpType",
     parseAsArrayOf(parseAsString)
+      .withOptions({ clearOnDefault: true })
+      .withDefault([])
   )
 
   const hasValue = avpType && avpType?.length > 0
