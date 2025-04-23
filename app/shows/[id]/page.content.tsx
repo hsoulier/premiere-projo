@@ -23,9 +23,9 @@ import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
 import { Footer } from "@/components/navigation"
 
 export const providers = {
-  ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
+  ugc: <UGCIcon className="w-6 text-white dark:text-black" />,
   pathe: <PatheIcon className="w-6 text-white" />,
-  mk2: <Mk2Icon className="w-6 text-black dark:text-white" />,
+  mk2: <Mk2Icon className="w-6 text-white dark:text-black" />,
 }
 
 export const Content = () => {
@@ -114,7 +114,7 @@ export const Content = () => {
 
             <div className="space-y-4 col-span-3 lg:col-span-4">
               <h1 className="text-2xl font-semibold flex flex-wrap gap-1 lg:flex-nowrap">
-                <span className="truncate">{movie.title}</span>
+                {movie.title}
                 {/* <span className="flex-shrink-0 font-normal lg:ml-4 bg-gray-100 inline-flex gap-2 p-2 rounded-xl text-xs">
               <UserGroupIcon className="size-4 text-gray-500" />
               {mappingAVP[show?.avpType as keyof typeof mappingAVP]}
@@ -169,7 +169,7 @@ export const Content = () => {
             <button
               onClick={() => setAvpType("AVPE")}
               aria-pressed={avpType === "AVPE"}
-              className="h-10 px-3 rounded-lg border border-primary-yellow/50 text-primary-yellow/50 dark:border-primary-yellow/10 dark:text-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:bg-primary-yellow/10 aria-pressed:border-primary-yellow/0 aria-pressed:text-primary-yellow"
+              className="h-10 px-3 rounded-lg border border-primary-yellow/50 text-primary-yellow/50 dark:border-primary-yellow/10 dark:text-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:bg-primary-yellow/50 aria-pressed:border-primary-yellow/0 aria-pressed:text-primary-yellow aria-pressed:text-black"
             >
               <UsersRound className="inline size-4" />
               Avec l'équipe du film
