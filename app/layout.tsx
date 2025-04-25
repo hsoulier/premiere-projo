@@ -59,7 +59,7 @@ export default function RootLayout({
       <head />
       <body
         className={cn(
-          "dark:text-gray-white bg-gray-background min-h-screen font-sans antialiased flex flex-col items-center",
+          "dark:text-gray-white bg-gray-background min-h-screen max-w-screen font-sans antialiased grid grid-cols-1 auto-rows-max [&>*]:justify-self-center",
           font.variable
         )}
       >

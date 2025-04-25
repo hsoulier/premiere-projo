@@ -100,7 +100,7 @@ const getTitle = async (slug) => {
     return {
       id: slug.split("-").at(-1),
       title,
-      synopsis,
+      synopsis: synopsis?.replaceAll("<br/>", "\n") || "",
       director: directors || "",
       duration,
       release: releaseAt.FR_FR,
