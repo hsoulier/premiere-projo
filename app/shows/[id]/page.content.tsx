@@ -10,7 +10,7 @@ import {
 import { SOURCE_PROVIDER } from "@/constants/mapping"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { getShowAggregated } from "@/lib/queries"
-import { cn, numToTime } from "@/lib/utils"
+import { numToTime } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import { Calendar, ChevronLeft, Clock, UsersRound } from "lucide-react"
 import Link from "next/link"
@@ -83,7 +83,7 @@ export const Content = () => {
 
   return (
     <>
-      <main className="mx-5 lg:max-w-5xl lg:mx-auto">
+      <main className="w-full mx-5 lg:max-w-5xl lg:mx-auto">
         <button
           className="inline-flex items-center gap-1 p-2 text-sm font-light"
           onClick={() => history.back()}
@@ -146,7 +146,12 @@ export const Content = () => {
 
                 <div className="gap-1 flex-col hidden lg:flex">
                   <span className="font-light text-gray-500">Synopsis</span>
-                  <p className="font-light">{movie.synopsis}</p>
+                  <p
+                    className="font-light"
+                    dangerouslySetInnerHTML={{
+                      __html: movie.synopsis?.replace(/\n/g, "<br />") || "",
+                    }}
+                  />
                 </div>
               </div>
             </div>
