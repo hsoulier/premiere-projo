@@ -1,6 +1,7 @@
-import { values } from "@/components/filters.cinema"
-import type { SOURCE_PROVIDER } from "@/constants/mapping"
+import { multiplex, SOURCE_PROVIDER } from "@/constants/mapping"
 import type { TypedSupabaseClient } from "@/types/supabase"
+
+const multiplexSource = [multiplex.pathe, multiplex.ugc, multiplex.mk2]
 
 export const getShowsAggregated = async (
   client: TypedSupabaseClient,
@@ -15,26 +16,6 @@ export const getShowsAggregated = async (
     .from("movies")
     .select(`movie_id:id,title, poster,release,shows(*)`)
 
-  console.log("searchParams", c)
-  const cinemasRaw = c?.toString().split(",") || []
-  const multiplexSource = values.map(({ value }) => value)
-
-  const cinemas = cinemasRaw.filter((cinema) => {
-    return !multiplexSource.includes(cinema as (typeof multiplexSource)[number])
-  })
-
-  const multiplexIndex = cinemasRaw.findIndex((cinema) => {
-    return multiplexSource.includes(cinema as (typeof multiplexSource)[number])
-  })
-
-  if (multiplexIndex !== -1) {
-    query = query.ilike("shows.cinemaId", `%${cinemasRaw[multiplexIndex]}%`)
-  }
-
-  if (cinemas.length > 0) {
-    query = query.in("shows.cinemaId", cinemas)
-  }
-
   if ("avpType" in searchParams && avpType) {
     query = query.eq("shows.avpType", avpType.toString())
   }
@@ -46,7 +27,40 @@ export const getShowsAggregated = async (
     query = query.ilike("title", `%${q}%`)
   }
 
-  return query.gte("shows.date", now).order("release").not("shows", "is", null)
+  const response = await query
+    .gte("shows.date", now)
+    .order("release")
+    .not("shows", "is", null)
+
+  const cinemasRaw = c?.toString().split(",") || []
+
+  const cinemas = cinemasRaw.filter((cinema) => {
+    return !multiplexSource.includes(cinema as (typeof multiplexSource)[number])
+  })
+
+  const multiplexSelected = cinemasRaw.filter((c) =>
+    multiplexSource.includes(c as (typeof multiplexSource)[number])
+  )
+
+  const data = response.data
+    ?.map((movie) => {
+      const shows = movie.shows.filter((show) => {
+        if (cinemasRaw.length === 0) return true
+
+        const cinema = show.cinemaId
+
+        const isInCinema =
+          cinemas.includes(cinema) ||
+          multiplexSelected.some((c) => cinema.startsWith(c))
+
+        return isInCinema
+      })
+
+      return { ...movie, shows }
+    })
+    .filter((movie) => movie.shows.length > 0)
+
+  return data
 }
 
 export const getShowAggregated = async (
@@ -91,5 +105,5 @@ export const getShowAggregated = async (
 }
 
 export type ShowAggregated = NonNullable<
-  Awaited<ReturnType<typeof getShowsAggregated>>["data"]
+  Awaited<ReturnType<typeof getShowsAggregated>>
 >[number]

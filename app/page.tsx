@@ -31,11 +31,8 @@ const Page = async ({ searchParams }: { searchParams: AwaitSearchParams }) => {
         `lang-${awaitedSearchParams.lang}`,
         `q-${awaitedSearchParams.q}`,
       ],
-      queryFn: async () => {
-        const response = await getShowsAggregated(supabase, awaitedSearchParams)
-
-        return response.data
-      },
+      queryFn: async () =>
+        await getShowsAggregated(supabase, awaitedSearchParams),
     })
   )
 
