@@ -23,9 +23,9 @@ import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
 import { Footer } from "@/components/navigation"
 
 export const providers = {
-  ugc: <UGCIcon className="w-6 text-white dark:text-black" />,
+  ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
   pathe: <PatheIcon className="w-6 text-white" />,
-  mk2: <Mk2Icon className="w-6 text-white dark:text-black" />,
+  mk2: <Mk2Icon className="w-6 text-black dark:text-white" />,
 }
 
 export const Content = () => {

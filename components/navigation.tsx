@@ -29,7 +29,7 @@ export const Navigation = () => {
   }, [search])
 
   return (
-    <div className="w-full max-w-screen-2xl sticky top-0 z-50 bg-gradient-to-b from-20% from-gray-background to-gray-background/0">
+    <div className="mx-auto w-full max-w-screen-2xl sticky top-0 z-50 bg-gradient-to-b from-20% from-gray-background to-gray-background/0">
       <nav className="flex items-center justify-between py-6 z-50 px-5 space-x-5">
         <Link href="/">
           <Logo className="h-8" />
@@ -66,7 +66,7 @@ export const Navigation = () => {
 
 export const Footer = () => {
   return (
-    <footer className="mt-32 flex flex-col items-stretch justify-between gap-4 pb-16 w-full  px-4 lg:px-5 max-w-screen-2xl">
+    <footer className="left-1/2 -translate-x-1/2 bottom-0 absolute h-64 pt-32 flex flex-col items-stretch justify-between gap-4 pb-16 w-full  px-4 lg:px-5 max-w-screen-2xl">
       <div className="flex items-center justify-between">
         <Logo className="h-6" />
         <div className="flex gap-8">

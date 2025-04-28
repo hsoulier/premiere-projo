@@ -24,17 +24,13 @@ export const Content = () => {
       `lang-${searchParams.get("lang") || ""}`,
       `q-${searchParams.get("q") || ""}`,
     ],
-    queryFn: async () => {
-      const response = await getShowsAggregated(supabase, options)
-
-      return response.data
-    },
+    queryFn: async () => await getShowsAggregated(supabase, options),
   })
 
   if (!isLoading && data?.length === 0) {
     return (
       <>
-        <main className="grow w-full px-4 lg:px-5 max-w-screen-2xl grid place-items-center">
+        <main className="mx-auto grow w-full px-4 lg:px-5 max-w-screen-2xl grid place-items-center">
           <EmptyResponse />
         </main>
         <Footer />
@@ -44,7 +40,7 @@ export const Content = () => {
 
   return (
     <>
-      <main className="w-auto px-4 lg:px-5 2xl:max-w-screen-2xl gap-x-4 gap-y-6 grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] grow">
+      <main className="mx-auto w-auto px-4 lg:px-5 2xl:max-w-screen-2xl gap-x-4 gap-y-6 grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] grow">
         {data?.map((movie) => (
           <MovieCard key={movie.movie_id} movie={movie} />
         ))}

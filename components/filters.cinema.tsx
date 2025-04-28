@@ -11,172 +11,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { providers } from "@/constants/mapping"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
 
-const mk2 = [
-  {
-    id: "mk2-1",
-    name: "Bibliothèque",
-  },
-  {
-    id: "mk2-2",
-    name: "Nation",
-  },
-  {
-    id: "mk2-3",
-    name: "Quai de Loire",
-  },
-  {
-    id: "mk2-4",
-    name: "Bastille (côté Beaumarchais)",
-  },
-  {
-    id: "mk2-5",
-    name: "Odéon (côté St Michel)",
-  },
-  {
-    id: "mk2-6",
-    name: "Beaubourg",
-  },
-  {
-    id: "mk2-7",
-    name: "Parnasse",
-  },
-  {
-    id: "mk2-8",
-    name: "Gambetta",
-  },
-  {
-    id: "mk2-9",
-    name: "Odéon (côté St Germain)",
-  },
-  {
-    id: "mk2-10",
-    name: "Quai de Seine",
-  },
-  {
-    id: "mk2-11",
-    name: "Bastille (côté Fg St Antoine)",
-  },
-] as const
-
-const ugc = [
-  {
-    id: "ugc-1",
-    name: "UGC Ciné Cité Les Halles",
-  },
-  {
-    id: "ugc-2",
-    name: "UGC Ciné Cité Maillot",
-  },
-  {
-    id: "ugc-3",
-    name: "UGC Montparnasse",
-  },
-  {
-    id: "ugc-4",
-    name: "UGC Rotonde",
-  },
-  {
-    id: "ugc-5",
-    name: "UGC Odéon",
-  },
-  {
-    id: "ugc-6",
-    name: "UGC Danton",
-  },
-  {
-    id: "ugc-7",
-    name: "UGC Ciné Cité Bercy",
-  },
-  {
-    id: "ugc-8",
-    name: "UGC Lyon Bastille",
-  },
-  {
-    id: "ugc-9",
-    name: "UGC Gobelins",
-  },
-  {
-    id: "ugc-10",
-    name: "UGC Opéra",
-  },
-  {
-    id: "ugc-11",
-    name: "UGC Ciné Cité Paris 19",
-  },
-] as const
-
-const pathe = [
-  {
-    id: "pathe-28",
-    name: "Pathé Alésia",
-  },
-  {
-    id: "pathe-29",
-    name: "Pathé Aquaboulevard",
-  },
-  {
-    id: "pathe-30",
-    name: "Pathé Convention",
-  },
-  {
-    id: "pathe-31",
-    name: "Pathé Les Fauvettes",
-  },
-  {
-    id: "pathe-50",
-    name: "Pathé Beaugrenelle",
-  },
-  {
-    id: "pathe-51",
-    name: "Pathé Parnasse",
-  },
-  {
-    id: "pathe-54",
-    name: "Pathé Wepler",
-  },
-  {
-    id: "pathe-55",
-    name: "Pathé La Villette",
-  },
-  {
-    id: "pathe-67",
-    name: "Pathé Montparnos",
-  },
-  {
-    id: "pathe-69",
-    name: "Les 7 Batignolles",
-  },
-  {
-    id: "pathe-73",
-    name: "Le Miramar",
-  },
-  {
-    id: "pathe-74",
-    name: "Pathé Palace",
-  },
-  {
-    id: "pathe-75",
-    name: "La Géode",
-  },
-] as const
-
-export const values = [
-  { value: "pathe", label: "Pathé", cinemas: pathe },
-  { value: "ugc", label: "UGC", cinemas: ugc },
-  { value: "mk2", label: "MK2", cinemas: mk2 },
-  // { value: "indy", label: "Indépendant", cinemas: [] },
-] as const
-
 type Value =
-  | (typeof values)[number]["value"]
-  | (typeof values)[number]["cinemas"][number]["id"]
-// TODO: remove footer when is loading
-// TODO: Make it working with the request
+  | (typeof providers)[number]["value"]
+  | (typeof providers)[number]["cinemas"][number]["id"]
+
 export const FilterCinema = () => {
   const [cinemaQuery, setCinemaQuery] = useQueryState(
     "c",
@@ -213,15 +57,16 @@ export const FilterCinema = () => {
         asChild
       >
         <Accordion type="single" collapsible className="space-y-1">
-          {values.map(({ value, label, cinemas }) => (
+          {providers.map(({ value, label, cinemas }) => (
             <AccordionItem key={value} value={value} className="border-b-0">
               <AccordionPrimitive.Header>
                 <AccordionPrimitive.Trigger asChild>
                   <div className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2">
                     <Checkbox
                       defaultChecked={
-                        cinemaQuery?.includes(value) ||
-                        cinemaQuery?.some((c) => c.startsWith(value))
+                        cinemaQuery?.includes(value)
+                          ? true
+                          : cinemaQuery?.some((c) => c.startsWith(value))
                           ? "indeterminate"
                           : false
                       }
