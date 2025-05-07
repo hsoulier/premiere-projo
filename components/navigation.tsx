@@ -98,8 +98,8 @@ export const Footer = () => {
           </a>
         </div>
       </div>
-      <div className="flex items-center justify-between text-gray-600 flex-col md:flex-row">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between text-gray-600 gap-2 md:gap-0 flex-col md:flex-row pb-4">
+        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
           <span>
             Concept et design par{" "}
             <a
@@ -109,7 +109,7 @@ export const Footer = () => {
               @Antho
             </a>
           </span>
-          |
+          <span className="hidden md:inline-block">|</span>
           <span>
             Developpé par{" "}
             <a

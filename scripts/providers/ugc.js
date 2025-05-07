@@ -104,7 +104,7 @@ const getShows = async (info) => {
         formatted: details.date,
       })
 
-      // await insertShow(details)
+      await insertShow(details)
 
       debug.shows++
     }

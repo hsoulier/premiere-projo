@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { providers } from "@/constants/mapping"
+import { providers, LIST_MULTIPLEX } from "@/constants/mapping"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"
@@ -35,8 +35,27 @@ export const FilterCinema = () => {
     if (!cinemaQuery) return
     setCinemaQuery(cinemaQuery.filter((v) => v !== value))
   }
-  const addFilter = (value: Value) => {
+  const addFilter = (value: Value) =>
     setCinemaQuery([...(cinemaQuery || []), value])
+
+  const addProvider = (value: (typeof LIST_MULTIPLEX)[number]) => {
+    const provider = providers.find((p) => p.value === value)
+
+    if (!provider) return
+
+    const newCinemas = provider.cinemas.map((c) => c.id)
+    setCinemaQuery([...(cinemaQuery || []), ...newCinemas])
+  }
+
+  const removeProvider = (value: (typeof LIST_MULTIPLEX)[number]) => {
+    console.log("removeProvider", value, cinemaQuery)
+
+    const provider = providers.find((p) => p.value === value)
+    if (!provider) return
+
+    const newCinemas = cinemaQuery?.filter((v) => !v.startsWith(value))
+
+    setCinemaQuery(newCinemas || [])
   }
 
   return (
@@ -57,51 +76,56 @@ export const FilterCinema = () => {
         asChild
       >
         <Accordion type="single" collapsible className="space-y-1">
-          {providers.map(({ value, label, cinemas }) => (
-            <AccordionItem key={value} value={value} className="border-b-0">
-              <AccordionPrimitive.Header>
-                <AccordionPrimitive.Trigger asChild>
-                  <div className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2">
-                    <Checkbox
-                      defaultChecked={
-                        cinemaQuery?.includes(value)
-                          ? true
-                          : cinemaQuery?.some((c) => c.startsWith(value))
-                          ? "indeterminate"
-                          : false
-                      }
-                      onClick={(e) => e.stopPropagation()}
-                      onCheckedChange={(checked) =>
-                        checked ? addFilter(value) : removeFilter(value)
-                      }
-                    />
-                    <span className="[[aria-checked=true]~&]:text-gray-white text-gray-700">
-                      {label}
-                    </span>
-                    <ChevronDown className="ml-auto mr-0 h-4 w-4 shrink-0 transition-transform duration-200" />
-                  </div>
-                </AccordionPrimitive.Trigger>
-              </AccordionPrimitive.Header>
-              <AccordionContent className="pb-0">
-                <ul className="space-y-1">
-                  {cinemas.map(({ id, name }) => (
-                    <li key={id} className="pl-8 flex items-center gap-2 p-2">
+          {providers.map(({ value, label, cinemas }) => {
+            return (
+              <AccordionItem key={value} value={value} className="border-b-0">
+                <AccordionPrimitive.Header>
+                  <AccordionPrimitive.Trigger asChild>
+                    <div className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2">
                       <Checkbox
-                        checked={cinemaQuery?.includes(id)}
-                        id={id}
+                        checked={
+                          cinemas.every(({ id }) => cinemaQuery.includes(id))
+                            ? true
+                            : cinemaQuery?.some((c) => c.startsWith(value))
+                            ? "indeterminate"
+                            : false
+                        }
+                        onClick={(e) => e.stopPropagation()}
                         onCheckedChange={(checked) =>
-                          checked ? addFilter(id) : removeFilter(id)
+                          checked ? addProvider(value) : removeProvider(value)
                         }
                       />
-                      <label htmlFor={id} className="w-full">
-                        {name}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                      <span className="[[aria-checked=true]~&]:text-gray-white text-gray-700">
+                        {label}
+                      </span>
+                      <ChevronDown className="ml-auto mr-0 h-4 w-4 shrink-0 transition-transform duration-200" />
+                    </div>
+                  </AccordionPrimitive.Trigger>
+                </AccordionPrimitive.Header>
+                <AccordionContent className="pb-0">
+                  <ul className="space-y-1">
+                    {cinemas.map(({ id, name }) => (
+                      <li key={id} className="pl-8 flex items-center gap-2 p-2">
+                        <Checkbox
+                          checked={
+                            cinemaQuery?.includes(id) ||
+                            cinemaQuery?.includes(value)
+                          }
+                          id={id}
+                          onCheckedChange={(checked) =>
+                            checked ? addFilter(id) : removeFilter(id)
+                          }
+                        />
+                        <label htmlFor={id} className="w-full">
+                          {name}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            )
+          })}
         </Accordion>
       </PopoverContent>
     </Popover>

@@ -174,7 +174,7 @@ export const Content = () => {
             <button
               onClick={() => setAvpType("AVPE")}
               aria-pressed={avpType === "AVPE"}
-              className="h-10 px-3 rounded-lg border border-primary-yellow/50 text-primary-yellow/50 dark:border-primary-yellow/10 dark:text-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:bg-primary-yellow/50 aria-pressed:border-primary-yellow/0 aria-pressed:text-primary-yellow aria-pressed:text-black"
+              className="h-10 px-3 rounded-lg border border-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:text-gray-800 dark:aria-pressed:bg-[#241E00] dark:aria-pressed:text-[#FDD700] dark:aria-[pressed=false]:bg-transparent dark:aria-[pressed=false]:text-[#FDD70080] dark:aria-pressed:border-transparent bg-[#FCDE36] text-gray-800 aria-[pressed=false]:opacity-50"
             >
               <UsersRound className="inline size-4" />
               Avec l'équipe du film

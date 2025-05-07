@@ -80,6 +80,11 @@ export const scrapMk2 = async () => {
 
     moviesData.push(movie)
 
+    if (!movie.id) {
+      console.warn("no id for movie", movie)
+      continue
+    }
+
     const existingMovie = await getMovie(movie.id)
 
     if (existingMovie) continue
@@ -93,6 +98,11 @@ export const scrapMk2 = async () => {
     const props = await getDataFromPage(movie.link)
 
     const event = props.pageProps.event
+
+    if (!movie.id) {
+      console.warn("no id for movie", movie)
+      continue
+    }
 
     for (const session of event.sessionsByFilmAndCinema[0].sessions) {
       const language =
