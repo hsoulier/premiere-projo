@@ -17,7 +17,7 @@ export const SOURCE_PROVIDER = {
   cgr: "CGR",
 } as const
 
-const mk2 = [
+export const mk2Cinemas = [
   {
     id: "mk2-1",
     name: "Bibliothèque",
@@ -64,7 +64,7 @@ const mk2 = [
   },
 ] as const
 
-const ugc = [
+export const ugcCinemas = [
   {
     id: "ugc-1",
     name: "UGC Ciné Cité Les Halles",
@@ -111,7 +111,7 @@ const ugc = [
   },
 ] as const
 
-const pathe = [
+export const patheCinemas = [
   {
     id: "pathe-28",
     name: "Pathé Alésia",
@@ -174,9 +174,11 @@ export const multiplex = {
   cgr: "cgr",
 } as const
 
+export const LIST_MULTIPLEX = [multiplex.pathe, multiplex.ugc, multiplex.mk2]
+
 export const providers = [
-  { value: "pathe", label: "Pathé", cinemas: pathe },
-  { value: "ugc", label: "UGC", cinemas: ugc },
-  { value: "mk2", label: "MK2", cinemas: mk2 },
+  { value: "pathe", label: "Pathé", cinemas: patheCinemas },
+  { value: "ugc", label: "UGC", cinemas: ugcCinemas },
+  { value: "mk2", label: "MK2", cinemas: mk2Cinemas },
   // { value: "indy", label: "Indépendant", cinemas: [] },
 ] as const

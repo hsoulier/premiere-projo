@@ -1,7 +1,5 @@
-import { multiplex, SOURCE_PROVIDER } from "@/constants/mapping"
+import { LIST_MULTIPLEX, multiplex, SOURCE_PROVIDER } from "@/constants/mapping"
 import type { TypedSupabaseClient } from "@/types/supabase"
-
-const multiplexSource = [multiplex.pathe, multiplex.ugc, multiplex.mk2]
 
 export const getShowsAggregated = async (
   client: TypedSupabaseClient,
@@ -35,11 +33,11 @@ export const getShowsAggregated = async (
   const cinemasRaw = c?.toString().split(",") || []
 
   const cinemas = cinemasRaw.filter((cinema) => {
-    return !multiplexSource.includes(cinema as (typeof multiplexSource)[number])
+    return !LIST_MULTIPLEX.includes(cinema as (typeof LIST_MULTIPLEX)[number])
   })
 
   const multiplexSelected = cinemasRaw.filter((c) =>
-    multiplexSource.includes(c as (typeof multiplexSource)[number])
+    LIST_MULTIPLEX.includes(c as (typeof LIST_MULTIPLEX)[number])
   )
 
   const data = response.data
