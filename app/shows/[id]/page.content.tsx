@@ -83,7 +83,7 @@ export const Content = () => {
 
   return (
     <>
-      <main className="w-full mx-5 lg:max-w-5xl lg:mx-auto">
+      <main className="mx-5 lg:max-w-5xl lg:mx-auto">
         <button
           className="inline-flex items-center gap-1 p-2 text-sm font-light"
           onClick={() => history.back()}
@@ -112,7 +112,7 @@ export const Content = () => {
               />
             </div>
 
-            <div className="space-y-4 col-span-3 lg:col-span-4">
+            <div className="space-y-2 col-span-3 lg:col-span-4">
               <h1 className="text-2xl font-semibold flex flex-wrap gap-1 lg:flex-nowrap">
                 {movie.title}
                 {/* <span className="flex-shrink-0 font-normal lg:ml-4 bg-gray-100 inline-flex gap-2 p-2 rounded-xl text-xs">
@@ -163,7 +163,7 @@ export const Content = () => {
           </div>
         </div>
         <section className="flex flex-col gap-12 my-12">
-          <div className="flex gap-3 flex-wrap">
+          <div className="md:flex md:gap-3 gap-5 flex-wrap grid grid-cols-2">
             <button
               onClick={() => setAvpType(null)}
               aria-pressed={avpType === "AVPE"}
@@ -174,10 +174,13 @@ export const Content = () => {
             <button
               onClick={() => setAvpType("AVPE")}
               aria-pressed={avpType === "AVPE"}
-              className="h-10 px-3 rounded-lg border border-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:text-gray-800 dark:aria-pressed:bg-[#241E00] dark:aria-pressed:text-[#FDD700] dark:aria-[pressed=false]:bg-transparent dark:aria-[pressed=false]:text-[#FDD70080] dark:aria-pressed:border-transparent bg-[#FCDE36] text-gray-800 aria-[pressed=false]:opacity-50"
+              className="h-10 px-3 rounded-lg border border-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:text-gray-800 dark:aria-pressed:bg-[#241E00] dark:aria-pressed:text-[#FDD700] dark:aria-[pressed=false]:bg-transparent dark:aria-[pressed=false]:text-[#FDD70080] dark:aria-pressed:border-transparent bg-[#FCDE36] text-gray-800 aria-[pressed=false]:opacity-50 justify-center"
             >
               <UsersRound className="inline size-4" />
-              Avec l'équipe du film
+              <span>
+                <span className="hidden md:inline">Avec l'équipe du film</span>
+                <span className="inline md:hidden">L'équipe du film</span>
+              </span>
             </button>
           </div>
           <Accordion

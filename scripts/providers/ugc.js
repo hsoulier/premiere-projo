@@ -104,6 +104,10 @@ const getShows = async (info) => {
         formatted: details.date,
       })
 
+      const existingShow = await getShow(details.id)
+
+      if (existingShow) continue
+
       await insertShow(details)
 
       debug.shows++
@@ -172,18 +176,20 @@ export const scrapUGC = async () => {
       "décembre",
     ]
 
-    const directors = text
-      .find((t) => t.startsWith("De "))
-      .toLowerCase()
-      .split("de ")
-      .slice(1)
+    const directors =
+      text
+        ?.find((t) => t.startsWith("De "))
+        ?.toLowerCase()
+        ?.split("de ")
+        ?.slice(1) || ""
 
-    const releaseSplitted = text
-      .find((t) => t.startsWith("Sortie le "))
-      .toLowerCase()
-      .split("sortie le ")
-      .at(-1)
-      .split(" ")
+    const releaseSplitted =
+      text
+        ?.find((t) => t.startsWith("Sortie le "))
+        ?.toLowerCase()
+        ?.split("sortie le ")
+        ?.at(-1)
+        ?.split(" ") || ""
 
     const release = new Date(
       Date.UTC(
