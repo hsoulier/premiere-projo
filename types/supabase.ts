@@ -51,12 +51,14 @@ export type Database = {
           release: string | null
           synopsis: string | null
           title: string | null
+          hide: boolean | null
         }
         Insert: {
           director?: string | null
           duration?: number | null
           id: number
           imdbId?: string | null
+          hide?: boolean | null
           poster?: string | null
           release?: string | null
           synopsis?: string | null
@@ -67,6 +69,7 @@ export type Database = {
           duration?: number | null
           id?: number
           imdbId?: string | null
+          hide?: boolean | null
           poster?: string | null
           release?: string | null
           synopsis?: string | null

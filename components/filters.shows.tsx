@@ -62,7 +62,7 @@ export const FilterShows = () => {
             className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2"
           >
             <Checkbox
-              defaultChecked={avpType?.includes(value)}
+              checked={avpType?.includes(value)}
               onClick={(e) => e.stopPropagation()}
               id={value}
               onCheckedChange={(checked) => {

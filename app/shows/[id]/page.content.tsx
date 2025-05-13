@@ -83,7 +83,7 @@ export const Content = () => {
 
   return (
     <>
-      <main className="w-full mx-5 lg:max-w-5xl lg:mx-auto">
+      <main className="mx-5 lg:max-w-5xl lg:mx-auto">
         <button
           className="inline-flex items-center gap-1 p-2 text-sm font-light"
           onClick={() => history.back()}
