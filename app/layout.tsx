@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "Première Projo",
   description:
     "Découvrez toutes les avant-premières de films à Paris en un seul coup d'œil ! 🎬 Retrouvez les projections exclusives des cinémas UGC, Pathé, MK2 et le Grand Rex. Ne manquez aucune sortie anticipée et vivez la magie du cinéma avant tout le monde. Consultez les horaires et réservez vos places dès maintenant !",
-  keywords: ["avant-première", "cinéma", "paris"],
+  keywords: ["avant-première", "cinéma", "paris", "ugc", "pathé", "mk2"],
   authors: [
     { name: "Anthony Reungère", url: "https://bento.me/anthonyreungere" },
     { name: "Hippolyte Soulier", url: "https://hsoulier.dev" },
