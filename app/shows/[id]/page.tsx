@@ -30,13 +30,15 @@ export const generateMetadata = async ({
     return acc
   }, 0)
 
+  const title = `${response.movie?.title} | ${shows} avant-premières | PremiereProjo`
+
   return {
     ...metadata,
-    title: `${shows} avant-premières de ${response.movie?.title}`,
+    title,
     description: response.movie?.synopsis || metadata.description,
     twitter: {
       ...metadata.twitter,
-      title: `${shows} avant-premières de ${response.movie?.title}` || "",
+      title,
       description: response.movie?.synopsis || "",
       images: [response.movie?.poster || ""],
       card: "summary_large_image",
@@ -46,7 +48,7 @@ export const generateMetadata = async ({
       ...metadata.openGraph,
       title: `${shows} avant-premières de ${response.movie?.title}` || "",
       description: response.movie?.synopsis || "",
-      url: `https://example.com/shows/${id}`,
+      url: `https://premiereprojo.fr/shows/${id}`,
       images: [
         {
           url: response.movie?.poster || "",
