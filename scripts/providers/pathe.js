@@ -18,10 +18,20 @@ const specialTitles = [
   "séance all inclusive : ",
   "la séance live :",
   "horror cinéma club :",
+  "la soirée des passionnés :",
+]
+
+const specialTitlesSlug = [
+  "seance-all-inclusive-",
+  "la-séance-live-",
+  "horror-cinema-club-",
+  "la-soiree-des-passionnes-",
 ]
 
 const previewsList = new Map()
 const moviesUnique = new Set()
+
+const allSlugs = []
 
 const debug = {
   movies: 0,
@@ -68,7 +78,32 @@ const getCinemaShows2 = async (cinema) => {
 }
 
 const getTitle = async (slug) => {
-  const data = await fetchData(`https://www.pathe.fr/api/show/${slug}`)
+  const specificMovieIndex = specialTitlesSlug.findIndex((s) =>
+    slug.startsWith(s)
+  )
+
+  const hasSpecial = specificMovieIndex !== -1
+
+  const requests = [`https://www.pathe.fr/api/show/${slug}`]
+
+  const specificSlug = hasSpecial
+    ? allSlugs.find((s) =>
+        s.startsWith(
+          slug
+            .replace(specialTitlesSlug[specificMovieIndex], "")
+            .split("-")
+            .slice(0, -1)
+            .join("-")
+        )
+      )
+    : slug
+
+  specificSlug !== slug &&
+    requests.push(`https://www.pathe.fr/api/show/${specificSlug}`)
+
+  const res = await Promise.all(requests.map(fetchData))
+
+  const data = res.length === 2 ? res?.[1] : res?.[0]
 
   if (data.genres.includes("Courts-Métrages")) {
     console.log(`🚫 Skip short movie (${slug})`)
@@ -119,6 +154,10 @@ const getTitle = async (slug) => {
 }
 
 export const scrapPathe = async () => {
+  const { shows } = await fetchData("https://www.pathe.fr/api/shows")
+
+  allSlugs.push(...shows.map((s) => s.slug))
+
   for (const cinema of CINEMAS) {
     await getCinemaShows2(cinema)
   }

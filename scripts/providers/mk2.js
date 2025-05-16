@@ -14,10 +14,7 @@ const listAVPs = [
   "avant-premieres-avec-equipe",
 ]
 
-const debug = {
-  movies: 0,
-  shows: 0,
-}
+const debug = { movies: 0, shows: 0 }
 
 const getDataFromPage = async (page) => {
   const res = await fetch(page)
@@ -81,7 +78,7 @@ export const scrapMk2 = async () => {
     moviesData.push(movie)
 
     if (!movie.id) {
-      console.warn("no id for movie", movie)
+      console.warn("no id for", movie.title, link)
       continue
     }
 
@@ -126,6 +123,11 @@ export const scrapMk2 = async () => {
         movieId: movie.id,
         linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${session.cinemaId}&sessionId=${session.sessionId}`,
         linkMovie: movie.link,
+      }
+
+      if (!show.movieId || !show.cinemaId) {
+        console.warn("no movie or cinema id for", show.id, show.linkShow)
+        continue
       }
 
       const existingShow = await getShow(show.id)
