@@ -25,7 +25,7 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
         title: movie.label,
         duration: "0",
         synopsis: "",
-        director: movie.data.director_name[0],
+        director: movie.data.director_name[0] || "",
         release: movie.last_release,
         imdbId: movie.entity_id,
         poster: movie.data.poster_path
@@ -69,7 +69,7 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
       title: movie.label,
       duration: "0",
       synopsis: "",
-      director: movie.data.director_name[0],
+      director: movie.data.director_name[0] || "",
       release: movie.last_release,
       imdbId: movie.entity_id,
       poster: movie.data.poster_path
