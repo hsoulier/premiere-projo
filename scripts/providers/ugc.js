@@ -205,7 +205,7 @@ export const scrapUGC = async () => {
       ...m,
       synopsis: synopsis?.textContent.trim(),
       link: movie.link,
-      director: m.director || directors,
+      director: m?.director || directors,
       duration,
     })
   }
