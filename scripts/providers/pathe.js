@@ -19,6 +19,8 @@ const specialTitles = [
   "la séance live :",
   "horror cinéma club :",
   "la soirée des passionnés :",
+  "la séance feel good : ",
+  "la séance tenante : ",
 ]
 
 const specialTitlesSlug = [
@@ -26,6 +28,8 @@ const specialTitlesSlug = [
   "la-séance-live-",
   "horror-cinema-club-",
   "la-soiree-des-passionnes-",
+  "la-soiree-feel-good-",
+  "seance-tenante-",
 ]
 
 const previewsList = new Map()

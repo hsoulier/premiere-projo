@@ -1,5 +1,7 @@
 export const getAllocineInfo = async ({ title, release, directors }) => {
   try {
+    const yearRelease = new Date(`${release}`).getFullYear()
+
     const query = new URLSearchParams({ title })
 
     const sluggedTitle = query.toString().split("=")[1]
@@ -35,8 +37,7 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
     }
 
     const fromSameYear = results?.filter(
-      ({ last_release }) =>
-        new Date(last_release).getFullYear() === new Date(release).getFullYear()
+      ({ last_release }) => new Date(last_release).getFullYear() === yearRelease
     )
 
     const fromSameDirector = results?.filter(({ data }) =>
@@ -47,9 +48,30 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
 
     const flattenedResults = [...restResults?.flat()]
 
+    const commonItems = fromSameDirector.filter((item) =>
+      fromSameYear.some((i) => i.entity_id === item.entity_id)
+    )
+
     const mapMatches = new Map(
       flattenedResults.map((movie) => [movie.entity_id, movie])
     )
+
+    if (commonItems.length === 1) {
+      const movie = commonItems[0]
+
+      return {
+        id: movie.entity_id,
+        title: movie.label,
+        duration: "0",
+        synopsis: "",
+        director: movie.data.director_name[0] || "",
+        release: movie.last_release,
+        imdbId: movie.entity_id,
+        poster: movie.data.poster_path
+          ? `https://fr.web.img5.acsta.net${movie.data.poster_path}`
+          : null,
+      }
+    }
 
     if (mapMatches.size > 1) {
       console.log(
