@@ -93,7 +93,7 @@ export const Content = () => {
         </button>
         <div className="flex flex-col gap-8">
           <div className="mt-6 grid grid-cols-5 gap-4 lg:grid-cols-6 lg:gap-12">
-            <div className="relative col-span-2 lg:col-span-2">
+            <div className="relative col-span-2 lg:col-span-2 h-fit">
               {movie.poster && (
                 <img
                   src={movie.poster || ""}

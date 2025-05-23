@@ -9,11 +9,31 @@ import {
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
 
-const TYPE_SHOWS = ["Avant-première avec équipe", "Avant-première"]
+const TYPE_SHOWS = [
+  "Avant-première avec équipe",
+  "Avant-première",
+  "Festival de Cannes",
+]
 
-const debug = {
-  movies: 0,
-  shows: 0,
+const debug = { movies: 0, shows: 0 }
+
+const removeAccents = (str) =>
+  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+
+const slugify = (input) => {
+  if (!input) return ""
+
+  // make lower case and trim
+  const slug = input
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .trim()
+    .replace(/[\s-]+/g, "_")
+
+  return slug
 }
 
 async function getFirstDate(id) {
@@ -84,6 +104,10 @@ const getShows = async (info) => {
         movieId,
         linkShow: `https://www.ugc.fr/reservationSeances.html?id=${attributes?.showing}`,
         linkMovie: link,
+        festival:
+          preview?.textContent?.trim() === "Festival de Cannes"
+            ? "Festival de Cannes"
+            : null,
       }
 
       const dateRaw = attributes?.seancedate?.split("/")
@@ -117,7 +141,7 @@ const getShows = async (info) => {
   console.log("✅ UGC scrapping done", debug)
 }
 
-export const scrapUGC = async () => {
+const retrieveAvp = async () => {
   const $pathe = await fetch(
     "https://www.ugc.fr/filmsAjaxAction!getFilmsAndFilters.action?filter=onPreview&page=30010&cinemaId=&reset=false&"
   )
@@ -136,6 +160,129 @@ export const scrapUGC = async () => {
       link: `https://www.ugc.fr/${$link?.href}`,
     }
   })
+
+  return moviesWithAVP
+}
+
+const retrieveAvpFestival = async () => {
+  const page = await fetch("https://www.ugc.fr/evenement_875.html")
+  const html = await page.text()
+  const { document } = parseHTML(html)
+
+  const numberOfCols = document.querySelectorAll(
+    ".card-body > .container > .row > .col-sm"
+  ).length
+
+  const $movies = Array.from({ length: numberOfCols }, (_, i) =>
+    [
+      ...document.querySelectorAll(
+        `.card-body > .container > .row > .col-sm:nth-of-type(${
+          i + 1
+        }) > font[color=#0047BA]`
+      ),
+    ].map((m, j) => {
+      const text = m.textContent.trim()
+
+      const textWithoutCompetition = text.split(" | ").slice(0, -1).join(" | ")
+
+      const competition = text.split(" | ").pop().toLowerCase()
+
+      // When 2 directors the title is "TILE, Director 1, Director 2"
+      const splittedTitle = textWithoutCompetition.split(", ")
+
+      const director = splittedTitle
+        .filter((d) => d.toUpperCase() !== d)
+        .join(", ")
+        .toLowerCase()
+
+      const title = splittedTitle
+        .filter((d) => d.toUpperCase() === d)
+        .join(", ")
+        .toLowerCase()
+
+      return {
+        title,
+        director,
+        competition,
+        link: document.querySelector(
+          `.card-body > .container > .row > .col-sm:nth-of-type(${
+            i + 1
+          }) > a:nth-of-type(${j + 1})`
+        )?.href,
+      }
+    })
+  ).flat()
+
+  const $moviesWithoutMoviePage = $movies.filter((m) =>
+    m.link?.includes("reservation")
+  )
+
+  const moviesWithMoviePage = $movies
+    .filter((m) => !m.link?.includes("reservation"))
+    .map((m) => {
+      const id = m.link.split("?id=").at(-1)
+
+      return {
+        ...m,
+        link: `https://www.ugc.fr/film_${slugify(m.title)}_${id}.html`,
+      }
+    })
+
+  const getMoviePage = async (movie) => {
+    const page = await fetch(
+      `https://www.ugc.fr/searchAjaxAction!getPreviewResults.action?page=30004&searchKey=${encodeURIComponent(
+        removeAccents(movie.title.toUpperCase())
+      )}`
+    )
+
+    const html = await page.text()
+    const { document } = parseHTML(html)
+
+    const results = [
+      ...document.querySelectorAll(
+        ".results-container > .container > .row > div > .row > .col-md-6"
+      ),
+    ]
+
+    const result = results.find((r) => {
+      const title =
+        r
+          .querySelector(`.info-wrapper .block--title a`)
+          ?.textContent.trim()
+          ?.toUpperCase() || ""
+
+      const director =
+        r
+          .querySelector(".info-wrapper .p--medium a")
+          ?.textContent.trim()
+          ?.toLowerCase() || ""
+
+      return (
+        removeAccents(title) === removeAccents(movie.title.toUpperCase()) &&
+        director === movie.director.toLowerCase()
+      )
+    })
+
+    !result && console.log("⚠️ No result in search for", movie.title)
+
+    return {
+      ...movie,
+      link: `https://www.ugc.fr/${result?.querySelector("a")?.href}`,
+    }
+  }
+
+  const moviesWithoutMoviePage = await Promise.all(
+    $moviesWithoutMoviePage.map(getMoviePage)
+  )
+
+  return [...moviesWithMoviePage, ...moviesWithoutMoviePage]
+}
+
+export const scrapUGC = async () => {
+  const moviesWithAVPClassic = await retrieveAvp()
+  const moviesWithAVPFestival = await retrieveAvpFestival()
+
+  const moviesWithAVP = [...moviesWithAVPClassic, ...moviesWithAVPFestival]
 
   const newMovies = []
 
@@ -181,7 +328,7 @@ export const scrapUGC = async () => {
         ?.find((t) => t.startsWith("De "))
         ?.toLowerCase()
         ?.split("de ")
-        ?.slice(1) || ""
+        ?.slice(1) || []
 
     const releaseSplitted =
       text
@@ -191,13 +338,15 @@ export const scrapUGC = async () => {
         ?.at(-1)
         ?.split(" ") || ""
 
-    const release = new Date(
-      Date.UTC(
-        parseInt(releaseSplitted[2]),
-        months.indexOf(releaseSplitted[1]),
-        parseInt(releaseSplitted[0])
-      )
-    )
+    const release = releaseSplitted
+      ? new Date(
+          Date.UTC(
+            parseInt(releaseSplitted[2]),
+            months.indexOf(releaseSplitted[1]),
+            parseInt(releaseSplitted[0])
+          )
+        )
+      : new Date()
 
     const m = await getAllocineInfo({ title: movie.title, release, directors })
 
