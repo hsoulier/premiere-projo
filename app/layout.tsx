@@ -17,7 +17,7 @@ const font = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://premiereprojo.fr"),
-  title: "Première Projo",
+  title: "Première Pro | Toutes les avant-premières à Paris",
   description:
     "Découvrez toutes les avant-premières de films à Paris en un seul coup d'œil ! 🎬 Retrouvez les projections exclusives des cinémas UGC, Pathé, MK2 et le Grand Rex. Ne manquez aucune sortie anticipée et vivez la magie du cinéma avant tout le monde. Consultez les horaires et réservez vos places dès maintenant !",
   keywords: ["avant-première", "cinéma", "paris", "ugc", "pathé", "mk2"],
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   icons:
     "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>",
   openGraph: {
-    title: "Première Projo",
+    title: "Première Pro | Toutes les avant-premières à Paris",
     description:
       "Découvrez toutes les avant-premières de films à Paris en un seul coup d'œil ! 🎬 Retrouvez les projections exclusives des cinémas UGC, Pathé, MK2 et le Grand Rex. Ne manquez aucune sortie anticipée et vivez la magie du cinéma avant tout le monde. Consultez les horaires et réservez vos places dès maintenant !",
     type: "website",
