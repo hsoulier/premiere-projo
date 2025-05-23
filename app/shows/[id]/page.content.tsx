@@ -133,7 +133,13 @@ export const Content = () => {
                   </span>
 
                   <span className="font-light">
-                    {new Date(movie.release || "").toLocaleDateString("fr-FR")}
+                    {movie.release &&
+                    parseInt(movie.release?.split("-")[0] || "") >
+                      new Date().getFullYear() - 2
+                      ? new Date(movie.release || "").toLocaleDateString(
+                          "fr-FR"
+                        )
+                      : "Prochainement en salle"}
                   </span>
                 </div>
 

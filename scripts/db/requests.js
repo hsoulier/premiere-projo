@@ -63,7 +63,7 @@ export const insertMovie = async (movie) => {
 export const updateMovie = async (id, movie) => {
   try {
     const data = await sql`
-    update movies set ${sql(movie, "director", "imdbId", "poster")}
+    update movies set ${sql(movie, "director", "poster")}
     where id = ${id}`
 
     return data[0]
@@ -122,7 +122,7 @@ export const insertCinema = async (cinema) => {
 }
 
 export const listMovies = async () => {
-  const data = await sql`select * from movies where release > now()`
+  const data = await sql`select * from movies`
 
   return data
 }
