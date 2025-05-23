@@ -78,7 +78,7 @@ export const insertShow = async (show) => {
   try {
     const data = await sql`
     insert into shows ${sql(
-      show,
+      { festival: null, ...show },
       "id",
       "language",
       "date",
@@ -86,7 +86,8 @@ export const insertShow = async (show) => {
       "cinemaId",
       "movieId",
       "linkShow",
-      "linkMovie"
+      "linkMovie",
+      "festival"
     )}
     returning *
   `

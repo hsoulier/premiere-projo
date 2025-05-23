@@ -54,6 +54,7 @@ const CINEMAS = [
   "cinema-pathe-opera-premier",
   "cinema-pathe-parnasse",
   "cinema-pathe-wepler",
+  "cinema-pathe-palace",
 ]
 
 const fetchData = async (url, { fr } = { fr: true }) => {
@@ -67,7 +68,14 @@ const getCinemaShows2 = async (cinema) => {
   )
 
   const $movies = Object.entries(dataCinema.shows).reduce((acc, [slug, v]) => {
-    if (!v.isEarlyAVP) return acc
+    if (
+      !v.isEarlyAVP &&
+      !Object.values(v.days).some(({ tags }) => tags.includes("AVP"))
+    )
+      return acc
+
+    slug === "l-agent-secret-48144" && console.dir(v, { depth: null })
+
     return [...acc, { ...v, slug }]
   }, [])
 
@@ -130,7 +138,9 @@ const getTitle = async (slug) => {
   const movie = await getAllocineInfo({
     title: data.title,
     release: data.releaseAt.FR_FR,
-    directors: data.directors,
+    directors: Array.isArray(data.directors)
+      ? data.directors
+      : [data?.directors || ""],
   })
 
   if (!movie) {

@@ -26,7 +26,29 @@ const getDataFromPage = async (page) => {
   return JSON.parse(document.querySelector("#__NEXT_DATA__").textContent)?.props
 }
 
+const scrapAVPFestival = async () => {
+  const pages = [
+    "https://prod-paris.api.mk2.com/events/reprise-un-certain-regard-2025/schedule?cinema-group=ile-de-france",
+    "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
+    "https://prod-paris.api.mk2.com/events/reprise-selection-officielle-festival-cannes-2025?cinema-group=ile-de-france",
+  ]
+
+  try {
+    const res = await Promise.all(pages.map((p) => fetch(p)))
+
+    const data = await Promise.all(res.map((r) => r.json()))
+
+    console.log(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const scrapMk2 = async () => {
+  // await scrapAVPFestival()
+
+  // return
+
   const props = await getDataFromPage(
     "https://www.mk2.com/ile-de-france/evenements"
   )
@@ -55,8 +77,8 @@ export const scrapMk2 = async () => {
     const directorNames = cast?.find((c) => c.personType === "Director")
 
     const directors = directorNames
-      ? directorNames?.firstName + " " + directorNames?.lastName
-      : ""
+      ? [directorNames?.firstName + " " + directorNames?.lastName]
+      : []
 
     const m = await getAllocineInfo({
       title: title || fallback.name,
