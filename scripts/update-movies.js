@@ -1,10 +1,9 @@
+import { parseHTML } from "linkedom"
 import { listMovies, updateMovie } from "./db/requests.js"
 import { sql } from "./utils.js"
 
 const init = async () => {
   const movies = await listMovies()
-
-  console.log(movies?.find((movie) => movie.id === "1000006454"))
 
   for (const movie of movies) {
     const oneMonthAgo = new Date()
@@ -19,6 +18,29 @@ const init = async () => {
     const query = new URLSearchParams({ title: movie.title.toLowerCase() })
 
     const sluggedTitle = query.toString().split("=")[1]
+
+    const moviePage = await fetch(
+      `https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.id}.html`
+    )
+
+    const html = await moviePage.text()
+
+    const { document } = parseHTML(html)
+
+    const synopsis = [
+      ...document.querySelectorAll("#synopsis-details .content-txt .bo-p"),
+    ]
+      .map((a) => (a.textContent || "").trim())
+      .filter((a) => a.length > 0)
+    // .at(-1)
+
+    console.log(
+      movie.title,
+      `https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.id}.html`,
+      synopsis
+    )
+
+    continue
 
     const res = await fetch(
       `https://allocine.fr/_/autocomplete/mobile/movie/${sluggedTitle}`
