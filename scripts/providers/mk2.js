@@ -26,6 +26,102 @@ const getDataFromPage = async (page) => {
   return JSON.parse(document.querySelector("#__NEXT_DATA__").textContent)?.props
 }
 
+const scrapAVPFestival = async () => {
+  const pages = [
+    "https://prod-paris.api.mk2.com/events/reprise-un-certain-regard-2025?cinema-group=ile-de-france",
+    "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
+    "https://prod-paris.api.mk2.com/events/reprise-selection-officielle-festival-cannes-2025?cinema-group=ile-de-france",
+  ]
+
+  try {
+    const res = await Promise.all(pages.map((p) => fetch(p)))
+
+    const data = await Promise.all(res.map((r) => r.json()))
+
+    const sessionsByFilmAndCinema = data.map((d) => d.sessionsByFilmAndCinema)
+
+    const moviesWithSession = sessionsByFilmAndCinema
+      .map((sessions, index) =>
+        sessions.map((session, j) => {
+          return {
+            movie: session.film,
+            shows: session.sessions,
+            cinemaSlug: session.cinema.slug,
+          }
+        })
+      )
+      .flat()
+
+    for (const { movie, shows, cinemaSlug } of moviesWithSession) {
+      const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
+
+      if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
+
+      const d = movie.cast.find((c) => c.personType === "Director")
+
+      const m = await getAllocineInfo({
+        release: movie.openingDate,
+        title: movie.title,
+        directors: [`${d.firstName} ${d.lastName}`],
+      })
+
+      if (movie.title === "Caravan") m.id = "48265"
+
+      if (m?.id === "") {
+        console.warn("No ID found for movie", movie.title, movie.openingDate)
+        throw new Error(
+          `No ID found for movie: ${movie.title} (${movie.openingDate})`
+        )
+      }
+
+      const existingMovie = await getMovie(m.id)
+
+      if (!existingMovie) {
+        await insertMovie({
+          ...m,
+          synopsis: movie.synopsis,
+          duration: movie.runTime || 0,
+          link: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
+          director: m?.director || [],
+        })
+
+        debug.movies++
+      }
+
+      for (const show of shows) {
+        const foundLanguage = show.attributes.find(
+          (a) => a.id === "VS00000005"
+        )?.shortName
+
+        const language =
+          foundLanguage === "VOSTF" || foundLanguage === "VO" ? "vost" : "vf"
+
+        const showData = {
+          id: show.sessionId,
+          cinemaId,
+          language,
+          date: show.showTime,
+          avpType: "AVP",
+          movieId: m.id,
+          linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.sessionId}`,
+          linkMovie: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
+          festival: "Festival de Cannes",
+        }
+
+        const existingShow = await getShow(showData.id)
+
+        if (existingShow) continue
+
+        await insertShow(showData)
+
+        debug.shows++
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const scrapMk2 = async () => {
   const props = await getDataFromPage(
     "https://www.mk2.com/ile-de-france/evenements"
@@ -55,8 +151,8 @@ export const scrapMk2 = async () => {
     const directorNames = cast?.find((c) => c.personType === "Director")
 
     const directors = directorNames
-      ? directorNames?.firstName + " " + directorNames?.lastName
-      : ""
+      ? [directorNames?.firstName + " " + directorNames?.lastName]
+      : []
 
     const m = await getAllocineInfo({
       title: title || fallback.name,
@@ -139,6 +235,8 @@ export const scrapMk2 = async () => {
       debug.shows++
     }
   }
+
+  await scrapAVPFestival()
 
   console.log("✅ Mk2 scrapping done", debug)
 }

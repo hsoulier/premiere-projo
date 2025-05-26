@@ -1,6 +1,8 @@
-export const getAllocineInfo = async ({ title, release, directors }) => {
+const SILENT = false
+
+export const getAllocineInfo = async ({ title, release, directors = [] }) => {
   try {
-    const yearRelease = new Date(`${release}`).getFullYear()
+    const yearRelease = new Date(`${release || ""}`).getFullYear()
 
     const query = new URLSearchParams({ title })
 
@@ -15,8 +17,8 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
     const results = json?.results
 
     if (!results?.length) {
-      console.error(`❌ [ALLOCINE] No results for ${title}`)
-      return
+      !SILENT && console.error(`❌ [ALLOCINE] No results for ${title}`)
+      return { id: null }
     }
 
     if (results.length === 1) {
@@ -40,33 +42,40 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
       ({ last_release }) => new Date(last_release).getFullYear() === yearRelease
     )
 
-    const fromSameDirector = results?.filter(({ data }) =>
-      data?.director_name.includes(directors)
-    )
+    const fromSameDirector = results?.filter(({ data }) => {
+      const directorsLowered = directors?.map((a) => a.toLowerCase())
+      const directorsFromMovie = data?.director_name?.map((a) =>
+        a.toLowerCase()
+      )
+
+      return directorsFromMovie?.some((director) =>
+        directorsLowered?.includes(director)
+      )
+    })
 
     const restResults = [fromSameDirector, fromSameYear].filter(Boolean)
 
     const flattenedResults = [...restResults?.flat()]
 
     const commonItems = fromSameDirector.filter((item) =>
-      fromSameYear.some((i) => i.entity_id === item.entity_id)
+      fromSameYear.some((i) => i?.entity_id === item?.entity_id)
     )
 
     const mapMatches = new Map(
-      flattenedResults.map((movie) => [movie.entity_id, movie])
+      flattenedResults.map((movie) => [movie?.entity_id, movie])
     )
 
     if (commonItems.length === 1) {
       const movie = commonItems[0]
 
       return {
-        id: movie.entity_id,
+        id: movie?.entity_id,
         title: movie.label,
         duration: "0",
         synopsis: "",
         director: movie.data.director_name[0] || "",
         release: movie.last_release,
-        imdbId: movie.entity_id,
+        imdbId: movie?.entity_id,
         poster: movie.data.poster_path
           ? `https://fr.web.img5.acsta.net${movie.data.poster_path}`
           : null,
@@ -74,14 +83,22 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
     }
 
     if (mapMatches.size > 1) {
-      console.log(
-        "⚠️ [ALLOCINE] Multiple results for",
-        title,
-        results.map((movie) => movie.entity_id)
-      )
+      !SILENT &&
+        console.log(
+          "⚠️ [ALLOCINE] Multiple results for",
+          title,
+          results.map((movie) => movie.entity_id)
+        )
     }
+
     if (mapMatches.size === 1) {
-      console.log("✅ [ALLOCINE] All movies have entity_id", sluggedTitle)
+      !SILENT &&
+        console.log("✅ [ALLOCINE] All movies have entity_id", sluggedTitle)
+    }
+
+    if (mapMatches.size === 0) {
+      !SILENT && console.error(`❌ [ALLOCINE] No results for ${title}`)
+      return { id: null }
     }
 
     const movie = mapMatches.get(flattenedResults[0].entity_id)
@@ -99,6 +116,7 @@ export const getAllocineInfo = async ({ title, release, directors }) => {
         : "",
     }
   } catch (error) {
-    console.error(`❌ [ALLOCINE] ${error} ${title}`)
+    !SILENT && console.error(`❌ [ALLOCINE] ${title}`)
+    !SILENT && console.error(error)
   }
 }
