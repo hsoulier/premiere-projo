@@ -32,6 +32,8 @@ const specialTitlesSlug = [
   "seance-tenante-",
 ]
 
+const cannesFestivalTitles = ["un certain regard"]
+
 const previewsList = new Map()
 const moviesUnique = new Set()
 
@@ -179,7 +181,10 @@ export const scrapPathe = async () => {
   for (const slug of [...moviesUnique].filter(Boolean)) {
     const movie = await getTitle(slug)
 
-    if (!movie) continue
+    if (slug === "caravane-48265") movie.id = "48265"
+    if (slug === "arc-en-ciel-dans-la-steppe-48195") movie.id = "48195"
+
+    if (!movie || !movie.id) continue
 
     const existingMovie = await getMovie(movie.id)
 
@@ -215,6 +220,13 @@ export const scrapPathe = async () => {
           movieId: movie.id,
           linkShow: date.refCmd,
           linkMovie: `https://www.pathe.fr/films/${slug}`,
+          festival: cannesFestivalTitles.some((a) =>
+            a.startsWith(
+              date?.specialShowtimeDetails?.titleScreening.toLowerCase()
+            )
+          )
+            ? "Festival de Cannes"
+            : null,
         }
 
         const existingShow = await getShow(show.id)

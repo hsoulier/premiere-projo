@@ -18,7 +18,7 @@ export const getAllocineInfo = async ({ title, release, directors = [] }) => {
 
     if (!results?.length) {
       !SILENT && console.error(`❌ [ALLOCINE] No results for ${title}`)
-      return
+      return { id: null }
     }
 
     if (results.length === 1) {
@@ -98,7 +98,7 @@ export const getAllocineInfo = async ({ title, release, directors = [] }) => {
 
     if (mapMatches.size === 0) {
       !SILENT && console.error(`❌ [ALLOCINE] No results for ${title}`)
-      return
+      return { id: null }
     }
 
     const movie = mapMatches.get(flattenedResults[0].entity_id)
