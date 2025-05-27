@@ -185,7 +185,7 @@ export const Content = () => {
               <UsersRound className="inline size-4" />
               <span>
                 <span className="hidden md:inline">Avec l'équipe du film</span>
-                <span className="inline md:hidden">L'équipe du film</span>
+                <span className="inline md:hidden">Avec l'équipe</span>
               </span>
             </button>
           </div>
