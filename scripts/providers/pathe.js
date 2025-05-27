@@ -145,7 +145,7 @@ const getTitle = async (slug) => {
       : [data?.directors || ""],
   })
 
-  if (!movie) {
+  if (!movie || !movie.id) {
     const { title, synopsis, directors, duration, releaseAt, posterPath } = data
 
     return {
