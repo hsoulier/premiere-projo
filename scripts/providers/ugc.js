@@ -137,8 +137,6 @@ const getShows = async (info) => {
       debug.shows++
     }
   }
-
-  console.log("✅ UGC scrapping done", debug)
 }
 
 const retrieveAvp = async () => {
@@ -285,101 +283,112 @@ const retrieveAvpFestival = async () => {
 }
 
 export const scrapUGC = async () => {
-  const moviesWithAVPClassic = await retrieveAvp()
-  const moviesWithAVPFestival = await retrieveAvpFestival()
+  try {
+    const moviesWithAVPClassic = await retrieveAvp()
+    const moviesWithAVPFestival = await retrieveAvpFestival()
 
-  const moviesWithAVP = [...moviesWithAVPClassic, ...moviesWithAVPFestival]
+    const moviesWithAVP = [...moviesWithAVPClassic, ...moviesWithAVPFestival]
 
-  const newMovies = []
+    const newMovies = []
 
-  for (const movie of moviesWithAVP) {
-    const page = await fetch(movie.link)
+    for (const movie of moviesWithAVP) {
+      const page = await fetch(movie.link)
 
-    const html = await page.text()
-    const { document } = parseHTML(html)
+      const html = await page.text()
+      const { document } = parseHTML(html)
 
-    const [meta, synopsis] = [
-      ...document.querySelectorAll(".group-info .color--dark-blue"),
-    ]
+      const [meta, synopsis] = [
+        ...document.querySelectorAll(".group-info .color--dark-blue"),
+      ]
 
-    const text = meta?.innerHTML
-      .trim()
-      .replaceAll("\t", "")
-      .replaceAll("\n", "")
-      .split("<br>")
+      const text = meta?.innerHTML
+        .trim()
+        .replaceAll("\t", "")
+        .replaceAll("\n", "")
+        .split("<br>")
 
-    const [hours, minutes] = text?.[0]?.includes("· ")
-      ? text[0].split("· ").at(-1).split("h")
-      : [0, 0]
+      const [hours, minutes] = text?.[0]?.includes("· ")
+        ? text[0].split("· ").at(-1).split("h")
+        : [0, 0]
 
-    const duration = parseInt(hours) * 60 + parseInt(minutes)
+      const duration = parseInt(hours) * 60 + parseInt(minutes)
 
-    const months = [
-      "janvier",
-      "février",
-      "mars",
-      "avril",
-      "mai",
-      "juin",
-      "juillet",
-      "août",
-      "septembre",
-      "octobre",
-      "novembre",
-      "décembre",
-    ]
+      const months = [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre",
+      ]
 
-    const directors =
-      text
-        ?.find((t) => t.startsWith("De "))
-        ?.toLowerCase()
-        ?.split("de ")
-        ?.slice(1) || []
+      const directors =
+        text
+          ?.find((t) => t.startsWith("De "))
+          ?.toLowerCase()
+          ?.split("de ")
+          ?.slice(1) || []
 
-    const releaseSplitted =
-      text
-        ?.find((t) => t.startsWith("Sortie le "))
-        ?.toLowerCase()
-        ?.split("sortie le ")
-        ?.at(-1)
-        ?.split(" ") || ""
+      const releaseSplitted =
+        text
+          ?.find((t) => t.startsWith("Sortie le "))
+          ?.toLowerCase()
+          ?.split("sortie le ")
+          ?.at(-1)
+          ?.split(" ") || ""
 
-    const release = releaseSplitted
-      ? new Date(
-          Date.UTC(
-            parseInt(releaseSplitted[2]),
-            months.indexOf(releaseSplitted[1]),
-            parseInt(releaseSplitted[0])
+      const release = releaseSplitted
+        ? new Date(
+            Date.UTC(
+              parseInt(releaseSplitted[2]),
+              months.indexOf(releaseSplitted[1]),
+              parseInt(releaseSplitted[0])
+            )
           )
-        )
-      : new Date()
+        : new Date()
 
-    const m = await getAllocineInfo({ title: movie.title, release, directors })
+      const m = await getAllocineInfo({
+        title: movie.title,
+        release,
+        directors,
+      })
 
-    newMovies.push({
-      ...m,
-      synopsis: synopsis?.textContent.trim(),
-      link: movie.link,
-      director: m?.director || directors,
-      duration,
-    })
+      newMovies.push({
+        ...m,
+        synopsis: synopsis?.textContent.trim(),
+        link: movie.link,
+        director: m?.director || directors,
+        duration,
+      })
+    }
+
+    for (const movie of newMovies) {
+      const { link, ...m } = movie
+
+      if (!m?.id) continue
+
+      const existingMovie = await getMovie(m.id)
+
+      if (existingMovie) continue
+
+      await insertMovie(m)
+
+      debug.movies++
+    }
+
+    await getShows(newMovies)
+
+    console.log("✅ UGC scrapping done", debug)
+  } catch (error) {
+    console.error("❌ Error while scrapping UGC:")
+    console.error(error)
   }
-
-  for (const movie of newMovies) {
-    const { link, ...m } = movie
-
-    if (!m?.id) continue
-
-    const existingMovie = await getMovie(m.id)
-
-    if (existingMovie) continue
-
-    await insertMovie(m)
-
-    debug.movies++
-  }
-
-  await getShows(newMovies)
 }
 
 export const getUGCTheaters = async () => {

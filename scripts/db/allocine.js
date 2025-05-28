@@ -84,7 +84,7 @@ export const getAllocineInfo = async ({ title, release, directors = [] }) => {
 
     if (mapMatches.size > 1) {
       !SILENT &&
-        console.log(`⚠️ [ALLOCINE] Multiple matches found for ${title}:`)
+        console.log(`⚠️ [ALLOCINE] Multiple matches found for ${title}`)
     }
 
     if (mapMatches.size === 1) {

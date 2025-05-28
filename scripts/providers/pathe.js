@@ -170,77 +170,81 @@ const getTitle = async (slug) => {
 }
 
 export const scrapPathe = async () => {
-  const { shows } = await fetchData("https://www.pathe.fr/api/shows")
+  try {
+    const { shows } = await fetchData("https://www.pathe.fr/api/shows")
 
-  allSlugs.push(...shows.map((s) => s.slug))
+    allSlugs.push(...shows.map((s) => s.slug))
 
-  for (const cinema of CINEMAS) {
-    await getCinemaShows2(cinema)
-  }
-
-  for (const slug of [...moviesUnique].filter(Boolean)) {
-    const movie = await getTitle(slug)
-
-    if (slug === "caravane-48265") movie.id = "48265"
-    if (slug === "arc-en-ciel-dans-la-steppe-48195") movie.id = "48195"
-
-    if (!movie || !movie.id) continue
-
-    const existingMovie = await getMovie(movie.id)
-
-    if (!existingMovie) {
-      await insertMovie(movie)
-
-      debug.movies++
+    for (const cinema of CINEMAS) {
+      await getCinemaShows2(cinema)
     }
 
-    if (!previewsList.has(slug)) continue
+    for (const slug of [...moviesUnique].filter(Boolean)) {
+      const movie = await getTitle(slug)
 
-    const showsEl = previewsList.get(slug)
+      if (slug === "caravane-48265") movie.id = "48265"
+      if (slug === "arc-en-ciel-dans-la-steppe-48195") movie.id = "48195"
 
-    for (const day in showsEl.days) {
-      const data = await fetchData(
-        `https://www.pathe.fr/api/show/${slug}/showtimes/${showsEl.cinema}/${day}`,
-        { fr: false }
-      )
+      if (!movie || !movie.id) continue
 
-      for (const date of data) {
-        const currentCinema = await getCinemaBySlug(showsEl.cinema)
+      const existingMovie = await getMovie(movie.id)
 
-        if (!currentCinema) continue
+      if (!existingMovie) {
+        await insertMovie(movie)
 
-        const show = {
-          id: date.refCmd.split("/").at(-2),
-          cinemaId: currentCinema?.id,
-          language: date.version === "vf" ? "vf" : "vost",
-          date: new Date(date.time),
-          avpType: showsEl.days[day].tags.includes("avp-equipe")
-            ? "AVPE"
-            : "AVP",
-          movieId: movie.id,
-          linkShow: date.refCmd,
-          linkMovie: `https://www.pathe.fr/films/${slug}`,
-          festival: cannesFestivalTitles.some((a) =>
-            a.startsWith(
-              date?.specialShowtimeDetails?.titleScreening.toLowerCase()
+        debug.movies++
+      }
+
+      if (!previewsList.has(slug)) continue
+
+      const showsEl = previewsList.get(slug)
+
+      for (const day in showsEl.days) {
+        const data = await fetchData(
+          `https://www.pathe.fr/api/show/${slug}/showtimes/${showsEl.cinema}/${day}`,
+          { fr: false }
+        )
+
+        for (const date of data) {
+          const currentCinema = await getCinemaBySlug(showsEl.cinema)
+
+          if (!currentCinema) continue
+
+          const show = {
+            id: date.refCmd.split("/").at(-2),
+            cinemaId: currentCinema?.id,
+            language: date.version === "vf" ? "vf" : "vost",
+            date: new Date(date.time),
+            avpType: showsEl.days[day].tags.includes("avp-equipe")
+              ? "AVPE"
+              : "AVP",
+            movieId: movie.id,
+            linkShow: date.refCmd,
+            linkMovie: `https://www.pathe.fr/films/${slug}`,
+            festival: cannesFestivalTitles.some((a) =>
+              a.startsWith(
+                date?.specialShowtimeDetails?.titleScreening.toLowerCase()
+              )
             )
-          )
-            ? "Festival de Cannes"
-            : null,
+              ? "Festival de Cannes"
+              : null,
+          }
+
+          const existingShow = await getShow(show.id)
+
+          if (existingShow) continue
+
+          await insertShow(show)
+
+          debug.shows++
         }
-
-        const existingShow = await getShow(show.id)
-
-        if (existingShow) continue
-
-        await insertShow(show)
-
-        debug.shows++
       }
     }
+    console.log("✅ Pathe scrapping done", debug)
+  } catch (error) {
+    console.error("❌ Error while scrapping Pathé:")
+    console.error(error)
   }
-
-  console.log("✅ Pathe scrapping done", debug)
 }
 
 export const getPatheTheaters = async () => {

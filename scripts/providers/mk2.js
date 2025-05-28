@@ -123,122 +123,127 @@ const scrapAVPFestival = async () => {
 }
 
 export const scrapMk2 = async () => {
-  const props = await getDataFromPage(
-    "https://www.mk2.com/ile-de-france/evenements"
-  )
+  try {
+    const props = await getDataFromPage(
+      "https://www.mk2.com/ile-de-france/evenements"
+    )
 
-  const info = props?.pageProps?.events?.content.filter((c) =>
-    listAVPs.includes(c.slug)
-  )
+    const info = props?.pageProps?.events?.content.filter((c) =>
+      listAVPs.includes(c.slug)
+    )
 
-  const events = info
-    ?.map((e) => e.events.filter((a) => a.type.id === "avant-premiere"))
-    .flat()
+    const events = info
+      ?.map((e) => e.events.filter((a) => a.type.id === "avant-premiere"))
+      .flat()
 
-  const moviesData = []
+    const moviesData = []
 
-  for (const event of events) {
-    const link = `https://www.mk2.com/ile-de-france/evenement/${event.slug}`
-    const props = await getDataFromPage(link)
+    for (const event of events) {
+      const link = `https://www.mk2.com/ile-de-france/evenement/${event.slug}`
+      const props = await getDataFromPage(link)
 
-    const sessionsByFilmAndCinema =
-      props.pageProps.event.sessionsByFilmAndCinema || []
+      const sessionsByFilmAndCinema =
+        props.pageProps.event.sessionsByFilmAndCinema || []
 
-    const { title, cast, synopsis, runTime, openingDate } =
-      sessionsByFilmAndCinema?.[0]?.film || {}
+      const { title, cast, synopsis, runTime, openingDate } =
+        sessionsByFilmAndCinema?.[0]?.film || {}
 
-    const fallback = props.pageProps.event
-    const directorNames = cast?.find((c) => c.personType === "Director")
+      const fallback = props.pageProps.event
+      const directorNames = cast?.find((c) => c.personType === "Director")
 
-    const directors = directorNames
-      ? [directorNames?.firstName + " " + directorNames?.lastName]
-      : []
+      const directors = directorNames
+        ? [directorNames?.firstName + " " + directorNames?.lastName]
+        : []
 
-    const m = await getAllocineInfo({
-      title: title || fallback.name,
-      directors,
-      release: new Date(openingDate).getFullYear(),
-    })
+      const m = await getAllocineInfo({
+        title: title || fallback.name,
+        directors,
+        release: new Date(openingDate).getFullYear(),
+      })
 
-    !Object.keys(sessionsByFilmAndCinema?.[0]?.film).length === 0 &&
-      console.warn("no film object, fallback used for", event.slug, link)
+      !Object.keys(sessionsByFilmAndCinema?.[0]?.film).length === 0 &&
+        console.warn("no film object, fallback used for", event.slug, link)
 
-    const movie = {
-      ...m,
-      synopsis: synopsis || fallback.description,
-      duration: runTime || 0,
-      link,
-      director: m?.director || directors,
-    }
-
-    moviesData.push(movie)
-
-    if (!movie.id) {
-      console.warn("no id for", movie.title, link)
-      continue
-    }
-
-    const existingMovie = await getMovie(movie.id)
-
-    if (existingMovie) continue
-
-    await insertMovie(movie)
-
-    debug.movies++
-  }
-
-  for (const movie of moviesData) {
-    const props = await getDataFromPage(movie.link)
-
-    const event = props.pageProps.event
-
-    if (!movie.id) {
-      console.warn("no id for movie", movie)
-      continue
-    }
-
-    for (const session of event.sessionsByFilmAndCinema[0].sessions) {
-      const language =
-        session.attributes.find((a) => a.id === "VS00000005")?.shortName ===
-        "VOSTF"
-          ? "vost"
-          : "vf"
-
-      const cinemaSlug = event.sessionsByFilmAndCinema[0].cinema.slug
-
-      const cinema = await getCinemaBySlug(cinemaSlug)
-
-      const cinemaId = cinema?.id
-
-      const show = {
-        id: session.sessionId,
-        cinemaId,
-        language,
-        date: session.showTime,
-        avpType: event.genres?.[0]?.id === "equipe-du-film" ? "AVPE" : "AVP",
-        movieId: movie.id,
-        linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${session.cinemaId}&sessionId=${session.sessionId}`,
-        linkMovie: movie.link,
+      const movie = {
+        ...m,
+        synopsis: synopsis || fallback.description,
+        duration: runTime || 0,
+        link,
+        director: m?.director || directors,
       }
 
-      if (!show.movieId || !show.cinemaId) {
-        console.warn("no movie or cinema id for", show.id, show.linkShow)
+      moviesData.push(movie)
+
+      if (!movie.id) {
+        console.warn("no id for", movie.title, link)
         continue
       }
 
-      const existingShow = await getShow(show.id)
+      const existingMovie = await getMovie(movie.id)
 
-      if (existingShow) continue
+      if (existingMovie) continue
 
-      await insertShow(show)
+      await insertMovie(movie)
 
-      debug.shows++
+      debug.movies++
     }
+
+    for (const movie of moviesData) {
+      const props = await getDataFromPage(movie.link)
+
+      const event = props.pageProps.event
+
+      if (!movie.id) {
+        console.warn("no id for movie", movie)
+        continue
+      }
+
+      for (const session of event.sessionsByFilmAndCinema[0].sessions) {
+        const language =
+          session.attributes.find((a) => a.id === "VS00000005")?.shortName ===
+          "VOSTF"
+            ? "vost"
+            : "vf"
+
+        const cinemaSlug = event.sessionsByFilmAndCinema[0].cinema.slug
+
+        const cinema = await getCinemaBySlug(cinemaSlug)
+
+        const cinemaId = cinema?.id
+
+        const show = {
+          id: session.sessionId,
+          cinemaId,
+          language,
+          date: session.showTime,
+          avpType: event.genres?.[0]?.id === "equipe-du-film" ? "AVPE" : "AVP",
+          movieId: movie.id,
+          linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${session.cinemaId}&sessionId=${session.sessionId}`,
+          linkMovie: movie.link,
+        }
+
+        if (!show.movieId || !show.cinemaId) {
+          console.warn("no movie or cinema id for", show.id, show.linkShow)
+          continue
+        }
+
+        const existingShow = await getShow(show.id)
+
+        if (existingShow) continue
+
+        await insertShow(show)
+
+        debug.shows++
+      }
+    }
+
+    await scrapAVPFestival()
+
+    console.log("✅ Mk2 scrapping done", debug)
+  } catch (error) {
+    console.error("❌ Error while scrapping Mk2:")
+    console.error(error)
   }
-
-  await scrapAVPFestival()
-
-  console.log("✅ Mk2 scrapping done", debug)
 }
 
 export const getMk2Theaters = async () => {
