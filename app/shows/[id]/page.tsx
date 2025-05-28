@@ -16,6 +16,13 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
+export const dynamic = "force-static"
+
+// request comes in, at most once every 30 minutes.
+export const revalidate = 1_800
+
+export const generateStaticParams = () => []
+
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {

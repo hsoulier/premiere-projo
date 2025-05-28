@@ -25,6 +25,7 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
       style={{ "--img": cover } as CSSProperties}
       className="group relative after:z-10 after:inset-0 rounded-xl w-full aspect-[27/40] cursor-pointer block"
       href={`/shows/${id}`}
+      prefetch={false}
     >
       <div className="size-full bg-center bg-cover rounded-[inherit] overflow-hidden">
         {cover && (
