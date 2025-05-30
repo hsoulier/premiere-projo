@@ -36,6 +36,18 @@ export const getMovieByTitle = async (title) => {
   return data?.[0]
 }
 
+export const listShows = async () => {
+  const data = await sql`select * from shows`
+
+  return data
+}
+
+export const listMovies = async () => {
+  const data = await sql`select * from movies`
+
+  return data
+}
+
 export const insertMovie = async (movie) => {
   try {
     const data = await sql`
@@ -63,7 +75,12 @@ export const insertMovie = async (movie) => {
 export const updateMovie = async (id, movie) => {
   try {
     const data = await sql`
-    update movies set ${sql(movie, "director", "poster")}
+    update movies set ${sql(
+      { scrapedAt: new Date(), ...movie },
+      "director",
+      "poster",
+      "scrapedAt"
+    )}
     where id = ${id}`
 
     return data[0]
@@ -78,7 +95,7 @@ export const insertShow = async (show) => {
   try {
     const data = await sql`
     insert into shows ${sql(
-      { festival: null, ...show },
+      { festival: null, scrapedAt: new Date(), ...show },
       "id",
       "language",
       "date",
@@ -87,7 +104,8 @@ export const insertShow = async (show) => {
       "movieId",
       "linkShow",
       "linkMovie",
-      "festival"
+      "festival",
+      "scrapedAt"
     )}
     returning *
   `
@@ -122,8 +140,14 @@ export const insertCinema = async (cinema) => {
   }
 }
 
-export const listMovies = async () => {
-  const data = await sql`select * from movies`
+export const deleteShow = async (id) => {
+  try {
+    const data = await sql`delete from shows where id = ${id} returning *`
 
-  return data
+    return data[0]
+  } catch (error) {
+    console.error(`Error deleting show with id ${id}:`, error)
+
+    throw error
+  }
 }

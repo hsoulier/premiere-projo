@@ -118,15 +118,10 @@ const getShows = async (info) => {
           dateRaw[2],
           dateRaw[1] - 1,
           dateRaw[0],
-          hour[0],
+          hour[0] - (process.env.CI ? 2 : 0), // When in CI we are in UTC+0
           hour[1]
         )
       }
-
-      console.log(movieId, {
-        raw: attributes?.seancehour,
-        formatted: details.date,
-      })
 
       const existingShow = await getShow(details.id)
 
@@ -348,7 +343,7 @@ export const scrapUGC = async () => {
             Date.UTC(
               parseInt(releaseSplitted[2]),
               months.indexOf(releaseSplitted[1]),
-              parseInt(releaseSplitted[0])
+              parseInt(releaseSplitted[0]) - (process.env.CI ? 2 : 0) // When in CI we are in UTC+0
             )
           )
         : new Date()
