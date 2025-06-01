@@ -30,7 +30,6 @@ const scrapAVPFestival = async () => {
   const pages = [
     "https://prod-paris.api.mk2.com/events/reprise-un-certain-regard-2025?cinema-group=ile-de-france",
     "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
-    "https://prod-paris.api.mk2.com/events/reprise-selection-officielle-festival-cannes-2025?cinema-group=ile-de-france",
   ]
 
   try {
@@ -41,8 +40,8 @@ const scrapAVPFestival = async () => {
     const sessionsByFilmAndCinema = data.map((d) => d.sessionsByFilmAndCinema)
 
     const moviesWithSession = sessionsByFilmAndCinema
-      .map((sessions, index) =>
-        sessions.map((session, j) => {
+      ?.map((sessions, index) =>
+        sessions?.map((session, j) => {
           return {
             movie: session.film,
             shows: session.sessions,
