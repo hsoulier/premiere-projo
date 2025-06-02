@@ -12,6 +12,7 @@ const TAGS_AVP = [
   "avant-premiere-+-équipe",
   "AVP",
   "avp-equipe",
+  "equipe",
 ]
 
 const specialTitles = [
@@ -211,14 +212,33 @@ export const scrapPathe = async () => {
 
           if (!currentCinema) continue
 
+          if (!date.tags.some((i) => TAGS_AVP.includes(i))) {
+            console.log(
+              `🚫 Skip date ${date.refCmd} for movie ${movie.title} (${slug})`
+            )
+            continue
+          }
+
+          const [baseDate, time] = date.time.split(" ")
+
+          const [hours, ...restTime] = time.split(":")
+
+          const date1 = new Date(
+            `${baseDate} ${hours - (process.env.CI ? 2 : 0)}:${restTime.join(
+              ":"
+            )}`
+          )
+
           const show = {
             id: date.refCmd.split("/").at(-2),
             cinemaId: currentCinema?.id,
             language: date.version === "vf" ? "vf" : "vost",
-            date: new Date(date.time),
-            avpType: showsEl.days[day].tags.includes("avp-equipe")
-              ? "AVPE"
-              : "AVP",
+            date: date1,
+            avpType:
+              showsEl.days[day].tags.includes("avp-equipe") ||
+              showsEl.days[day].tags.includes("equipe")
+                ? "AVPE"
+                : "AVP",
             movieId: movie.id,
             linkShow: date.refCmd,
             linkMovie: `https://www.pathe.fr/films/${slug}`,
