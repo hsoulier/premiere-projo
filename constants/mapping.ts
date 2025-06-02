@@ -121,6 +121,10 @@ export const patheCinemas = [
     name: "Pathé Aquaboulevard",
   },
   {
+    id: "pathe-27",
+    name: "Pathé BNP Paribas",
+  },
+  {
     id: "pathe-30",
     name: "Pathé Convention",
   },

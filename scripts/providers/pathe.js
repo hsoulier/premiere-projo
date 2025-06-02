@@ -57,6 +57,7 @@ const CINEMAS = [
   "cinema-pathe-parnasse",
   "cinema-pathe-wepler",
   "cinema-pathe-palace",
+  "cinema-pathe-bnp-paribas",
 ]
 
 const fetchData = async (url, { fr } = { fr: true }) => {
