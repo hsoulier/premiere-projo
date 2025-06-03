@@ -139,7 +139,7 @@ export const Content = () => {
                       ? new Date(movie.release || "").toLocaleDateString(
                           "fr-FR"
                         )
-                      : "Prochainement en salle"}
+                      : "Prochainement en salles"}
                   </span>
                 </div>
 
