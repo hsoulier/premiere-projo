@@ -192,6 +192,7 @@ export const scrapPathe = async () => {
       const existingMovie = await getMovie(movie.id)
 
       if (!existingMovie) {
+        movie.release && movie.release.setDate(movie.release.getDate() + 1)
         await insertMovie(movie)
 
         debug.movies++
