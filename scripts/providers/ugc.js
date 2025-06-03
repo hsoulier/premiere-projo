@@ -372,6 +372,8 @@ export const scrapUGC = async () => {
 
       if (existingMovie) continue
 
+      m.release && m.release.setDate(m.release.getDate() + 1)
+
       await insertMovie(m)
 
       debug.movies++

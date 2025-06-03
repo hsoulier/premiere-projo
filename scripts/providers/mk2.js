@@ -76,6 +76,7 @@ const scrapAVPFestival = async () => {
       const existingMovie = await getMovie(m.id)
 
       if (!existingMovie) {
+        m.release && m.release.setDate(m.release.getDate() + 1)
         await insertMovie({
           ...m,
           synopsis: movie.synopsis,
@@ -181,6 +182,8 @@ export const scrapMk2 = async () => {
       const existingMovie = await getMovie(movie.id)
 
       if (existingMovie) continue
+
+      movie.release && movie.release.setDate(movie.release.getDate() + 1)
 
       await insertMovie(movie)
 
