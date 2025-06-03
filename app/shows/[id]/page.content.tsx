@@ -190,10 +190,9 @@ export const Content = () => {
             </button>
           </div>
           <Accordion
-            type="single"
-            collapsible
+            type="multiple"
             className="w-full"
-            {...(hasOnlyOneProvider && { defaultValue: Object.keys(shows)[0] })}
+            defaultValue={Object.keys(shows)}
           >
             {Object.entries(shows).map(([key, value]) => (
               <AccordionItem value={key} key={key} className="border-none py-0">
