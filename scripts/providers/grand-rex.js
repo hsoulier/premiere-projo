@@ -1,5 +1,4 @@
 import { parseHTML } from "linkedom"
-import { getMovieFromTmDb } from "../db/tmdb.js"
 
 const getMoviesPage = async () => {
   const options = { method: "GET", headers: { "Accept-Language": "fr-FR" } }
@@ -30,32 +29,76 @@ const getMoviesFromEventPage = async () => {
   return movies.map((m) => {
     const title = m
       .querySelector(".title-movie-tout")
-      ?.textContent?.replaceAll("(AVP)", "")
+      ?.textContent?.split("(AVP")[0]
+      ?.split("(VIP")[0]
+      .trim()
+
     const link = m.querySelector(".title-movie-tout a")?.href
-    const [date] = m.querySelector(".date-tout")?.textContent.split("à")
 
-    const match = date.match(/\d.*/)
-    if (!match) throw new Error(`No date found for ${title}`)
-    const result = match[0].trim()
-
-    const formattedDate = new Date(result)
-
-    getMovieFromTmDb(title, formattedDate.getFullYear()).then((res) => {
-      const a = res.results?.[0]
-      console.log(a?.title, a?.release_date, title)
-    })
-
-    return {
-      title,
-      date: formattedDate,
-      // time,
-      link,
-    }
+    return { title, link }
   })
 }
 
 const getMovieInfos = async () => {
   const movies = await getMoviesFromEventPage()
+
+  console.dir(movies, { depth: null })
+
+  for (const m of movies) {
+    const res = await fetch(m.link)
+    const text = await res.text()
+
+    const { document } = parseHTML(text)
+
+    const pageTitle = document
+      .querySelector(".title-movie-affiche")
+      ?.textContent?.trim()
+
+    const description = [...document.querySelectorAll(".infos-page li")].map(
+      (d) => d.textContent?.trim()
+    )
+
+    console.table(description)
+
+    continue
+
+    const projections = description.findIndex((d) =>
+      d.includes("détail des projections:")
+    )
+
+    console.log(projections, description[1].split("\n"))
+
+    if (projections > -1) {
+      const end = description.lastIndexOf((d) =>
+        d.toLowerCase().startsWith("- le")
+      )
+      console.log(
+        end,
+        projections,
+        description.slice(projections, end - projections)
+      )
+    } else {
+      console.log("une seule projection", m.title)
+    }
+
+    // ? Reupere pas les horaires de la semaine courante ??
+    // const rows = [...document.querySelectorAll("div.seances > div:not(.hide)")]
+
+    // const index = rows.findIndex((r) => r.querySelector(".box-time-calendar"))
+
+    // const description = document
+    //   .querySelector(".box-time-calendar")
+    //   ?.textContent?.trim()
+
+    // console.log(
+    //   index,
+    //   rows?.length,
+    //   // rows[index].textContent?.trim(),
+    //   m.title,
+    //   description,
+    //   m.link
+    // )
+  }
 
   // return movies.map(async (m) => {
   //   const res = await fetch(m.link)
