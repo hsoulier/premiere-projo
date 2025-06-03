@@ -6,6 +6,7 @@ import type { ShowAggregated } from "@/lib/queries"
 import type { CSSProperties } from "react"
 import Link from "next/link"
 import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
+import { UsersRound } from "lucide-react"
 
 export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
   const router = useRouter()
@@ -18,6 +19,7 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
   ]
 
   const hasMultipleShows = movie.shows.length > 1
+  const hasAVPE = movie.shows.some((show) => show.avpType === "AVPE")
 
   return (
     <Link
@@ -61,8 +63,15 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
 
       <header className="absolute bottom-4 inset-x-4 space-y-1 z-20 text-[#F9FAFA]">
         <h3 className="text-lg font-semibold leading-[1.2]">{movie.title}</h3>
-        <p className="text-sm font-light flex justify-between">
-          {movie.shows.length} séance{hasMultipleShows && "s"}
+        <p className="text-sm font-light flex justify-start gap-1 items-center">
+          <span>
+            {movie.shows.length} séance{hasMultipleShows && "s"}
+          </span>
+          <span>
+            {hasAVPE && (
+              <UsersRound className="text-primary-yellow/80 inline size-4" />
+            )}
+          </span>
         </p>
       </header>
     </Link>
