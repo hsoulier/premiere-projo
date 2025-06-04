@@ -1,4 +1,8 @@
 import { parseHTML } from "linkedom"
+import playwright from "playwright"
+import { getAllocineInfo } from "../db/allocine.js"
+import { getShow, insertShow } from "../db/requests.js"
+import { frenchToISODateTime } from "../utils.js"
 
 const getMoviesPage = async () => {
   const options = { method: "GET", headers: { "Accept-Language": "fr-FR" } }
@@ -40,103 +44,119 @@ const getMoviesFromEventPage = async () => {
 }
 
 const getMovieInfos = async () => {
-  const movies = await getMoviesFromEventPage()
+  const browser = await playwright.chromium.launch()
+  const context = await browser.newContext()
+  const page = await context.newPage()
+
+  // const movies = await getMoviesFromEventPage()
+  const movies = [
+    { title: "F1", link: "https://www.legrandrex.com/cinema/5044" },
+  ]
 
   console.dir(movies, { depth: null })
 
   for (const m of movies) {
-    const res = await fetch(m.link)
-    const text = await res.text()
+    const textMovie = await (await fetch(m.link)).text()
 
-    const { document } = parseHTML(text)
+    const { document: movieDoc } = parseHTML(textMovie)
 
-    const pageTitle = document
-      .querySelector(".title-movie-affiche")
-      ?.textContent?.trim()
+    const directorRow = movieDoc
+      .querySelector(".infos-page > li:nth-of-type(2)")
+      .textContent.trim()
 
-    const description = [...document.querySelectorAll(".infos-page li")].map(
-      (d) => d.textContent?.trim()
-    )
-
-    console.table(description)
-
-    continue
-
-    const projections = description.findIndex((d) =>
-      d.includes("détail des projections:")
-    )
-
-    console.log(projections, description[1].split("\n"))
-
-    if (projections > -1) {
-      const end = description.lastIndexOf((d) =>
-        d.toLowerCase().startsWith("- le")
-      )
-      console.log(
-        end,
-        projections,
-        description.slice(projections, end - projections)
-      )
-    } else {
-      console.log("une seule projection", m.title)
+    if (!directorRow.startsWith("De ")) {
+      console.log(`Skipping movie "${m.title}" as it does not have a director`)
+      continue
     }
 
-    // ? Reupere pas les horaires de la semaine courante ??
-    // const rows = [...document.querySelectorAll("div.seances > div:not(.hide)")]
+    const director = directorRow.replace("De ", "").trim()
 
-    // const index = rows.findIndex((r) => r.querySelector(".box-time-calendar"))
+    const link = `${movieDoc
+      .querySelector("#book-film")
+      ?.dataset?.url.replace("resa-part/1/", "reserver/")}?utm_campaign=1`
 
-    // const description = document
-    //   .querySelector(".box-time-calendar")
-    //   ?.textContent?.trim()
+    await page.goto(link)
 
-    // console.log(
-    //   index,
-    //   rows?.length,
-    //   // rows[index].textContent?.trim(),
-    //   m.title,
-    //   description,
-    //   m.link
-    // )
+    const dates = await page.$$eval(
+      "select[name=modresa_jour] > option:not([value=''])",
+      (options) => options.map((o) => o.textContent.trim())
+    )
+
+    const title = await page.$eval(
+      "[name=modresa_film] > option[selected=selected]",
+      (el) => el.textContent.trim()
+    )
+
+    const movie = await getAllocineInfo({ title, directors: [director] })
+
+    if (!movie) {
+      console.log(`Skip movie ${title} not in Allocine`)
+      continue
+    }
+
+    for (const label of dates) {
+      await Promise.all([
+        page.waitForNavigation(),
+        page.selectOption("[name=modresa_jour]", { label }),
+      ])
+
+      const a = await (await page.$("#resa-erreur .erreur"))?.textContent()
+
+      if (a === "Plus de places disponibles en ligne pour cette séance.") {
+        console.log(label, "No more places available for this date")
+
+        await page.goBack({ waitUntil: "load" })
+        continue
+      }
+
+      const showTime = await page.$eval(".date_seance .s_jour", (el) =>
+        el.textContent.trim()
+      )
+
+      const showTimeHour = await page.$eval(".date_seance .s_heure", (el) =>
+        el.textContent.trim()
+      )
+      const lang = await page.$eval(".date_seance .film_version", (el) =>
+        el.textContent.trim()
+      )
+
+      const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
+
+      console.log(showTime, showTimeHour, d)
+
+      const show = {
+        id: page.url().split("/").at(-2), // Extract ID from URL (.../[id]/)
+        cinemaId: "grand-rex",
+        language: lang.toLowerCase(),
+        date: d,
+        avpType: "AVP",
+        movieId: movie.id,
+        linkShow: page.url(),
+        linkMovie: m.link,
+      }
+
+      const existingShow = await getShow(show.id)
+
+      if (existingShow) {
+        if (label === dates.at(-1)) continue
+        await page.goBack({ waitUntil: "load" })
+        continue
+      }
+
+      console.log(label, show)
+
+      await insertShow(show)
+
+      if (label === dates.at(-1)) continue
+
+      // Return to base page
+      await page.goBack({ waitUntil: "load" })
+    }
+
+    // console.log(`Link: ${link}`)
   }
 
-  // return movies.map(async (m) => {
-  //   const res = await fetch(m.link)
-  //   const text = await res.text()
-
-  //   const { document } = parseHTML(text)
-
-  //   const times = [
-  //     ...document.querySelectorAll(
-  //       'a[href="#seances"][role=button] > div:not(.hide)'
-  //     ),
-  //   ]
-
-  //   // ? Reupere pas les horaires de la semaine courante ??
-  //   const rows = [...document.querySelectorAll("div.seances > div:not(.hide)")]
-
-  //   const index = rows.findIndex((r) => r.querySelector(".box-time-calendar"))
-
-  //   const description = document
-  //     .querySelector(".box-time-calendar")
-  //     ?.textContent?.trim()
-
-  //   // console.log(m.title, description, times.length, m.link)
-
-  //   console.log(
-  //     index,
-  //     rows?.length,
-  //     times?.length,
-  //     // rows[index].textContent?.trim(),
-  //     times[index]?.textContent?.trim(),
-  //     m.date
-  //   )
-
-  //   return {
-  //     ...m,
-  //     description,
-  //   }
-  // })
+  await browser.close()
 }
 
 getMovieInfos()
