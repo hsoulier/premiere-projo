@@ -14,18 +14,20 @@ import { numToTime } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import { Calendar, ChevronLeft, Clock, UsersRound } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { parseAsString, useQueryState } from "nuqs"
 import { UGCIcon } from "@/components/icons/ugc"
 import { PatheIcon } from "@/components/icons/pathe"
 import { Mk2Icon } from "@/components/icons/mk2"
 import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
 import { Footer } from "@/components/navigation"
+import { GrandRexIcon } from "@/components/icons/grand-rex"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
   pathe: <PatheIcon className="w-6 text-white" />,
   mk2: <Mk2Icon className="w-6 text-black dark:text-white" />,
+  grand: <GrandRexIcon className="w-6 text-black dark:text-white" />,
 }
 
 export const Content = () => {
@@ -77,9 +79,9 @@ export const Content = () => {
         >
       )
 
-  const hasOnlyOneProvider = Object.keys(shows).length === 1
-
   if (!movie) return <div>Movie not found</div>
+
+  console.log(Object.keys(shows))
 
   return (
     <>

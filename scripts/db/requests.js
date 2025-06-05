@@ -95,7 +95,7 @@ export const insertShow = async (show) => {
   try {
     const data = await sql`
     insert into shows ${sql(
-      { festival: null, scrapedAt: new Date(), ...show },
+      { festival: null, isFull: false, scrapedAt: new Date(), ...show },
       "id",
       "language",
       "date",
@@ -105,7 +105,8 @@ export const insertShow = async (show) => {
       "linkShow",
       "linkMovie",
       "festival",
-      "scrapedAt"
+      "scrapedAt",
+      "isFull"
     )}
     returning *
   `
@@ -147,6 +148,48 @@ export const deleteShow = async (id) => {
     return data[0]
   } catch (error) {
     console.error(`Error deleting show with id ${id}:`, error)
+
+    throw error
+  }
+}
+
+export const updateShow = async (id, show) => {
+  try {
+    const data = await sql`
+    update shows set ${sql(
+      { ...show },
+      "language",
+      "date",
+      "avpType",
+      "cinemaId",
+      "movieId",
+      "linkShow",
+      "linkMovie",
+      "festival",
+      "isFull"
+    )}
+    where id = ${id}
+    returning *
+  `
+    return data[0]
+  } catch (error) {
+    console.error(show, error)
+
+    throw error
+  }
+}
+
+export const updateAvailabilityShow = async (id, show) => {
+  try {
+    const data = await sql`
+    update shows set ${sql(show, "isFull")}
+    where id = ${id}
+    returning *
+  `
+
+    return data[0]
+  } catch (error) {
+    console.error(show, error)
 
     throw error
   }

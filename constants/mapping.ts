@@ -12,7 +12,7 @@ export const EARLY_TYPE = {
 export const SOURCE_PROVIDER = {
   ugc: "UGC",
   pathe: "Pathé",
-  rex: "Le Grand Rex",
+  grand: "Le Grand Rex",
   mk2: "MK2",
   cgr: "CGR",
 } as const
