@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Suspense } from "react"
+import { GoogleAnalytics } from "@next/third-parties/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Bricolage_Grotesque } from "next/font/google"
 import { Providers } from "@/app/providers"
@@ -76,6 +77,7 @@ export default function RootLayout({
             </Suspense>
           </Providers>
         </NuqsAdapter>
+        <GoogleAnalytics gaId="G-3Q9NWLKWHZ" />
       </body>
     </html>
   )
