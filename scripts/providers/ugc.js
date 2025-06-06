@@ -53,6 +53,22 @@ async function getFirstDate(id) {
   return dateList.length > 0 ? dateList[0] : ""
 }
 
+async function getDatesShows(id) {
+  const res = await fetch(
+    `https://www.ugc.fr/showingsFilmAjaxAction!getDaysByFilm.action?reloadShowingsTopic=reloadShowings&dayForm=dayFormDesktop&filmId=${id}&day=&regionId=1&defaultRegionId=1`
+  )
+  const html = await res.text()
+  const { document } = parseHTML(html)
+
+  const dates = [...document.querySelectorAll(".slider-item")].map((date) => {
+    const text = date.id.trim()
+    const dateFormatted = text.split("nav_date_1_")[1]
+    return dateFormatted
+  })
+
+  return dates
+}
+
 function urlAVPMovie(id, firstDate) {
   return `https://www.ugc.fr/showingsFilmAjaxAction!getShowingsByFilm.action?filmId=${id}&day=${firstDate}&regionId=1`
 }
@@ -61,75 +77,78 @@ const getShows = async (info) => {
   for (const { link, id: movieId } of info) {
     const id = link.split("_").at(-1).replace(".html", "")
 
-    const firstDate = await getFirstDate(id)
-    const res2 = await fetch(urlAVPMovie(id, firstDate), {
-      headers: { "Content-Language": "fr-FR" },
-    })
-    const html2 = await res2.text()
-    const { document: document2 } = new JSDOM(html2).window
+    const dates = await getDatesShows(id)
 
-    // ? Get All show types for each projection card
-    const showTypes = document2.querySelectorAll(
-      ".component--screening-cards li button .screening-detail"
-    )
+    for (const firstDate of dates) {
+      const res2 = await fetch(urlAVPMovie(id, firstDate), {
+        headers: { "Content-Language": "fr-FR" },
+      })
+      const html2 = await res2.text()
+      const { document: document2 } = new JSDOM(html2).window
 
-    // ? Filter show types by only previews with team and previews without team
-    const previews = [...showTypes].filter((show) => {
-      return TYPE_SHOWS.includes(show?.textContent?.trim())
-    })
+      // ? Get All show types for each projection card
+      const showTypes = document2.querySelectorAll(
+        ".component--screening-cards li button .screening-detail"
+      )
 
-    for (const preview of previews) {
-      const el = preview?.closest("button[type=button]")
-      const attributes = Object.assign({}, el?.dataset)
+      // ? Filter show types by only previews with team and previews without team
+      const previews = [...showTypes].filter((show) => {
+        return TYPE_SHOWS.includes(show?.textContent?.trim())
+      })
 
-      if (!attributes) continue
+      for (const preview of previews) {
+        const el = preview?.closest("button[type=button]")
+        const attributes = Object.assign({}, el?.dataset)
 
-      // const existingShow = await getShow(attributes?.showing)
+        if (!attributes) continue
 
-      // if (existingShow) continue
+        // const existingShow = await getShow(attributes?.showing)
 
-      const cinemaId = (await getCinemaByName(attributes.cinema))?.id
+        // if (existingShow) continue
 
-      if (!movieId || !cinemaId) continue
+        const cinemaId = (await getCinemaByName(attributes.cinema))?.id
 
-      const details = {
-        id: attributes?.showing,
-        cinemaId,
-        language: attributes?.version === "VOSTF" ? "vost" : "vf",
-        date: "",
-        avpType:
-          preview?.textContent?.trim() === "Avant-première avec équipe"
-            ? "AVPE"
-            : "AVP",
-        movieId,
-        linkShow: `https://www.ugc.fr/reservationSeances.html?id=${attributes?.showing}`,
-        linkMovie: link,
-        festival:
-          preview?.textContent?.trim() === "Festival de Cannes"
-            ? "Festival de Cannes"
-            : null,
+        if (!movieId || !cinemaId) continue
+
+        const details = {
+          id: attributes?.showing,
+          cinemaId,
+          language: attributes?.version === "VOSTF" ? "vost" : "vf",
+          date: "",
+          avpType:
+            preview?.textContent?.trim() === "Avant-première avec équipe"
+              ? "AVPE"
+              : "AVP",
+          movieId,
+          linkShow: `https://www.ugc.fr/reservationSeances.html?id=${attributes?.showing}`,
+          linkMovie: link,
+          festival:
+            preview?.textContent?.trim() === "Festival de Cannes"
+              ? "Festival de Cannes"
+              : null,
+        }
+
+        const dateRaw = attributes?.seancedate?.split("/")
+        const hour = attributes?.seancehour?.split(":")
+
+        if (dateRaw && hour) {
+          details.date = new Date(
+            dateRaw[2],
+            dateRaw[1] - 1,
+            dateRaw[0],
+            hour[0] - (process.env.CI ? 2 : 0), // When in CI we are in UTC+0
+            hour[1]
+          )
+        }
+
+        const existingShow = await getShow(details.id)
+
+        if (existingShow) continue
+
+        await insertShow(details)
+
+        debug.shows++
       }
-
-      const dateRaw = attributes?.seancedate?.split("/")
-      const hour = attributes?.seancehour?.split(":")
-
-      if (dateRaw && hour) {
-        details.date = new Date(
-          dateRaw[2],
-          dateRaw[1] - 1,
-          dateRaw[0],
-          hour[0] - (process.env.CI ? 2 : 0), // When in CI we are in UTC+0
-          hour[1]
-        )
-      }
-
-      const existingShow = await getShow(details.id)
-
-      if (existingShow) continue
-
-      await insertShow(details)
-
-      debug.shows++
     }
   }
 }
