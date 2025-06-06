@@ -72,11 +72,10 @@ const getCinemaShows2 = async (cinema) => {
   )
 
   const $movies = Object.entries(dataCinema.shows).reduce((acc, [slug, v]) => {
-    if (
-      !v.isEarlyAVP &&
-      !Object.values(v.days).some(({ tags }) => tags.includes("AVP"))
+    const hasTagAVP = Object.values(v.days).some(({ tags }) =>
+      tags.includes("AVP")
     )
-      return acc
+    if (!v.isEarlyAVP && !hasTagAVP) return acc
 
     slug === "l-agent-secret-48144" && console.dir(v, { depth: null })
 
@@ -114,7 +113,8 @@ const getTitle = async (slug) => {
       )
     : slug
 
-  specificSlug !== slug &&
+  specificSlug &&
+    specificSlug !== slug &&
     requests.push(`https://www.pathe.fr/api/show/${specificSlug}`)
 
   const res = await Promise.all(requests.map(fetchData))
@@ -208,8 +208,7 @@ export const scrapPathe = async () => {
 
       for (const day in showsEl.days) {
         const data = await fetchData(
-          `https://www.pathe.fr/api/show/${slug}/showtimes/${showsEl.cinema}/${day}`,
-          { fr: false }
+          `https://www.pathe.fr/api/show/${slug}/showtimes/${showsEl.cinema}/${day}`
         )
 
         for (const date of data) {

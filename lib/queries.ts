@@ -44,6 +44,14 @@ export const getShowsAggregated = async (
   const data = response.data
     ?.map((movie) => {
       const shows = movie.shows.filter((show) => {
+        // ? Remove experimental other cinemas
+        if (
+          !show.cinemaId.startsWith("mk2-") &&
+          !show.cinemaId.startsWith("ugc-") &&
+          !show.cinemaId.startsWith("pathe-")
+        )
+          return false
+
         if (cinemasRaw.length === 0) return true
 
         const cinema = show.cinemaId
