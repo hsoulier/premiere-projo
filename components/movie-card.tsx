@@ -1,22 +1,34 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { providers, type Provider } from "@/components/movie-popup.show"
+import { iconProviders, type Provider } from "@/components/movie-popup.show"
 import type { ShowAggregated } from "@/lib/queries"
-import type { CSSProperties } from "react"
+import type { CSSProperties, ReactElement } from "react"
 import Link from "next/link"
 import { VideoCameraSlashIcon } from "@heroicons/react/24/outline"
 import { UsersRound } from "lucide-react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { SOURCE_PROVIDER } from "@/constants/mapping"
 
 export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
-  const router = useRouter()
-
   const cover = movie.poster || ""
   const id = movie.movie_id
+  const listProvider = movie?.shows?.reduce((acc, show) => {
+    const provider = show.cinemaId.split("-")[0] as Provider
 
-  const mProviders = [
-    ...new Set(movie?.shows.map((show) => show?.cinemaId.split("-")[0])),
-  ]
+    if (acc.has(provider)) return acc
+
+    acc.set(provider, {
+      label: `Cinéma ${SOURCE_PROVIDER[provider] || provider}`,
+      icon: iconProviders[provider],
+    })
+
+    return acc
+  }, new Map<string, { icon: ReactElement; label: string }>())
 
   const hasMultipleShows = movie.shows.length > 1
   const hasAVPE = movie.shows.some((show) => show.avpType === "AVPE")
@@ -51,13 +63,17 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
       />
 
       <div className="flex absolute inset-x-4 top-4 items-stretch justify-end gap-2">
-        {mProviders.map((provider, index) => (
-          <div
-            key={index}
-            className="size-8 text-gray-white inline-grid min-w-0 place-content-center rounded-lg bg-[#0B0C0E]/50 backdrop-blur-sm"
-          >
-            {providers[provider as Provider]}
-          </div>
+        {listProvider.entries().map(([_, { icon, label }], index) => (
+          <TooltipProvider key={index}>
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <div className="size-8 text-gray-white inline-grid min-w-0 place-content-center rounded-lg bg-[#0B0C0E]/50 backdrop-blur-sm">
+                  {icon}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>{label}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ))}
       </div>
 
