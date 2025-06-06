@@ -28,7 +28,6 @@ const getDataFromPage = async (page) => {
 
 const scrapAVPFestival = async () => {
   const pages = [
-    "https://prod-paris.api.mk2.com/events/reprise-un-certain-regard-2025?cinema-group=ile-de-france",
     "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
   ]
 
@@ -51,7 +50,18 @@ const scrapAVPFestival = async () => {
       )
       .flat()
 
-    for (const { movie, shows, cinemaSlug } of moviesWithSession) {
+    if (!moviesWithSession || !moviesWithSession.length) return
+
+    for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
+      if (!movie || !shows || !cinemaSlug) {
+        console.warn(
+          "Missing data for movie or shows",
+          movie,
+          shows,
+          cinemaSlug
+        )
+        continue
+      }
       const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
 
       if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
@@ -166,7 +176,7 @@ export const scrapMk2 = async () => {
         release: new Date(openingDate).getFullYear(),
       })
 
-      !Object.keys(sessionsByFilmAndCinema?.[0]?.film).length === 0 &&
+      !Object.keys(sessionsByFilmAndCinema?.[0]?.film || {}).length === 0 &&
         console.warn("no film object, fallback used for", event.slug, link)
 
       const movie = {
