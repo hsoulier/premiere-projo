@@ -49,6 +49,7 @@ export const getShowsAggregated = async (
           !show.cinemaId.startsWith("mk2-") &&
           !show.cinemaId.startsWith("ugc-") &&
           !show.cinemaId.startsWith("pathe-")
+          // && !show.cinemaId.startsWith("grand-")
         )
           return false
 

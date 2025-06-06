@@ -1,5 +1,15 @@
 import { parseHTML } from "linkedom"
-import { getMovieFromTmDb } from "../db/tmdb.js"
+import playwright from "playwright"
+import { getAllocineInfo } from "../db/allocine.js"
+import {
+  getMovie,
+  getShow,
+  insertMovie,
+  insertShow,
+  updateAvailabilityShow,
+  updateShow,
+} from "../db/requests.js"
+import { frenchToISODateTime } from "../utils.js"
 
 const getMoviesPage = async () => {
   const options = { method: "GET", headers: { "Accept-Language": "fr-FR" } }
@@ -22,7 +32,7 @@ const getMoviesFromEventPage = async () => {
 
     const isVIP = m
       .querySelector(".title-movie-tout")
-      ?.textContent?.endsWith("VIP")
+      ?.textContent?.includes("VIP")
 
     return isAVP && !isVIP
   })
@@ -30,70 +40,246 @@ const getMoviesFromEventPage = async () => {
   return movies.map((m) => {
     const title = m
       .querySelector(".title-movie-tout")
-      ?.textContent?.replaceAll("(AVP)", "")
+      ?.textContent?.split("(AVP")[0]
+      ?.split("(VIP")[0]
+      .trim()
+
     const link = m.querySelector(".title-movie-tout a")?.href
-    const [date] = m.querySelector(".date-tout")?.textContent.split("à")
 
-    const match = date.match(/\d.*/)
-    if (!match) throw new Error(`No date found for ${title}`)
-    const result = match[0].trim()
-
-    const formattedDate = new Date(result)
-
-    getMovieFromTmDb(title, formattedDate.getFullYear()).then((res) => {
-      const a = res.results?.[0]
-      console.log(a?.title, a?.release_date, title)
-    })
-
-    return {
-      title,
-      date: formattedDate,
-      // time,
-      link,
-    }
+    return { title, link }
   })
 }
 
-const getMovieInfos = async () => {
+export const scrapGrandRex = async () => {
+  const browser = await playwright.chromium.launch()
+  const context = await browser.newContext()
+  const page = await context.newPage()
+
   const movies = await getMoviesFromEventPage()
 
-  // return movies.map(async (m) => {
-  //   const res = await fetch(m.link)
-  //   const text = await res.text()
+  console.dir(movies, { depth: null })
 
-  //   const { document } = parseHTML(text)
+  for (const m of movies) {
+    const textMovie = await (await fetch(m.link)).text()
 
-  //   const times = [
-  //     ...document.querySelectorAll(
-  //       'a[href="#seances"][role=button] > div:not(.hide)'
-  //     ),
-  //   ]
+    const { document: movieDoc } = parseHTML(textMovie)
 
-  //   // ? Reupere pas les horaires de la semaine courante ??
-  //   const rows = [...document.querySelectorAll("div.seances > div:not(.hide)")]
+    const directorRow = movieDoc
+      .querySelector(".infos-page > li:nth-of-type(2)")
+      .textContent.trim()
 
-  //   const index = rows.findIndex((r) => r.querySelector(".box-time-calendar"))
+    if (!directorRow.startsWith("De ")) {
+      console.log(`Skipping movie "${m.title}" as it does not have a director`)
+      continue
+    }
 
-  //   const description = document
-  //     .querySelector(".box-time-calendar")
-  //     ?.textContent?.trim()
+    const director = directorRow.replace("De ", "").trim()
 
-  //   // console.log(m.title, description, times.length, m.link)
+    const rawLink = movieDoc.querySelector("#book-film")?.dataset?.url || ""
 
-  //   console.log(
-  //     index,
-  //     rows?.length,
-  //     times?.length,
-  //     // rows[index].textContent?.trim(),
-  //     times[index]?.textContent?.trim(),
-  //     m.date
-  //   )
+    const isSingleShow = rawLink.includes("/VOST/") || rawLink.includes("/VF/")
 
-  //   return {
-  //     ...m,
-  //     description,
-  //   }
-  // })
+    const link = `${rawLink.replace(
+      "resa-part/1/",
+      "reserver/"
+    )}?utm_campaign=1`
+
+    await page.goto(link)
+
+    if (isSingleShow) {
+      const errorText = await (
+        await page.$("#resa-erreur .erreur")
+      )?.textContent()
+
+      const isFull =
+        errorText === "Plus de places disponibles en ligne pour cette séance."
+
+      const id = page.url().split("/").at(-2)
+
+      const existingShow = await getShow(id)
+
+      if (!existingShow && isFull) continue
+
+      if (existingShow) {
+        if (existingShow.isFull !== isFull) {
+          console.log(
+            `ℹ️ Toggle show ${existingShow.id} to status ${
+              isFull ? "full" : "available"
+            }`
+          )
+          await updateAvailabilityShow(existingShow.id, { isFull })
+        }
+
+        continue
+      }
+
+      const showTime = await page.$eval(".date_seance .s_jour", (el) =>
+        el.textContent.trim()
+      )
+
+      const showTimeHour = await page.$eval(".date_seance .s_heure", (el) =>
+        el.textContent.trim()
+      )
+      const lang = await page.$eval(".date_seance .film_version", (el) =>
+        el.textContent.trim()?.replace("en ", "")
+      )
+      const title = await page.$eval("#titre_du_film_seul", (el) =>
+        el.textContent.trim()
+      )
+
+      const movie = await getAllocineInfo({ title, directors: [director] })
+
+      const existingMovie = await getMovie(movie.id)
+
+      if (!existingMovie) {
+        console.log(`Inserting movie ${movie.id} ${movie.title}`)
+
+        await insertMovie(movie)
+      }
+
+      const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
+
+      console.log(showTime, showTimeHour, d)
+
+      const show = {
+        id,
+        cinemaId: "grand-rex",
+        language: lang.toLowerCase(),
+        date: d,
+        avpType: "AVP",
+        movieId: movie.id,
+        linkShow: page.url(),
+        linkMovie: m.link,
+        isFull,
+      }
+
+      if (existingShow && existingShow.isFull === isFull) continue
+
+      if (existingShow && existingShow.isFull !== isFull) {
+        console.log(
+          `Updating show ${show.id} from ${existingShow.isFull} to ${isFull}`
+        )
+        await updateAvailabilityShow(id, isFull)
+
+        continue
+      }
+
+      await insertShow(show)
+
+      continue
+    }
+
+    const dates = await page.$$eval(
+      "select[name=modresa_jour] > option:not([value=''])",
+      (options) => options.map((o) => o.textContent.trim())
+    )
+
+    const title = await page.$eval(
+      "[name=modresa_film] > option[selected=selected]",
+      (el) => el.textContent.trim()
+    )
+
+    const movie = await getAllocineInfo({ title, directors: [director] })
+
+    if (!movie) {
+      console.log(`❌ Skip movie ${title} not in Allocine`)
+      continue
+    }
+
+    const existingMovie = await getMovie(movie.id)
+
+    if (!existingMovie) {
+      console.log(`Inserting movie ${movie.id} ${movie.title}`)
+      await insertMovie(movie)
+    }
+
+    for (const label of dates) {
+      await Promise.all([
+        page.waitForNavigation(),
+        page.selectOption("[name=modresa_jour]", { label }),
+      ])
+
+      const errorText = await (
+        await page.$("#resa-erreur .erreur")
+      )?.textContent()
+
+      const isFull =
+        errorText === "Plus de places disponibles en ligne pour cette séance."
+
+      const id = page.url().split("/").at(-2)
+
+      const existingShow = await getShow(id)
+
+      if (isFull && (!existingShow || (existingShow && isFull))) {
+        if (existingShow && existingShow.isFull !== isFull) {
+          console.log(
+            `ℹ️ Toggle show ${existingShow.id} to status ${
+              isFull ? "full" : "available"
+            }`
+          )
+          await updateAvailabilityShow(existingShow.id, { isFull })
+        }
+        if (label === dates.at(-1)) continue
+        await page.goBack({ waitUntil: "load" })
+        continue
+      }
+
+      const showTime = await page.$eval(".date_seance .s_jour", (el) =>
+        el.textContent.trim()
+      )
+
+      const showTimeHour = await page.$eval(".date_seance .s_heure", (el) =>
+        el.textContent.trim()
+      )
+      const lang = await page.$eval(".date_seance .film_version", (el) =>
+        el.textContent.trim()?.replace("en ", "")
+      )
+
+      const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
+
+      console.log(showTime, showTimeHour, d)
+
+      const show = {
+        id,
+        cinemaId: "grand-rex",
+        language: lang.toLowerCase(),
+        date: d,
+        avpType: "AVP",
+        movieId: movie.id,
+        linkShow: page.url(),
+        linkMovie: m.link,
+        isFull,
+      }
+
+      if (existingShow && existingShow.isFull === isFull) {
+        if (label === dates.at(-1)) continue
+
+        await page.goBack({ waitUntil: "load" })
+
+        continue
+      }
+
+      if (existingShow && existingShow.isFull !== isFull) {
+        console.log(
+          `Updating show ${show.id} from ${existingShow.isFull} to ${isFull}`
+        )
+        await updateAvailabilityShow(id, isFull)
+
+        if (label === dates.at(-1)) continue
+
+        await page.goBack({ waitUntil: "load" })
+
+        continue
+      }
+
+      await insertShow(show)
+
+      if (label === dates.at(-1)) continue
+
+      // Return to base page
+      await page.goBack({ waitUntil: "load" })
+    }
+  }
+
+  await browser.close()
 }
-
-getMovieInfos()
