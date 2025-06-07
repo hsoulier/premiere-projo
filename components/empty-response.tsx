@@ -2,7 +2,7 @@ export const EmptyResponse = () => {
   return (
     <section className="flex flex-col gap-8">
       <svg
-        className="w-90"
+        className="w-full max-w-90"
         viewBox="0 0 457 399"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

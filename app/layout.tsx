@@ -21,7 +21,16 @@ export const metadata: Metadata = {
   title: "Première Pro | Toutes les avant-premières à Paris",
   description:
     "Découvrez toutes les avant-premières de films à Paris en un seul coup d'œil ! 🎬 Retrouvez les projections exclusives des cinémas UGC, Pathé, MK2 et le Grand Rex. Ne manquez aucune sortie anticipée et vivez la magie du cinéma avant tout le monde. Consultez les horaires et réservez vos places dès maintenant !",
-  keywords: ["avant-première", "cinéma", "paris", "ugc", "pathé", "mk2"],
+  keywords: [
+    "avant-première",
+    "avant-premiere avec équipe",
+    "équipe du film",
+    "cinéma",
+    "paris",
+    "ugc",
+    "pathé",
+    "mk2",
+  ],
   authors: [
     { name: "Anthony Reungère", url: "https://bento.me/anthonyreungere" },
     { name: "Hippolyte Soulier", url: "https://hsoulier.dev" },
@@ -73,11 +82,13 @@ export default function RootLayout({
               </header>
 
               {children}
-              <Analytics />
+              {process.env.NODE_ENV === "production" && <Analytics />}
             </Suspense>
           </Providers>
         </NuqsAdapter>
-        <GoogleAnalytics gaId="G-3Q9NWLKWHZ" />
+        {process.env.NODE_ENV === "production" && (
+          <GoogleAnalytics gaId="G-3Q9NWLKWHZ" />
+        )}
       </body>
     </html>
   )

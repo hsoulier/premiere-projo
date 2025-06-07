@@ -85,7 +85,14 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
           </span>
           <span>
             {hasAVPE && (
-              <UsersRound className="text-primary-yellow/80 inline size-4" />
+              <TooltipProvider>
+                <Tooltip delayDuration={100}>
+                  <TooltipTrigger asChild>
+                    <UsersRound className="text-primary-yellow/80 inline size-4" />
+                  </TooltipTrigger>
+                  <TooltipContent>Avec l'équipe du film</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </span>
         </p>
