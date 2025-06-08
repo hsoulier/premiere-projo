@@ -63,7 +63,7 @@ export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
       />
 
       <div className="flex absolute inset-x-4 top-4 items-stretch justify-end gap-2">
-        {listProvider.entries().map(([_, { icon, label }], index) => (
+        {[...listProvider.entries()].map(([_, { icon, label }], index) => (
           <TooltipProvider key={index}>
             <Tooltip delayDuration={100}>
               <TooltipTrigger asChild>
