@@ -29,37 +29,37 @@ export const Navigation = () => {
   }, [search])
 
   return (
-    <div className="mx-auto w-full max-w-screen-2xl sticky top-0 z-50 bg-gradient-to-b from-20% from-gray-background to-gray-background/0">
-      <nav className="flex items-center justify-between py-6 z-50 px-5 space-x-5">
-        <Link href="/">
-          <Logo className="h-8" />
-        </Link>
-        <search
-          role="search"
-          className="grow lg:absolute left-1/2 lg:-translate-x-1/2"
-        >
-          <form className="relative grow h-10 rounded-2xl bg-gray-100 lg:h-12 lg:w-[40vw] flex items-center">
-            <div className="p-4 lg:block lg:pl-4 text-gray-400">
-              <MagnifyingGlassIcon className="size-4 lg:block" />
-            </div>
-            <input
-              type="search"
-              name="q"
-              placeholder="Rechercher une avant-première..."
-              className="min-w-0 w-fit h-full lg:w-full bg-transparent outline-none placeholder:text-gray-400 text-gray-800 bg-red-20 placeholder-shown:text-ellipsis grow"
-              value={dSearch}
-              onChange={(e) => setDSearch(e.target.value)}
-            />
-            {!!search && (
-              <button className="p-4" type="button" onClick={clear}>
-                <span className="sr-only">Effacer la recherche</span>
-                <XMarkIcon className="size-5 stroke-gray-400" />
-              </button>
-            )}
-          </form>
-        </search>
-        <ThemeSwitch />
-      </nav>
+    <div className="w-full 2xl:max-w-screen-2xl sticky top-0 z-50 bg-gradient-to-b from-20% from-gray-background to-gray-background/0 py-6 flex items-center gap-5 px-5 lg:justify-between lg:mx-auto">
+      <Link href="/">
+        <Logo className="h-8" />
+      </Link>
+      <form
+        data-state={!!search ? "search" : ""}
+        className="relative lg:absolute lg:left-1/2 lg:-translate-x-1/2 grow h-10 rounded-2xl bg-gray-100 lg:h-12 lg:w-[40vw] inline-flex items-center min-w-0"
+      >
+        <div className="absolute lg:static left-2 lg:left-4 lg:block lg:pl-4 text-gray-400 lg:p-4">
+          <MagnifyingGlassIcon className="size-4 lg:block" />
+        </div>
+        <input
+          type="search"
+          name="q"
+          placeholder="Rechercher une avant-première..."
+          className="pl-8 min-w-0 grow h-full lg:w-full bg-transparent outline-none placeholder:text-gray-400 text-gray-800 placeholder-shown:text-ellipsis [[data-state=search]_&]:w-[calc(100%-2rem)] lg:pl-0"
+          value={dSearch}
+          onChange={(e) => setDSearch(e.target.value)}
+        />
+        {!!search && (
+          <button
+            className="absolute right-2 lg:p-4 lg:static"
+            type="button"
+            onClick={clear}
+          >
+            <span className="sr-only">Effacer la recherche</span>
+            <XMarkIcon className="size-5 stroke-gray-400" />
+          </button>
+        )}
+      </form>
+      <ThemeSwitch />
     </div>
   )
 }
