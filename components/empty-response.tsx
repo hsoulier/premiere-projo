@@ -169,7 +169,7 @@ export const EmptyResponse = () => {
         </defs>
       </svg>
       <div className="flex flex-col gap-2 items-center">
-        <h1 className="text-gray-white text-2xl font-medium">
+        <h1 className="text-gray-white text-2xl font-medium text-center">
           Aucune avant-première disponible
         </h1>
         <p className="text-gray-500 font-light text-center">
