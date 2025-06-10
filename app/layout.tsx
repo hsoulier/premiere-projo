@@ -18,7 +18,7 @@ const font = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://premiereprojo.fr"),
-  title: "Première Pro | Toutes les avant-premières à Paris",
+  title: "Première Projo | Toutes les avant-premières à Paris",
   description:
     "Découvrez toutes les avant-premières de films à Paris en un seul coup d'œil ! 🎬 Retrouvez les projections exclusives des cinémas UGC, Pathé, MK2 et le Grand Rex. Ne manquez aucune sortie anticipée et vivez la magie du cinéma avant tout le monde. Consultez les horaires et réservez vos places dès maintenant !",
   keywords: [
@@ -30,6 +30,8 @@ export const metadata: Metadata = {
     "ugc",
     "pathé",
     "mk2",
+    "le grand rex",
+    "grand rex",
   ],
   authors: [
     { name: "Anthony Reungère", url: "https://bento.me/anthonyreungere" },
@@ -37,10 +39,8 @@ export const metadata: Metadata = {
   ],
   robots: "index, follow",
   applicationName: "Première Projo",
-  icons:
-    "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>",
   openGraph: {
-    title: "Première Pro | Toutes les avant-premières à Paris",
+    title: "Première Projo | Toutes les avant-premières à Paris",
     description:
       "Découvrez toutes les avant-premières de films à Paris en un seul coup d'œil ! 🎬 Retrouvez les projections exclusives des cinémas UGC, Pathé, MK2 et le Grand Rex. Ne manquez aucune sortie anticipée et vivez la magie du cinéma avant tout le monde. Consultez les horaires et réservez vos places dès maintenant !",
     type: "website",
@@ -66,7 +66,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <head />
+      <head>
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="any" />
+      </head>
       <body
         className={cn(
           "relative dark:text-gray-white bg-gray-background min-h-screen max-w-screen font-sans antialiased pb-64",
