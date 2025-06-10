@@ -19,6 +19,7 @@ const specialTitles = [
   "séance all inclusive : ",
   "la séance live :",
   "horror cinéma club :",
+  "horror cinema club -",
   "la soirée des passionnés :",
   "la séance feel good : ",
   "la séance tenante : ",

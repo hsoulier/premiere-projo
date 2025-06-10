@@ -219,7 +219,12 @@ export const scrapMk2 = async () => {
         continue
       }
 
-      for (const session of event.sessionsByFilmAndCinema[0].sessions) {
+      if (!event.sessionsByFilmAndCinema?.length) {
+        console.warn("⚠️ no sessions for event", event.slug, movie.link)
+        continue
+      }
+
+      for (const session of event.sessionsByFilmAndCinema?.[0]?.sessions) {
         const language =
           session.attributes.find((a) => a.id === "VS00000005")?.shortName ===
           "VOSTF"
