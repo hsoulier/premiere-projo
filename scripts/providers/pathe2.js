@@ -95,8 +95,9 @@ export const scrapPathe = async () => {
         }
 
         if (movieData.genres.includes("Documentaire")) {
-          console.log(`🚫 Skip docu (${movieSlug})`)
-          continue
+          console.log(`ℹ️ documentary (${movieSlug})`)
+          // console.log(`🚫 Skip docu (${movieSlug})`)
+          // continue
         }
 
         const specificMovieIndex = specialTitlesSlug.findIndex((s) =>
