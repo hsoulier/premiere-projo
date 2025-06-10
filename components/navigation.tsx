@@ -30,7 +30,7 @@ export const Navigation = () => {
 
   return (
     <div className="w-full 2xl:max-w-screen-2xl sticky top-0 z-50 bg-gradient-to-b from-20% from-gray-background to-gray-background/0 py-6 flex items-center gap-5 px-5 lg:justify-between lg:mx-auto">
-      <Link href="/">
+      <Link href="/" aria-label="Accueil de Premiere Projo">
         <Logo className="h-8" />
       </Link>
       <form
@@ -70,7 +70,11 @@ export const Footer = () => {
       <div className="flex items-center justify-between">
         <Logo className="h-6" />
         <div className="flex gap-8">
-          <a href="https://x.com/premiereprojo" target="_blank">
+          <a
+            aria-label="Accéder au compte X (twitter) de Premiere Projo"
+            href="https://x.com/premiereprojo"
+            target="_blank"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -83,7 +87,11 @@ export const Footer = () => {
               />
             </svg>
           </a>
-          <a href="https://www.instagram.com/premiereprojo/" target="_blank">
+          <a
+            aria-label="Accéder au compte Instagram de Premiere Projo"
+            href="https://www.instagram.com/premiereprojo/"
+            target="_blank"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
