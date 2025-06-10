@@ -184,5 +184,11 @@ export const providers = [
   { value: "pathe", label: "Pathé", cinemas: patheCinemas },
   { value: "ugc", label: "UGC", cinemas: ugcCinemas },
   { value: "mk2", label: "MK2", cinemas: mk2Cinemas },
+] as const
+
+export const simpleProviders = [
+  { value: "grand-rex", label: "Le Grand Rex", cinemas: [] },
   // { value: "indy", label: "Indépendant", cinemas: [] },
 ] as const
+
+export const allProviders = [...providers, ...simpleProviders] as const

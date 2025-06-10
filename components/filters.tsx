@@ -1,6 +1,7 @@
 "use client"
 import { FilterCinema } from "@/components/filters.cinema"
 import { FilterLanguage } from "@/components/filters.language"
+import { FilterOrder } from "@/components/filters.order"
 import { FilterShows } from "@/components/filters.shows"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
@@ -9,7 +10,10 @@ export const Filters = () => {
   const router = useRouter()
   const isHomePage = usePathname() === "/"
 
-  const hasFilters = searchParams.size > 0 && !searchParams.has("q")
+  const hasFilters =
+    searchParams.size > 0 &&
+    !searchParams.has("q") &&
+    !searchParams.has("order")
 
   if (!isHomePage) return null
 
@@ -23,6 +27,8 @@ export const Filters = () => {
           Tout effacer
         </button>
       )}
+
+      <FilterOrder />
     </header>
   )
 }

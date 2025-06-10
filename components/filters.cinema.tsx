@@ -11,14 +11,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { providers, LIST_MULTIPLEX } from "@/constants/mapping"
+import {
+  providers,
+  LIST_MULTIPLEX,
+  type allProviders,
+} from "@/constants/mapping"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
 
 type Value =
-  | (typeof providers)[number]["value"]
+  | (typeof allProviders)[number]["value"]
   | (typeof providers)[number]["cinemas"][number]["id"]
 
 export const FilterCinema = () => {
@@ -73,7 +77,6 @@ export const FilterCinema = () => {
         align="start"
         sideOffset={8}
         className="p-2 border border-gray-200 bg-gray-background rounded-xl text-gray-700 max-h-80 overflow-y-auto"
-        asChild
       >
         <Accordion type="single" collapsible className="space-y-1">
           {providers.map(({ value, label, cinemas }) => {
@@ -127,6 +130,25 @@ export const FilterCinema = () => {
             )
           })}
         </Accordion>
+        <div
+          className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2 cursor-pointer"
+          onClick={() =>
+            !cinemaQuery.includes("grand-rex")
+              ? addFilter("grand-rex")
+              : removeFilter("grand-rex")
+          }
+        >
+          <Checkbox
+            checked={cinemaQuery.includes("grand-rex")}
+            onClick={(e) => e.stopPropagation()}
+            onCheckedChange={(checked) =>
+              checked ? addFilter("grand-rex") : removeFilter("grand-rex")
+            }
+          />
+          <span className="[[aria-checked=true]~&]:text-gray-white text-gray-700">
+            Le Grand Rex
+          </span>
+        </div>
       </PopoverContent>
     </Popover>
   )
