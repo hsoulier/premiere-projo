@@ -10,10 +10,15 @@ export const Filters = () => {
   const router = useRouter()
   const isHomePage = usePathname() === "/"
 
+  const hasSearch = searchParams.has("q")
+  const hasOrder = searchParams.has("order")
+
   const hasFilters =
-    searchParams.size > 0 &&
-    !searchParams.has("q") &&
-    !searchParams.has("order")
+    (searchParams.size > 0 &&
+      !searchParams.has("q") &&
+      !searchParams.has("order")) ||
+    (searchParams.size > 1 && hasSearch) ||
+    (searchParams.size > 1 && hasOrder)
 
   if (!isHomePage) return null
 
