@@ -38,13 +38,40 @@ export const Content = () => {
     )
   }
 
+  const order = searchParams.get("order") || "show"
+
+  const movies = data?.sort((a, b) => {
+    if (order === "az") {
+      return a.title?.localeCompare(b.title || "", "fr") || 0
+    }
+
+    if (order === "release") {
+      const releaseA = new Date(a.release || "").getTime()
+      const releaseB = new Date(b.release || "").getTime()
+      return releaseA - releaseB
+    }
+
+    const earlierShowA = a.shows.sort(
+      (x, y) =>
+        new Date(x.date || "").getTime() - new Date(y.date || "").getTime()
+    )?.[0]
+    const earlierShowB = b.shows.sort(
+      (x, y) =>
+        new Date(x.date || "").getTime() - new Date(y.date || "").getTime()
+    )?.[0]
+
+    return earlierShowA?.date && earlierShowB?.date
+      ? new Date(earlierShowA.date).getTime() -
+          new Date(earlierShowB.date).getTime()
+      : 0
+  })
+
   return (
     <>
       <main className="mx-auto w-auto px-4 lg:px-5 2xl:max-w-screen-2xl gap-x-4 gap-y-6 grid grid-cols-2 md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] grow">
-        {data?.map((movie) => (
+        {movies?.map((movie) => (
           <MovieCard key={movie.movie_id} movie={movie} />
         ))}
-        {/* <MoviePopup /> */}
       </main>
       {!isLoading && <Footer />}
     </>
