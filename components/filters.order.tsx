@@ -36,9 +36,9 @@ export const FilterOrder = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="hidden lg:flex ml-auto mr-0 focus:outline-none items-center gap-2 px-3 py-[10px] border border-gray-200 rounded-xl text-gray-800">
+      <DropdownMenuTrigger className="hidden lg:flex ml-auto mr-0 focus:outline-none items-center gap-2 px-3 py-[10px] border border-gray-200 rounded-xl text-gray-800 data-[state=open]:bg-gray-100 hover:bg-gray-100">
         Trier
-        <ChevronDownIcon className="size-4" />
+        <ChevronDownIcon className="size-4 transition-transform duration-100 ease-in-out [[data-state=open]_&]:rotate-180" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"

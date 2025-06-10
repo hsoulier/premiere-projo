@@ -5,20 +5,26 @@ import { FilterOrder } from "@/components/filters.order"
 import { FilterShows } from "@/components/filters.shows"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
+const keysToKeep = ["q", "order"]
+
 export const Filters = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const isHomePage = usePathname() === "/"
 
-  const hasSearch = searchParams.has("q")
-  const hasOrder = searchParams.has("order")
-
   const hasFilters =
-    (searchParams.size > 0 &&
-      !searchParams.has("q") &&
-      !searchParams.has("order")) ||
-    (searchParams.size > 1 && hasSearch) ||
-    (searchParams.size > 1 && hasOrder)
+    [...searchParams.keys()].filter((key) => !keysToKeep.includes(key)).length >
+    0
+
+  const removeFilters = () => {
+    const params = new URLSearchParams(searchParams)
+
+    for (const key of params.keys()) {
+      if (!keysToKeep.includes(key)) params.delete(key)
+    }
+
+    router.push(`/?${params.toString()}`)
+  }
 
   if (!isHomePage) return null
 
@@ -28,7 +34,7 @@ export const Filters = () => {
       <FilterShows />
       {/* <FilterLanguage /> */}
       {hasFilters && (
-        <button className="px-3" onClick={() => router.push("/")}>
+        <button className="px-3" onClick={removeFilters}>
           Tout effacer
         </button>
       )}
