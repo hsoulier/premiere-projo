@@ -57,10 +57,12 @@ export const scrapGrandRex = async () => {
 
   const movies = await getMoviesFromEventPage()
 
-  console.dir(movies, { depth: null })
+  console.log("ℹ️ Movies to scrap", movies.length)
 
   for (const m of movies) {
     const textMovie = await (await fetch(m.link)).text()
+
+    console.log(`ℹ️ Scraping movie ${m.title} ${m.link}`)
 
     const { document: movieDoc } = parseHTML(textMovie)
 
@@ -83,6 +85,13 @@ export const scrapGrandRex = async () => {
       "resa-part/1/",
       "reserver/"
     )}?utm_campaign=1`
+
+    if (!link.includes("cotecine.fr")) {
+      console.log(
+        `Skipping movie "${m.title}" as it does not have a valid link`
+      )
+      continue
+    }
 
     await page.goto(link)
 

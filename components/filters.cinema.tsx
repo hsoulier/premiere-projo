@@ -52,8 +52,6 @@ export const FilterCinema = () => {
   }
 
   const removeProvider = (value: (typeof LIST_MULTIPLEX)[number]) => {
-    console.log("removeProvider", value, cinemaQuery)
-
     const provider = providers.find((p) => p.value === value)
     if (!provider) return
 
