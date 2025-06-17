@@ -26,6 +26,7 @@ const specialTitles = [
   "séance tenante : ",
   "les rendez-vous de l'animé : ",
   "les rendez-vous de l'anime : ",
+  "les vendredis de l’horreur :",
 ]
 
 const specialTitlesSlug = [
@@ -36,6 +37,7 @@ const specialTitlesSlug = [
   "la-soiree-feel-good-",
   "seance-tenante-",
   "les-rendez-vous-de-l-anime-",
+  "les-vendredis-de-l-horreur-",
 ]
 
 const cannesFestivalTitles = ["un certain regard"]
