@@ -1,1 +1,4 @@
-Allow: /api/og/*
+User-Agent: *
+Allow: /
+
+Sitemap: https://premiereprojo.fr/sitemap.xml
