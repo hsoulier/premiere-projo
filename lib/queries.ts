@@ -12,7 +12,9 @@ export const getShowsAggregated = async (
 
   let query = client
     .from("movies")
-    .select(`movie_id:id,title, poster,release,hide,shows(*)`)
+    .select(
+      `movie_id:id,title,poster,release,director,synopsis,duration,hide,shows(*)`
+    )
     .not("hide", "is", true)
 
   if ("avpType" in searchParams && avpType) {
