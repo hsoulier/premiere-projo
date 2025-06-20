@@ -2,7 +2,6 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -10,21 +9,13 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
-  VisibilityState,
 } from "@tanstack/react-table"
-import {
-  ArrowUpDown,
-  ChevronDown,
-  FileWarningIcon,
-  MessageCircleWarningIcon,
-  MoreHorizontal,
-} from "lucide-react"
+import { ArrowUpDown, FileWarningIcon, MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -43,6 +34,15 @@ import {
 import { useState } from "react"
 import type { getShowsAggregated } from "@/lib/queries"
 import Link from "next/link"
+import { CheckIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline"
+import { cn } from "@/lib/utils"
+import { ModalEditMovie } from "@/components/modal-edit-movie"
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogPortal,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const TABLE_IDS = {
   CINEMAS: "32274",
@@ -95,7 +95,6 @@ export const columns: ColumnDef<Data>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
   },
   {
     accessorKey: "duration",
@@ -125,22 +124,27 @@ export const columns: ColumnDef<Data>[] = [
   },
   {
     accessorKey: "errors",
-    header: () => <div className="text-center">Possible errors</div>,
+    header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => {
-      const noDirector = !Boolean(row.getValue("director") ?? "")
-      const noDuration = !Boolean(row.getValue("duration") ?? "")
-      const noSynopsis = !Boolean(row.getValue("synopsis") ?? "")
-
-      console.log("row errors", row.original)
+      const noDirector = !Boolean(row.original?.director ?? "")
+      const noDuration = !Boolean(row.original?.duration ?? "")
+      const noSynopsis = !Boolean(row.original?.synopsis ?? "")
 
       const errors = [noDirector, noDuration, noSynopsis].filter(Boolean).length
 
       return (
-        <div className="text-right font-medium">
-          {errors > 0 && <MessageCircleWarningIcon className="text-red-500" />}
-          {errors > 0 && (
-            <span className="ml-2 text-sm text-red-500">{errors}</span>
+        <div
+          className={cn(
+            "justify-center gap-2 inline-flex items-center font-medium rounded-full py-1 px-2",
+            errors === 0 && "text-green-700 bg-green-100/80",
+            errors === 1 && "text-amber-700 bg-amber-100/80",
+            errors === 2 && "text-orange-700 bg-orange-100/80",
+            errors === 3 && "text-red-700 bg-red-100/80"
           )}
+        >
+          {errors > 0 && <ExclamationCircleIcon className="size-3" />}
+          {errors === 0 && <CheckIcon className="text-green-600 size-3" />}
+          {errors > 0 && <span className="text-sm tabular-nums">{errors}</span>}
         </div>
       )
     },
@@ -183,8 +187,24 @@ export const columns: ColumnDef<Data>[] = [
                 Voir les séances sur supabase
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/films/${movie.movie_id}`}>
+                Voir la page du film
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <AlertDialog>
+                <AlertDialogTrigger className="w-full relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0">
+                  Open
+                </AlertDialogTrigger>
+                <AlertDialogPortal>
+                  <AlertDialogContent>
+                    <ModalEditMovie id={movie.movie_id} />
+                  </AlertDialogContent>
+                </AlertDialogPortal>
+              </AlertDialog>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -205,7 +225,11 @@ export function DataTableDemo({ data }: { data: Data[] }) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
-    state: { sorting, rowSelection },
+    state: {
+      sorting,
+      rowSelection,
+      pagination: { pageIndex: 0, pageSize: 30 },
+    },
   })
 
   return (
@@ -222,7 +246,7 @@ export function DataTableDemo({ data }: { data: Data[] }) {
       </div>
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

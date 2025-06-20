@@ -6,7 +6,7 @@ import { auth } from "@/lib/firebase"
 import { getShowsAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
 import { onAuthStateChanged } from "firebase/auth"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 const DashboardPage = () => {
