@@ -146,6 +146,14 @@ export const scrapGrandRex = async () => {
         await insertMovie(movie)
       }
 
+      console.log(
+        `1️⃣ M ${movie.title} ${
+          existingMovie.release ? new Date(existingMovie.release) : "⚠️⚠️"
+        } ${movie.release ? new Date(movie.release) : "⚠️⚠️"}`
+      )
+
+      continue
+
       const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
 
       console.log(showTime, showTimeHour, d)
@@ -178,11 +186,6 @@ export const scrapGrandRex = async () => {
       continue
     }
 
-    const dates = await page.$$eval(
-      "select[name=modresa_jour] > option:not([value=''])",
-      (options) => options.map((o) => o.textContent.trim())
-    )
-
     const title = await page.$eval(
       "[name=modresa_film] > option[selected=selected]",
       (el) => el.textContent.trim()
@@ -197,16 +200,161 @@ export const scrapGrandRex = async () => {
 
     const existingMovie = await getMovie(movie.id)
 
+    console.log(
+      `2️⃣ M ${movie.title} ${
+        existingMovie.release ? new Date(existingMovie.release) : "⚠️⚠️"
+      } ${movie.release ? new Date(movie.release) : "⚠️⚠️"}`
+    )
+
+    const dates = (
+      await page.$$eval(
+        "select[name=modresa_jour] > option:not([value=''])",
+        (options) =>
+          options.map((o) => ({ label: o.textContent.trim(), value: o.value }))
+      )
+    ).filter((d) => {
+      const date = new Date(frenchToISODateTime(`${d.label} à 02h00`))
+
+      return date.getTime() < new Date(existingMovie.release).getTime()
+    })
+
+    console.log("✨ Dates available", dates.length)
+
     if (!existingMovie) {
       console.log(`Inserting movie ${movie.id} ${movie.title}`)
+
       await insertMovie(movie)
     }
 
-    for (const label of dates) {
+    for (const { label, value } of dates) {
+      console.log(`ℹ️ Scraping show for date ${label}`)
+
       await Promise.all([
-        page.waitForNavigation(),
-        page.selectOption("[name=modresa_jour]", { label }),
+        page.waitForURL(link),
+        page.selectOption("[name=modresa_jour]", value),
       ])
+
+      const resShows = await page.waitForResponse(
+        `https://legrandrex.cotecine.fr/reserver/ajax/?modresa_film=322713&modresa_jour=${value}`
+      )
+
+      const showsAvailable = await resShows.json()
+
+      console.log(`ℹ️ Response for date ${label}`, showsAvailable)
+
+      if (Object.keys(showsAvailable).length > 1) {
+        console.log(`ℹ️ Multiple shows on this date ${label} ${label}`)
+
+        const salles = await page.$$eval(
+          "select[name=modresa_seance] > option:not([value=''])",
+          (options) =>
+            options.map((o) => ({
+              label: o.textContent.trim(),
+              value: o.value,
+            }))
+        )
+
+        console.log("✨ Salles available", salles)
+
+        for (const { label, value } of salles) {
+          const linkShow = `${page.url().split("?")[0]}/D${value}`
+
+          console.log(`ℹ️ Scraping show for date ${label} ${value}`, linkShow)
+
+          page.waitForLoadState("domcontentloaded")
+
+          await page.selectOption("[name=modresa_seance]", value)
+
+          page.waitForURL(linkShow)
+
+          page.waitForLoadState("networkidle")
+
+          const errorText = await (
+            await page.$("#resa-erreur .erreur")
+          )?.textContent()
+
+          const isFull =
+            errorText ===
+            "Plus de places disponibles en ligne pour cette séance."
+
+          const id = page.url().split("/").at(-2)
+
+          const existingShow = await getShow(id)
+
+          if (isFull && (!existingShow || (existingShow && isFull))) {
+            if (existingShow && existingShow.isFull !== isFull) {
+              console.log(
+                `ℹ️ Toggle show ${existingShow.id} to status ${
+                  isFull ? "full" : "available"
+                }`
+              )
+              await updateAvailabilityShow(existingShow.id, { isFull })
+            }
+            if (label === dates.at(-1)) continue
+            await page.goBack({ waitUntil: "load" })
+            continue
+          }
+
+          const showTime = await page.$eval(".date_seance .s_jour", (el) =>
+            el.textContent.trim()
+          )
+
+          const showTimeHour = await page.$eval(".date_seance .s_heure", (el) =>
+            el.textContent.trim()
+          )
+          const lang = await page.$eval(".date_seance .film_version", (el) =>
+            el.textContent.trim()?.replace("en ", "")
+          )
+
+          const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
+
+          console.log(showTime, showTimeHour, d)
+
+          const show = {
+            id,
+            cinemaId: "grand-rex",
+            language: lang.toLowerCase(),
+            date: d,
+            avpType: "AVP",
+            movieId: movie.id,
+            linkShow: page.url(),
+            linkMovie: m.link,
+            isFull,
+          }
+
+          if (existingShow && existingShow.isFull === isFull) {
+            if (label === dates.at(-1)) continue
+
+            await page.goBack({ waitUntil: "load" })
+
+            continue
+          }
+
+          if (existingShow && existingShow.isFull !== isFull) {
+            console.log(
+              `Updating show ${show.id} from ${existingShow.isFull} to ${isFull}`
+            )
+            await updateAvailabilityShow(id, isFull)
+
+            if (label === dates.at(-1)) continue
+
+            await page.goBack({ waitUntil: "load" })
+
+            continue
+          }
+
+          await insertShow(show)
+
+          if (label === dates.at(-1)) continue
+
+          // Return to base page
+          await page.goBack({ waitUntil: "load" })
+        }
+
+        continue
+      }
+
+      continue
 
       const errorText = await (
         await page.$("#resa-erreur .erreur")
@@ -290,5 +438,6 @@ export const scrapGrandRex = async () => {
     }
   }
 
+  await context.close()
   await browser.close()
 }
