@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query"
 import { UsersRound, Calendar, Clock } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import { sendGAEvent } from "@next/third-parties/google"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
@@ -90,6 +91,13 @@ export const MovieShows = ({ shows }: { shows: Record<string, any> }) => {
                       href={show.linkShow || ""}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() =>
+                        sendGAEvent("event", "book_show_click", {
+                          movie_id: id,
+                          show_id: show.id,
+                          provider: key,
+                        })
+                      }
                       className="mt-4 rounded-lg w-full bg-gray-100 h-10 text-sm font-light grid place-content-center"
                     >
                       Réserver
