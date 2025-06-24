@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import "./globals.css"
+import { Toaster } from "@/components/ui/sonner"
 
 const font = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -91,6 +92,7 @@ export default function RootLayout({
         {process.env.NODE_ENV === "production" && (
           <GoogleAnalytics gaId="G-3Q9NWLKWHZ" />
         )}
+        <Toaster />
       </body>
     </html>
   )

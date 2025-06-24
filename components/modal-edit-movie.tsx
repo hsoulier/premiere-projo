@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, type SubmitHandler } from "react-hook-form"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { getShowAggregated } from "@/lib/queries"
-import { useEffect } from "react"
 import {
   Form,
   FormControl,
@@ -34,6 +33,8 @@ import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   director: z.string(),
@@ -47,38 +48,50 @@ const formSchema = z.object({
   hide: z.boolean(),
 })
 
-export const ModalEditMovie = ({ id }: { id: number }) => {
+export const ModalEditMovie = ({
+  id,
+  close,
+}: {
+  id: number
+  close: () => void
+}) => {
+  const router = useRouter()
   const supabase = useSupabaseBrowser()
 
-  const { data, isLoading } = useQuery({
-    queryKey: [`movie-details-${id}`],
-    queryFn: async () => await getShowAggregated(supabase, id.toString()),
+  const mutation = useMutation({
+    mutationFn: async () => await getShowAggregated(supabase, id.toString()),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: async () => {
+      const data = await mutation.mutateAsync()
+
+      return {
+        director: data?.movie?.director || "",
+        duration: data?.movie?.duration || 0,
+        id: data?.movie?.id || 0,
+        imdbId: data?.movie?.imdbId || "",
+        poster: data?.movie?.poster || "",
+        release: data?.movie?.release
+          ? new Date(data.movie.release)
+          : undefined,
+        synopsis: data?.movie?.synopsis || "",
+        title: data?.movie?.title || "",
+        hide: data?.movie?.hide ?? false,
+      }
+    },
   })
 
-  useEffect(() => {
-    if (!data?.movie) return
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
+    values,
+    e
+  ) => {
+    e?.preventDefault()
 
-    console.log("data", data.movie)
+    const toastId = toast.loading("Enregistrement des modifications...")
 
-    form.reset({
-      director: data.movie.director || "",
-      duration: data.movie.duration || 0,
-      id: data.movie.id,
-      imdbId: data.movie.imdbId || "",
-      poster: data.movie.poster || "",
-      release: data.movie.release ? new Date(data.movie.release) : undefined,
-      synopsis: data.movie.synopsis || "",
-      title: data.movie.title || "",
-      hide: data.movie.hide ?? false,
-    })
-  }, [data?.movie])
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await supabase
+    const a = await supabase
       .from("movies")
       .update({
         director: values.director,
@@ -90,12 +103,24 @@ export const ModalEditMovie = ({ id }: { id: number }) => {
         title: values.title,
         hide: values.hide,
       })
-      .eq("id", values.id)
+      .eq("id", id)
 
-    console.log(values)
+    console.log(a)
+
+    toast.success("Modifications enregistrées", {
+      description: `Le film ${values.title} a été mis à jour.`,
+      duration: 2_000,
+      action: {
+        label: "Voir",
+        onClick: () => router.push(`/films/${values.id}`),
+      },
+      id: toastId,
+    })
+
+    close()
   }
 
-  if (isLoading) {
+  if (!mutation.data) {
     return (
       <AlertDialogHeader>
         <AlertDialogTitle>Loading...</AlertDialogTitle>
@@ -109,7 +134,7 @@ export const ModalEditMovie = ({ id }: { id: number }) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <AlertDialogDescription asChild>
-            <div>
+            <div aria-description="Edit movie details">
               <FormField
                 control={form.control}
                 name="director"

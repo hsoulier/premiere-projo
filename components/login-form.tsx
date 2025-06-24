@@ -9,24 +9,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  GoogleAuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
 import { useEffect, type ComponentProps } from "react"
-
-const provider = new GoogleAuthProvider()
-provider.addScope("https://www.googleapis.com/auth/userinfo.profile")
+import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 
 export function LoginForm({ className, ...props }: ComponentProps<"div">) {
   const router = useRouter()
+  const supabase = useSupabaseBrowser()
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
+      const user = session?.user
       if (!user) {
         console.log("ℹ️ No user signed in")
         return
@@ -40,18 +33,20 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
         email !== "anthony.reungere@gmail.com" &&
         email !== "hi.soulier@gmail.com"
       ) {
-        await signOut(auth)
+        await supabase.auth.signOut()
         return alert("You are not allowed to sign in with this account.")
       }
 
       if (user) router.push("/dashboard")
     })
 
-    return () => unsubscribe()
+    return () => data.subscription.unsubscribe()
   }, [])
 
   const connectWithGoogle = async () => {
-    await signInWithPopup(auth, provider)
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    })
   }
 
   return (

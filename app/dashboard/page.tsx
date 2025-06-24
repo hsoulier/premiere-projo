@@ -2,10 +2,8 @@
 
 import { DataTableDemo } from "@/components/table-movies"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { auth } from "@/lib/firebase"
 import { getShowsAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
-import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
@@ -20,14 +18,16 @@ const DashboardPage = () => {
   })
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
+    const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
+      const user = session?.user
+
+      if (!user?.email) {
         // If the user is not authenticated, redirect to the login page
         router.push("/login")
       }
     })
 
-    return () => unsubscribe()
+    return () => data.subscription.unsubscribe()
   }, [])
 
   if (isLoading) {
@@ -38,9 +38,19 @@ const DashboardPage = () => {
     return <div className="container mx-auto p-4">No data available</div>
   }
 
+  const movies = data.map((item) => {
+    const noDirector = !Boolean(item?.director ?? "")
+    const noDuration = !Boolean(item?.duration ?? "")
+    const noSynopsis = !Boolean(item?.synopsis ?? "")
+
+    const errors = [noDirector, noDuration, noSynopsis].filter(Boolean).length
+
+    return { ...item, errors }
+  })
+
   return (
     <div className="container mx-auto p-4">
-      <DataTableDemo data={data} />
+      <DataTableDemo data={movies} />
     </div>
   )
 }

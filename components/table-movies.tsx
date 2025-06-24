@@ -50,7 +50,9 @@ const TABLE_IDS = {
   SHOWS: "32292",
 }
 
-type Data = NonNullable<Awaited<ReturnType<typeof getShowsAggregated>>>[number]
+export type Data = NonNullable<
+  Awaited<ReturnType<typeof getShowsAggregated>>
+>[number] & { errors: number }
 
 export const columns: ColumnDef<Data>[] = [
   {
@@ -79,7 +81,9 @@ export const columns: ColumnDef<Data>[] = [
     accessorKey: "movie_id",
     header: "Id",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("movie_id")}</div>
+      <div className="capitalize text-gray-400 tabular-nums">
+        {row.getValue("movie_id")}
+      </div>
     ),
   },
   {
@@ -113,33 +117,45 @@ export const columns: ColumnDef<Data>[] = [
   },
   {
     accessorKey: "shows",
-    header: () => <div className="text-center">Number of shows</div>,
+    header: () => <div className="text-center">Nb séances</div>,
     cell: ({ row }) => {
-      const numberOfShows = Array.isArray(row.getValue("shows"))
-        ? (row.getValue("shows") as Data["shows"]).length
-        : 0
+      const numberOfShows = row.getValue<unknown[]>("shows")?.length || 0
 
-      return <div className="text-right font-medium">{numberOfShows}</div>
+      return (
+        <div className="text-right font-medium text-gray-600">
+          {numberOfShows}
+        </div>
+      )
     },
   },
   {
     accessorKey: "errors",
-    header: () => <div className="text-center">Status</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Erreurs
+          <ArrowUpDown />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
-      const noDirector = !Boolean(row.original?.director ?? "")
-      const noDuration = !Boolean(row.original?.duration ?? "")
-      const noSynopsis = !Boolean(row.original?.synopsis ?? "")
-
-      const errors = [noDirector, noDuration, noSynopsis].filter(Boolean).length
+      const errors = row.getValue<number>("errors")
 
       return (
         <div
           className={cn(
-            "justify-center gap-2 inline-flex items-center font-medium rounded-full py-1 px-2",
-            errors === 0 && "text-green-700 bg-green-100/80",
-            errors === 1 && "text-amber-700 bg-amber-100/80",
-            errors === 2 && "text-orange-700 bg-orange-100/80",
-            errors === 3 && "text-red-700 bg-red-100/80"
+            "justify-center gap-2 flex items-center font-medium rounded-full py-1 px-2 mx-auto w-min",
+            errors === 0 &&
+              "text-green-700 bg-green-100/80 dark:text-green-500 dark:bg-green-800/80",
+            errors === 1 &&
+              "text-amber-700 bg-amber-100/80 dark:text-amber-500 dark:bg-amber-800/80",
+            errors === 2 &&
+              "text-orange-700 bg-orange-100/80 dark:text-orange-500 dark:bg-orange-800/80",
+            errors === 3 &&
+              "text-red-700 bg-red-100/80 dark:text-red-500 dark:bg-red-800/80"
           )}
         >
           {errors > 0 && <ExclamationCircleIcon className="size-3" />}
@@ -153,6 +169,7 @@ export const columns: ColumnDef<Data>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const [open, setOpen] = useState<boolean>(false)
       const movie = row.original
 
       return (
@@ -170,7 +187,7 @@ export const columns: ColumnDef<Data>[] = [
                 navigator.clipboard.writeText(movie.movie_id.toString())
               }
             >
-              Copy movie ID
+              Copier id film
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
@@ -194,13 +211,16 @@ export const columns: ColumnDef<Data>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <AlertDialog>
+              <AlertDialog open={open} onOpenChange={setOpen}>
                 <AlertDialogTrigger className="w-full relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0">
-                  Open
+                  Editer le film
                 </AlertDialogTrigger>
                 <AlertDialogPortal>
                   <AlertDialogContent>
-                    <ModalEditMovie id={movie.movie_id} />
+                    <ModalEditMovie
+                      id={movie.movie_id}
+                      close={() => setOpen(false)}
+                    />
                   </AlertDialogContent>
                 </AlertDialogPortal>
               </AlertDialog>
@@ -236,7 +256,7 @@ export function DataTableDemo({ data }: { data: Data[] }) {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter names..."
+          placeholder="Rechercher par titre..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
