@@ -85,7 +85,9 @@ export default function RootLayout({
               </header>
 
               {children}
-              {process.env.NODE_ENV === "production" && <Analytics />}
+              {process.env.NODE_ENV === "production" && (
+                <Analytics debug={false} mode="production" />
+              )}
             </Suspense>
           </Providers>
         </NuqsAdapter>
