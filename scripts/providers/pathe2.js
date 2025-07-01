@@ -27,6 +27,7 @@ const specialTitles = [
   "les rendez-vous de l'animé : ",
   "les rendez-vous de l'anime : ",
   "les vendredis de l’horreur :",
+  "la séance ciné-club : ",
 ]
 
 const specialTitlesSlug = [
@@ -38,6 +39,7 @@ const specialTitlesSlug = [
   "seance-tenante-",
   "les-rendez-vous-de-l-anime-",
   "les-vendredis-de-l-horreur-",
+  "la-seance-cine-club",
 ]
 
 const cannesFestivalTitles = ["un certain regard"]
@@ -231,6 +233,14 @@ export const scrapPathe = async () => {
               )
                 ? "Festival de Cannes"
                 : null,
+            }
+
+            if (!showToInsert.movieId) {
+              console.log(
+                `🚫 Skip show without movie ID (${movieSlug})`,
+                showToInsert
+              )
+              continue
             }
 
             const existingShow = await getShow(showToInsert.id)

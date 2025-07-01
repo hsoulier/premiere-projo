@@ -52,6 +52,8 @@ const scrapAVPFestival = async () => {
 
     if (!moviesWithSession || !moviesWithSession.length) return
 
+    console.log("Found movies with sessions:", moviesWithSession)
+
     for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
       if (!movie || !shows || !cinemaSlug) {
         console.warn(
@@ -263,7 +265,7 @@ export const scrapMk2 = async () => {
       }
     }
 
-    await scrapAVPFestival()
+    // await scrapAVPFestival()
 
     console.log("✅ Mk2 scrapping done", debug)
   } catch (error) {
