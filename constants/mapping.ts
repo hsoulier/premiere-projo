@@ -15,6 +15,7 @@ export const SOURCE_PROVIDER = {
   grand: "Le Grand Rex",
   mk2: "MK2",
   cgr: "CGR",
+  louxor: "Le Louxor",
 } as const
 
 export const mk2Cinemas = [

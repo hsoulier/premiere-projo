@@ -24,12 +24,14 @@ import { Footer } from "@/components/navigation"
 import { GrandRexIcon } from "@/components/icons/grand-rex"
 import { MovieShows } from "@/components/movie-shows"
 import { NoShows } from "@/components/no-shows"
+import { LouxorIcon } from "@/components/icons/louxor"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
   pathe: <PatheIcon className="w-6 text-white" />,
   mk2: <Mk2Icon className="w-6 text-black dark:text-white" />,
   grand: <GrandRexIcon className="w-6 text-black dark:text-white" />,
+  louxor: <LouxorIcon special className="w-6 text-black dark:text-white" />,
 }
 
 export const Content = () => {

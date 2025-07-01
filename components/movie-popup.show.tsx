@@ -4,12 +4,14 @@ import { UGCIcon } from "@/components/icons/ugc"
 import { PatheIcon } from "@/components/icons/pathe"
 import { Mk2Icon } from "@/components/icons/mk2"
 import { GrandRexIcon } from "@/components/icons/grand-rex"
+import { LouxorIcon } from "@/components/icons/louxor"
 
 export const iconProviders = {
   ugc: <UGCIcon className="w-6 text-white" />,
   pathe: <PatheIcon className="w-6 text-white" />,
   mk2: <Mk2Icon className="w-6 text-white" />,
   grand: <GrandRexIcon className="w-6 text-white" />,
+  louxor: <LouxorIcon className="w-6 text-white" />,
 } as const
 
 export type Provider = keyof typeof iconProviders

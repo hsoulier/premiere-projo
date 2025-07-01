@@ -18,12 +18,14 @@ import { UsersRound, Calendar, Clock } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { sendGAEvent } from "@next/third-parties/google"
+import { LouxorIcon } from "@/components/icons/louxor"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
   pathe: <PatheIcon className="w-6 text-white" />,
   mk2: <Mk2Icon className="w-6 text-black dark:text-white" />,
   grand: <GrandRexIcon className="w-6 text-black dark:text-white" />,
+  louxor: <LouxorIcon special className="w-6" />,
 }
 
 export const MovieShows = ({ shows }: { shows: Record<string, any> }) => {
