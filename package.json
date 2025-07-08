@@ -1,6 +1,6 @@
 {
   "name": "scrapper-avp",
-  "version": "0.1.0",
+  "version": "2.3.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "script:scrapper": "node ./scripts/scrapper.js"
+    "script:scrapper": "node ./scripts/scrapper.js",
+    "create:release": "release-it"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -60,6 +61,8 @@
     "jsdom": "^25.0.1",
     "postcss": "^8.5.2",
     "postgres": "^3.4.5",
+    "release-it": "^19.0.3",
+    "release-it-pnpm": "^4.6.6",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.7.3"
   },
