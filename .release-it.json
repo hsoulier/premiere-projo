@@ -1,0 +1,12 @@
+{
+  "plugins": {
+    "release-it-pnpm": {}
+  },
+  "git": {
+    "commitMessage": "🔖 Chore: release v${version}",
+    "tagName": "v${version}"
+  },
+  "github": {
+    "release": true
+  }
+}
