@@ -219,8 +219,7 @@ export const scrapPathe = async () => {
               language: show.version === "vf" ? "vf" : "vost",
               date: date1,
               avpType:
-                dayData.tags.includes("avp-equipe") ||
-                dayData.tags.includes("equipe")
+                show.tags.includes("avp-equipe") || show.tags.includes("equipe")
                   ? "AVPE"
                   : "AVP",
               movieId: movie.id,

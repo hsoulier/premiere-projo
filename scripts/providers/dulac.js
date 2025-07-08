@@ -96,7 +96,7 @@ export const scrapDulac = async () => {
 
       const dataSession = data?.data_session
 
-      if (!dataMovie || !dataSession) {
+      if (!dataMovie || !dataSession || data?.error_label) {
         console.warn(`No data found for ${movie.title} on ${dateShow}`)
         continue
       }
@@ -126,6 +126,8 @@ export const scrapDulac = async () => {
           imdbId: dataMovie.imdb_id,
         })
       }
+
+      continue
 
       const lang =
         (

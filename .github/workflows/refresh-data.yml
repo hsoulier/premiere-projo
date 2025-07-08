@@ -28,8 +28,8 @@ jobs:
       - name: 🚚 Install dependencies
         run: pnpm install
 
-      - name: 📦 Install Playwright
-        run: pnpm exec playwright install chromium --with-deps --only-shell
+      - name: 📦 Setup Playwright
+        uses: ./.github/actions/setup-playwright
 
       - name: 📊 Scrap
         run: pnpm run script:scrapper

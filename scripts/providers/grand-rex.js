@@ -100,6 +100,8 @@ export const scrapGrandRex = async () => {
     if (isSingleShow) {
       const showDoc = showsDoc
 
+      console.log(link)
+
       const movie = await getAllocineInfo({
         title: m.title,
         directors: [director],
@@ -126,6 +128,8 @@ export const scrapGrandRex = async () => {
 
       const existingShow = await getShow(id)
 
+      if (errorText && !isFull) continue
+
       if (isFull && (!existingShow || (existingShow && isFull))) {
         if (existingShow && existingShow.isFull !== isFull) {
           console.log(
@@ -141,7 +145,8 @@ export const scrapGrandRex = async () => {
 
       const showTime = showDoc
         .querySelector(".date_seance .s_jour")
-        ?.textContent.trim()
+        ?.textContent.replace(/\([^)]*\)/g, "")
+        .trim()
 
       const showTimeHour = showDoc
         .querySelector(".date_seance .s_heure")
@@ -152,7 +157,7 @@ export const scrapGrandRex = async () => {
         ?.textContent.trim()
         ?.replace("en ", "")
 
-      console.log(showTime, showTimeHour)
+      console.log(`${showTime} à ${showTimeHour}`)
 
       const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
 
@@ -202,7 +207,10 @@ export const scrapGrandRex = async () => {
         "select[name=modresa_jour] > option:not([value=''])"
       ),
     ]
-      .map((o) => ({ label: o.textContent.trim(), value: o.value }))
+      .map((o) => ({
+        label: o.textContent.replace(/\([^)]*\)/g, "").trim(),
+        value: o.value,
+      }))
       .filter((d) => {
         const date = new Date(frenchToISODateTime(`${d.label} à 02h00`))
 
