@@ -202,6 +202,12 @@ export const scrapGrandRex = async () => {
 
     const existingMovie = await getMovie(movie.id)
 
+    if (!existingMovie) {
+      console.log(`Inserting movie ${movie.id} ${movie.title}`)
+
+      await insertMovie(movie)
+    }
+
     const dates = [
       ...showsDoc.querySelectorAll(
         "select[name=modresa_jour] > option:not([value=''])"
@@ -214,19 +220,16 @@ export const scrapGrandRex = async () => {
       .filter((d) => {
         const date = new Date(frenchToISODateTime(`${d.label} à 02h00`))
 
-        return date.getTime() < new Date(existingMovie.release).getTime()
+        return (
+          date.getTime() <
+          new Date(existingMovie?.release || movie.last_release).getTime()
+        )
       })
 
     console.log("✨ Dates available", dates.length)
 
-    if (!existingMovie) {
-      console.log(`Inserting movie ${movie.id} ${movie.title}`)
-
-      await insertMovie(movie)
-    }
-
-    for (const { label, value } of dates) {
-      console.log(`ℹ️ Scraping show for date ${label}`)
+    for (const { label: labelDate, value } of dates) {
+      console.log(`ℹ️ Scraping show for date ${labelDate}`)
 
       const resShows = await fetch(
         `https://legrandrex.cotecine.fr/reserver/ajax/?modresa_film=${grandRexMovieId}&modresa_jour=${value}`
@@ -234,7 +237,7 @@ export const scrapGrandRex = async () => {
 
       const showsAvailable = await resShows.json()
 
-      console.log(`ℹ️ Response for date ${label}`, showsAvailable)
+      console.log(`ℹ️ Response for date ${labelDate}`, showsAvailable)
 
       for (const [value, label] of Object.entries(showsAvailable)) {
         const linkShow = link.endsWith("/D")
@@ -276,10 +279,6 @@ export const scrapGrandRex = async () => {
           continue
         }
 
-        const showTime = showDoc
-          .querySelector(".date_seance .s_jour")
-          ?.textContent.trim()
-
         const showTimeHour = showDoc
           .querySelector(".date_seance .s_heure")
           ?.textContent.trim()
@@ -289,9 +288,7 @@ export const scrapGrandRex = async () => {
           ?.textContent.trim()
           ?.replace("en ", "")
 
-        console.log(showTime, showTimeHour)
-
-        const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
+        const d = frenchToISODateTime(`${labelDate} à ${showTimeHour}`)
 
         const show = {
           id,

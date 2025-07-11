@@ -12,21 +12,31 @@ export const frenchToISODateTime = (
   // Map French months to month numbers (0-based for JS Date)
   const months = {
     janvier: 0,
-    février: 1,
+    fevrier: 1,
     mars: 2,
     avril: 3,
     mai: 4,
     juin: 5,
     juillet: 6,
-    août: 7,
+    aout: 7,
     septembre: 8,
     octobre: 9,
     novembre: 10,
-    décembre: 11,
+    decembre: 11,
   }
   // Regex to extract day, month, hour, minute
-  const regex = /(\d{1,2})\s+([a-zéû]+)\s+à\s+(\d{1,2})h(\d{2})?/i
-  const match = frenchDateTime.match(regex)
+  const regex = /(\d{1,2})\s+([a-z]+)\s+a\s+(\d{1,2})h(\d{2})?/i
+  const match = frenchDateTime
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .match(regex)
+
+  console.log(
+    "French date-time:",
+    frenchDateTime.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+    "Match:",
+    match
+  )
   if (!match) throw new Error("Invalid French date-time format")
   const day = parseInt(match[1], 10)
   const monthName = match[2].toLowerCase()
