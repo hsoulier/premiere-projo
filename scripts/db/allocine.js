@@ -89,8 +89,8 @@ export const getAllocineInfo = async ({
     ).sort((a, b) => b.count - a.count)
 
     if (
-      rankedResultsByOccurrences?.[0].count >
-      rankedResultsByOccurrences?.[1]?.count
+      (rankedResultsByOccurrences?.[0]?.count || 0) >
+      (rankedResultsByOccurrences?.[1]?.count || 0)
     ) {
       !SILENT &&
         console.log(

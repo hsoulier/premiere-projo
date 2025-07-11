@@ -34,7 +34,7 @@ export const scrapDulac = async () => {
 
     const items = document.querySelectorAll(".view-content > div > ul.row > li")
 
-    const hasMorePages = items.length === 16
+    const hasMorePages = items.length >= 16
 
     for (const item of items) {
       const title = item.querySelector(".field--name-title").textContent.trim()
@@ -126,8 +126,6 @@ export const scrapDulac = async () => {
           imdbId: dataMovie.imdb_id,
         })
       }
-
-      continue
 
       const lang =
         (

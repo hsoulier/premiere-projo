@@ -53,6 +53,11 @@ export const getShowsAggregated = async (
           !show.cinemaId.startsWith("pathe-") &&
           !show.cinemaId.startsWith("grand-") &&
           !show.cinemaId.startsWith("louxor")
+          // !show.cinemaId.startsWith("majestic-passy") &&
+          // !show.cinemaId.startsWith("majestic-bastille") &&
+          // !show.cinemaId.startsWith("arlequin") &&
+          // !show.cinemaId.startsWith("escurial") &&
+          // !show.cinemaId.startsWith("reflet-medicis")
         )
           return false
 

@@ -50,6 +50,8 @@ const TABLE_IDS = {
   SHOWS: "32292",
 }
 
+const PROJECT_ID = "ixrirhfbmbmmlsvhnccf"
+
 export type Data = NonNullable<
   Awaited<ReturnType<typeof getShowsAggregated>>
 >[number] & { errors: number }
@@ -192,14 +194,14 @@ export const columns: ColumnDef<Data>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link
-                href={`https://supabase.com/dashboard/project/yafeugsphejhrcwqmesx/editor/${TABLE_IDS.MOVIES}?filter=id:eq:${movie.movie_id}`}
+                href={`https://supabase.com/dashboard/project/${PROJECT_ID}/editor/${TABLE_IDS.MOVIES}?filter=id:eq:${movie.movie_id}`}
               >
                 Voir le film sur supabase
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Link
-                href={`https://supabase.com/dashboard/project/yafeugsphejhrcwqmesx/editor/${TABLE_IDS.SHOWS}?filter=movieId:eq:${movie.movie_id}`}
+                href={`https://supabase.com/dashboard/project/${PROJECT_ID}/editor/${TABLE_IDS.SHOWS}?filter=movieId:eq:${movie.movie_id}`}
               >
                 Voir les séances sur supabase
               </Link>
