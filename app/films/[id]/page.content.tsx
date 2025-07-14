@@ -86,6 +86,8 @@ export const Content = () => {
 
   if (!movie) return <div>Movie not found</div>
 
+  const hasDuration = movie.duration && movie.duration !== 0
+
   return (
     <>
       <main className="mx-5 lg:max-w-5xl lg:mx-auto">
@@ -151,7 +153,7 @@ export const Content = () => {
                 <div className="gap-1 flex flex-col">
                   <span className="font-light text-gray-500">Durée</span>
                   <span className="font-light">
-                    {numToTime(movie.duration || 0)}
+                    {hasDuration ? numToTime(movie.duration || 0) : "Inconnue"}
                   </span>
                 </div>
 
