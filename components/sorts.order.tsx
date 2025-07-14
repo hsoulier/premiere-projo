@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu"
 import { parseAsString, useQueryState } from "nuqs"
+import { useLocalStorage } from "react-use"
 
 const values = [
   { value: "show", label: "Par séances les plus proches" },
@@ -17,25 +18,25 @@ const values = [
   { value: "release", label: "Date de sortie du film" },
 ] as const
 
-const key = "order" as const
+export const defaultValueOrder = values[0].value
+
+export const keyOrder = "order" as const
 
 type Value = (typeof values)[number]["value"]
 
 export const FilterOrder = () => {
-  const [order, setOrder] = useQueryState(
-    key,
-    parseAsString.withDefault(values[0].value).withOptions({
-      clearOnDefault: true,
-    })
-  )
+  const [order, setOrder] = useLocalStorage<string>(keyOrder, defaultValueOrder)
+  const [_order, _setOrder] = useQueryState(keyOrder, parseAsString)
 
   const removeFilter = () => {
+    _setOrder(defaultValueOrder)
     if (!order) return
-    setOrder(null)
+    setOrder(defaultValueOrder)
   }
   const addFilter = (value: Value) => {
-    sendGAEvent("event", "apply_sort", { name: key, value })
+    sendGAEvent("event", "apply_sort", { name: keyOrder, value })
     setOrder(value)
+    _setOrder(value)
   }
 
   return (
