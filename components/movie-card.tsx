@@ -15,7 +15,7 @@ import {
 import { SOURCE_PROVIDER } from "@/constants/mapping"
 
 export const MovieCard = ({ movie }: { movie: ShowAggregated }) => {
-  const cover = movie.poster || ""
+  const cover = movie.posterThumb || movie.poster || ""
   const id = movie.movie_id
   const listProvider = movie?.shows?.reduce((acc, show) => {
     const provider = show.cinemaId.split("-")[0] as Provider

@@ -13,7 +13,7 @@ export const getShowsAggregated = async (
   let query = client
     .from("movies")
     .select(
-      `movie_id:id,title,poster,release,director,synopsis,duration,hide,shows(*)`
+      `movie_id:id,title,poster,posterThumb,release,director,synopsis,duration,hide,shows(*)`
     )
     .not("hide", "is", true)
 

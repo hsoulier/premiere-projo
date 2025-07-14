@@ -48,6 +48,7 @@ export type Database = {
           id: number
           imdbId: string | null
           poster: string | null
+          posterThumb: string | null
           release: string | null
           synopsis: string | null
           title: string | null
@@ -60,6 +61,7 @@ export type Database = {
           imdbId?: string | null
           hide?: boolean | null
           poster?: string | null
+          posterThumb?: string | null
           release?: string | null
           synopsis?: string | null
           title?: string | null
@@ -71,6 +73,7 @@ export type Database = {
           imdbId?: string | null
           hide?: boolean | null
           poster?: string | null
+          posterThumb?: string | null
           release?: string | null
           synopsis?: string | null
           title?: string | null
