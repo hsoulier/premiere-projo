@@ -43,6 +43,9 @@ export const getAllocineInfo = async ({
         poster: movie.data.poster_path
           ? `https://fr.web.img5.acsta.net${movie.data.poster_path}`
           : null,
+        posterThumb: movie.data.poster_path
+          ? `https://fr.web.img6.acsta.net/c_450_600${movie.data.poster_path}`
+          : null,
       }
     }
 
