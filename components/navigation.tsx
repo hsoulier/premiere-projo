@@ -6,8 +6,10 @@ import dynamic from "next/dynamic"
 import Link from "next/link"
 import { useQueryState } from "nuqs"
 import { useEffect, useState } from "react"
-import { useDebounce } from "react-use"
+import { useDebounce, useLocalStorage } from "react-use"
 import { sendGAEvent } from "@next/third-parties/google"
+import { toast } from "sonner"
+import { set } from "date-fns"
 
 const ThemeSwitch = dynamic(
   () => import("./theme-switch").then((m) => m.ThemeSwitch),
@@ -75,6 +77,16 @@ export const Navigation = () => {
 }
 
 export const Footer = () => {
+  const [lastRefresh, setLastRefresh] = useLocalStorage<number>("lastRefresh")
+
+  useEffect(() => {
+    if (!lastRefresh) return setLastRefresh(Date.now())
+
+    toast("De nouvelles avant-premières sont disponibles", {
+      description: `Dernière actualisation il y a 1 heure et 59 minutes`,
+    })
+  }, [lastRefresh])
+
   return (
     <footer className="left-1/2 -translate-x-1/2 bottom-0 absolute h-64 pt-32 flex flex-col items-stretch justify-between gap-4 pb-16 w-full  px-4 lg:px-5 max-w-screen-2xl">
       <div className="flex items-center justify-between">

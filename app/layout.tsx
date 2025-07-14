@@ -91,6 +91,7 @@ export default function RootLayout({
             </Suspense>
           </Providers>
         </NuqsAdapter>
+
         {process.env.NODE_ENV === "production" && (
           <GoogleAnalytics gaId="G-3Q9NWLKWHZ" />
         )}
