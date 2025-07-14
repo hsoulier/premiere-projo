@@ -11,9 +11,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { SOURCE_PROVIDER } from "@/constants/mapping"
-import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { getShowAggregated } from "@/lib/queries"
-import { useQuery } from "@tanstack/react-query"
 import { UsersRound, Calendar, Clock } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
@@ -31,17 +28,6 @@ export const providers = {
 export const MovieShows = ({ shows }: { shows: Record<string, any> }) => {
   const { id } = useParams<{ id: string }>()
 
-  const supabase = useSupabaseBrowser()
-
-  const { data, error, status, isLoading } = useQuery({
-    queryKey: [`show-${id}`],
-    queryFn: async () => {
-      const response = await getShowAggregated(supabase, id)
-
-      return response
-    },
-  })
-
   return (
     <Accordion
       type="multiple"
@@ -50,7 +36,15 @@ export const MovieShows = ({ shows }: { shows: Record<string, any> }) => {
     >
       {Object.entries(shows).map(([key, value]) => (
         <AccordionItem value={key} key={key} className="border-none py-0">
-          <AccordionTrigger className="hover:no-underline py-4">
+          <AccordionTrigger
+            className="hover:no-underline py-4"
+            onClick={() =>
+              sendGAEvent("event", "show_provider_click", {
+                movie_id: id,
+                provider: key,
+              })
+            }
+          >
             <div className="flex items-center justify-start w-full gap-1 hover:no-underline text-2xl">
               <span className="font-semibold inline-flex items-center gap-2">
                 {providers[key as Provider]}{" "}

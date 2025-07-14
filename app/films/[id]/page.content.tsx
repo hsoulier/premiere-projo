@@ -25,6 +25,7 @@ import { GrandRexIcon } from "@/components/icons/grand-rex"
 import { MovieShows } from "@/components/movie-shows"
 import { NoShows } from "@/components/no-shows"
 import { LouxorIcon } from "@/components/icons/louxor"
+import { sendGAEvent } from "@next/third-parties/google"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
@@ -175,14 +176,26 @@ export const Content = () => {
         <section className="flex flex-col gap-12 my-12">
           <div className="md:flex md:gap-3 gap-5 flex-wrap grid grid-cols-2">
             <button
-              onClick={() => setAvpType(null)}
+              onClick={() => {
+                sendGAEvent("event", "filter_movie", {
+                  movie_id: id,
+                  avp_type: "AVP",
+                })
+                setAvpType(null)
+              }}
               aria-pressed={avpType === "AVPE"}
               className="h-10 px-3 rounded-lg border border-transparent bg-gray-100 font-medium text-sm transition-colors duration-200 ease-in-out aria-pressed:bg-transparent aria-pressed:border-gray-100 aria-pressed:text-gray-500"
             >
               Toutes les séances
             </button>
             <button
-              onClick={() => setAvpType("AVPE")}
+              onClick={() => {
+                sendGAEvent("event", "filter_movie", {
+                  movie_id: id,
+                  avp_type: "AVPE",
+                })
+                setAvpType("AVPE")
+              }}
               aria-pressed={avpType === "AVPE"}
               className="h-10 px-3 rounded-lg border border-primary-yellow/50 inline-flex items-center gap-2 transition-colors duration-200 ease-in-out aria-pressed:text-gray-800 dark:aria-pressed:bg-[#241E00] dark:aria-pressed:text-[#FDD700] dark:aria-[pressed=false]:bg-transparent dark:aria-[pressed=false]:text-[#FDD70080] dark:aria-pressed:border-transparent bg-[#FCDE36] text-gray-800 aria-[pressed=false]:opacity-50 justify-center"
             >
