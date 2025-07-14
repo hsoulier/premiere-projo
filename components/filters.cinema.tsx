@@ -17,6 +17,7 @@ import {
   type allProviders,
 } from "@/constants/mapping"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
+import { sendGAEvent } from "@next/third-parties/google"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
 import { ChevronDown } from "lucide-react"
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
@@ -48,6 +49,11 @@ export const FilterCinema = () => {
     if (!provider) return
 
     const newCinemas = provider.cinemas.map((c) => c.id)
+    sendGAEvent("event", "apply_filter", {
+      name: "cinemas",
+      values: newCinemas,
+    })
+
     setCinemaQuery([...(cinemaQuery || []), ...newCinemas])
   }
 

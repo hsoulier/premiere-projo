@@ -7,6 +7,7 @@ import Link from "next/link"
 import { useQueryState } from "nuqs"
 import { useEffect, useState } from "react"
 import { useDebounce } from "react-use"
+import { sendGAEvent } from "@next/third-parties/google"
 
 const ThemeSwitch = dynamic(
   () => import("./theme-switch").then((m) => m.ThemeSwitch),
@@ -17,9 +18,18 @@ export const Navigation = () => {
   const [search, setSearch] = useQueryState("q", { defaultValue: "" })
   const [dSearch, setDSearch] = useState<string>(search)
 
-  useDebounce(() => setSearch(dSearch), 300, [dSearch])
+  useDebounce(
+    () => {
+      if (search) sendGAEvent("event", "search_movie", { search: dSearch })
+
+      setSearch(dSearch)
+    },
+    300,
+    [dSearch]
+  )
 
   const clear = () => {
+    sendGAEvent("event", "clear_search", { search: dSearch })
     setSearch("")
     setDSearch("")
   }

@@ -1,6 +1,7 @@
 "use client"
 
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline"
+import { sendGAEvent } from "@next/third-parties/google"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -32,7 +33,10 @@ export const FilterOrder = () => {
     if (!order) return
     setOrder(null)
   }
-  const addFilter = (value: Value) => setOrder(value)
+  const addFilter = (value: Value) => {
+    sendGAEvent("event", "apply_sort", { name: key, value })
+    setOrder(value)
+  }
 
   return (
     <DropdownMenu>

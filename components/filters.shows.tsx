@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/popover"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs"
+import { sendGAEvent } from "@next/third-parties/google"
 
 const values = [
   { value: "AVP", label: "AVP classiques", Icon: FilmIcon },
@@ -36,6 +37,7 @@ export const FilterShows = () => {
     setAvpType(avpType.filter((v) => v !== value))
   }
   const addFilter = (value: Value) => {
+    sendGAEvent("event", "apply_filter", { name: "avp_type", value })
     setAvpType([...(avpType || []), value])
   }
 
