@@ -1,7 +1,6 @@
 "use client"
 import { FilterCinema } from "@/components/filters.cinema"
-import { FilterLanguage } from "@/components/filters.language"
-import { FilterOrder } from "@/components/filters.order"
+import { FilterOrder } from "@/components/sorts.order"
 import { FilterShows } from "@/components/filters.shows"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
@@ -32,7 +31,6 @@ export const Filters = () => {
     <header className="flex gap-2 pb-4 lg:pb-6 relative z-30 flex-wrap mx-5">
       <FilterCinema />
       <FilterShows />
-      {/* <FilterLanguage /> */}
       {hasFilters && (
         <button className="px-3" onClick={removeFilters}>
           Tout effacer

@@ -3,13 +3,20 @@
 import { EmptyResponse } from "@/components/empty-response"
 import { MovieCard } from "@/components/movie-card"
 import { Footer } from "@/components/navigation"
+import { defaultValueOrder, keyOrder } from "@/components/sorts.order"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { getShowsAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "next/navigation"
+import { useLocalStorage } from "react-use"
 
 export const Content = () => {
   const searchParams = useSearchParams()
+
+  const [orderFromLs] = useLocalStorage<string>(keyOrder)
+  const orderFromUrl = searchParams.get("order")
+
+  const order = orderFromUrl || orderFromLs || defaultValueOrder
 
   const supabase = useSupabaseBrowser()
 
@@ -37,8 +44,6 @@ export const Content = () => {
       </>
     )
   }
-
-  const order = searchParams.get("order") || "show"
 
   const movies = data?.sort((a, b) => {
     if (order === "az") {
