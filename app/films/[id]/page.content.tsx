@@ -1,19 +1,11 @@
 "use client"
 
-import { type Provider } from "@/components/movie-popup.show"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { SOURCE_PROVIDER } from "@/constants/mapping"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { getShowAggregated } from "@/lib/queries"
 import { numToTime } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
-import { Calendar, ChevronLeft, Clock, UsersRound } from "lucide-react"
-import Link from "next/link"
+import { ChevronLeft, PencilIcon, UsersRound } from "lucide-react"
 import { useParams } from "next/navigation"
 import { parseAsString, useQueryState } from "nuqs"
 import { UGCIcon } from "@/components/icons/ugc"
@@ -26,6 +18,14 @@ import { MovieShows } from "@/components/movie-shows"
 import { NoShows } from "@/components/no-shows"
 import { LouxorIcon } from "@/components/icons/louxor"
 import { sendGAEvent } from "@next/third-parties/google"
+import { useState } from "react"
+import { useAuth } from "@/hooks/use-auth"
+import {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { ModalEditMovie } from "@/components/modal-edit-movie"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
@@ -38,6 +38,8 @@ export const providers = {
 export const Content = () => {
   const { id } = useParams<{ id: string }>()
 
+  const user = useAuth()
+  const [open, setOpen] = useState<boolean>(false)
   const [avpType, setAvpType] = useQueryState(
     "avpType",
     parseAsString.withOptions({ clearOnDefault: true })
@@ -117,6 +119,20 @@ export const Content = () => {
                 className="opacity-75 bg-no-repeat bg-center bg-cover blur-2xl absolute saturate-200 inset-0 -z-10 transition-opacity duration-150 ease-out"
                 style={{ backgroundImage: `url(${movie.poster || ""})` }}
               />
+
+              {user?.id && (
+                <AlertDialog open={open} onOpenChange={setOpen}>
+                  <AlertDialogTrigger className="absolute top-2 right-2 p-2 rounded-lg bg-black/20 backdrop-blur-sm hover:bg-black/50 transition-colors duration-200 ease-in-out text-white">
+                    <PencilIcon className="size-5" />
+                  </AlertDialogTrigger>
+                  <AlertDialogPortal>
+                    <ModalEditMovie
+                      id={movie.id}
+                      close={() => setOpen(false)}
+                    />
+                  </AlertDialogPortal>
+                </AlertDialog>
+              )}
             </div>
 
             <div className="space-y-2 col-span-3 lg:col-span-4">

@@ -39,7 +39,6 @@ import { cn } from "@/lib/utils"
 import { ModalEditMovie } from "@/components/modal-edit-movie"
 import {
   AlertDialog,
-  AlertDialogContent,
   AlertDialogPortal,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
@@ -157,6 +156,8 @@ export const columns: ColumnDef<Data>[] = [
             errors === 2 &&
               "text-orange-700 bg-orange-100/80 dark:text-orange-500 dark:bg-orange-800/80",
             errors === 3 &&
+              "text-red-700 bg-red-100/80 dark:text-red-500 dark:bg-red-800/80",
+            errors > 3 &&
               "text-red-700 bg-red-100/80 dark:text-red-500 dark:bg-red-800/80"
           )}
         >
@@ -218,12 +219,10 @@ export const columns: ColumnDef<Data>[] = [
                   Editer le film
                 </AlertDialogTrigger>
                 <AlertDialogPortal>
-                  <AlertDialogContent>
-                    <ModalEditMovie
-                      id={movie.movie_id}
-                      close={() => setOpen(false)}
-                    />
-                  </AlertDialogContent>
+                  <ModalEditMovie
+                    id={movie.movie_id}
+                    close={() => setOpen(false)}
+                  />
                 </AlertDialogPortal>
               </AlertDialog>
             </DropdownMenuItem>
