@@ -13,16 +13,23 @@ const DashboardPage = () => {
 
   const supabase = useSupabaseBrowser()
 
-  const user = useAuth()
-
   const { data, isLoading } = useQuery({
     queryKey: [],
     queryFn: async () => await getShowsAggregated(supabase, {}),
   })
 
   useEffect(() => {
-    if (!user?.email) router.push("/login")
-  }, [user])
+    const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
+      const user = session?.user
+
+      if (!user?.email) {
+        // If the user is not authenticated, redirect to the login page
+        router.push("/login")
+      }
+    })
+
+    return () => data.subscription.unsubscribe()
+  }, [])
 
   if (isLoading) {
     return <div className="container mx-auto p-4">Loading...</div>
