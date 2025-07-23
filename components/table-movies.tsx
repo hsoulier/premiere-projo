@@ -45,9 +45,9 @@ import {
 } from "@/components/ui/alert-dialog"
 
 const TABLE_IDS = {
-  CINEMAS: "32274",
-  MOVIES: "32281",
-  SHOWS: "32292",
+  CINEMAS: "17361",
+  MOVIES: "17366",
+  SHOWS: "17373",
 }
 
 const PROJECT_ID = "ixrirhfbmbmmlsvhnccf"
@@ -234,7 +234,7 @@ export const columns: ColumnDef<Data>[] = [
   },
 ]
 
-export function DataTableDemo({ data }: { data: Data[] }) {
+export function DataTableMovies({ data }: { data: Data[] }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [rowSelection, setRowSelection] = useState({})
 

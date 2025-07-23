@@ -1,6 +1,6 @@
 "use client"
 
-import { DataTableDemo } from "@/components/table-movies"
+import { DataTableMovies } from "@/components/table-movies"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { getShowsAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
@@ -50,7 +50,7 @@ const DashboardPage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <DataTableDemo data={movies} />
+      <DataTableMovies data={movies} />
     </div>
   )
 }
