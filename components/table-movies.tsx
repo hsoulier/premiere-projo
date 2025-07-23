@@ -39,15 +39,14 @@ import { cn } from "@/lib/utils"
 import { ModalEditMovie } from "@/components/modal-edit-movie"
 import {
   AlertDialog,
-  AlertDialogContent,
   AlertDialogPortal,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
 const TABLE_IDS = {
-  CINEMAS: "32274",
-  MOVIES: "32281",
-  SHOWS: "32292",
+  CINEMAS: "17361",
+  MOVIES: "17366",
+  SHOWS: "17373",
 }
 
 const PROJECT_ID = "ixrirhfbmbmmlsvhnccf"
@@ -157,6 +156,8 @@ export const columns: ColumnDef<Data>[] = [
             errors === 2 &&
               "text-orange-700 bg-orange-100/80 dark:text-orange-500 dark:bg-orange-800/80",
             errors === 3 &&
+              "text-red-700 bg-red-100/80 dark:text-red-500 dark:bg-red-800/80",
+            errors > 3 &&
               "text-red-700 bg-red-100/80 dark:text-red-500 dark:bg-red-800/80"
           )}
         >
@@ -218,12 +219,10 @@ export const columns: ColumnDef<Data>[] = [
                   Editer le film
                 </AlertDialogTrigger>
                 <AlertDialogPortal>
-                  <AlertDialogContent>
-                    <ModalEditMovie
-                      id={movie.movie_id}
-                      close={() => setOpen(false)}
-                    />
-                  </AlertDialogContent>
+                  <ModalEditMovie
+                    id={movie.movie_id}
+                    close={() => setOpen(false)}
+                  />
                 </AlertDialogPortal>
               </AlertDialog>
             </DropdownMenuItem>
@@ -234,7 +233,7 @@ export const columns: ColumnDef<Data>[] = [
   },
 ]
 
-export function DataTableDemo({ data }: { data: Data[] }) {
+export function DataTableMovies({ data }: { data: Data[] }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [rowSelection, setRowSelection] = useState({})
 
