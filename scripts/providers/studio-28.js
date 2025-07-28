@@ -8,18 +8,17 @@ import {
   updateAvailabilityShow,
   updateShow,
 } from "../db/requests.js"
-import { dashToISODateTime } from "../utils.js"
+import { frenchToISODateTime } from "../utils.js"
 
-export const scrapLouxor = async () => {
+export const scrapStudio28 = async () => {
   const pageEvents = await (
-    await fetch("https://www.cinemalouxor.fr/evenements/")
+    await fetch("https://www.cinema-studio28.fr/avant-premiere/")
   ).text()
 
   const { document: docPageEvents } = parseHTML(pageEvents)
 
-  const moviesFromLouxorWebsite = [
-    ...docPageEvents.querySelectorAll(".css-1mzdl2j"),
-  ]
+  // TODO: Change selector to match the actual structure of the page
+  const moviesFromWebsite = [...docPageEvents.querySelectorAll(".css-1mzdl2j")]
     .filter(
       ({ textContent }) => textContent && textContent.includes("Avant-première")
     )
@@ -29,15 +28,14 @@ export const scrapLouxor = async () => {
       return {
         title: parent
           .querySelector("h2")
-          ?.textContent.split(" · ")
-          .at(-1)
+          ?.textContent.replace("Avant-première · ", "")
           .toLowerCase(),
         link: parent.querySelector("a.css-ju3hew").href,
       }
     })
 
   const pageShows = await (
-    await fetch("https://www.louxor-reserver.cotecine.fr/reserver/")
+    await fetch("https://www.monticketstudio28.cotecine.fr/reserver/")
   ).text()
 
   const { document: docPageShows } = parseHTML(pageShows)
@@ -48,22 +46,14 @@ export const scrapLouxor = async () => {
     ),
   ]
     .filter(({ textContent }) =>
-      moviesFromLouxorWebsite.find(
-        ({ title }) => textContent.toLowerCase() === title.toLowerCase()
-      )
+      moviesFromWebsite.find((e) => e.title === textContent.toLowerCase())
     )
-    .map((el) => ({
-      value: el.value,
-      title: el.textContent,
-      link: moviesFromLouxorWebsite.find(
-        ({ title }) => el.textContent.toLowerCase() === title.toLowerCase()
-      ).link,
-    }))
+    .map((el) => ({ value: el.value, title: el.textContent }))
 
   for (const movie of movies) {
     console.group("🛠️ Scraping movie:", movie.title)
     const resDays = await fetch(
-      `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
+      `https://www.monticketstudio28.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
     )
 
     const days = await resDays.json()
@@ -79,7 +69,7 @@ export const scrapLouxor = async () => {
 
     if (!existingMovie) {
       console.log("🎬  movie not found:", _movie.title)
-      await insertMovie(_movie)
+      continue
     }
 
     for (const [day] of Object.entries(days)) {
@@ -87,39 +77,28 @@ export const scrapLouxor = async () => {
 
       const shows = await (
         await fetch(
-          `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}&modresa_jour=${day}`
+          `https://www.monticketstudio28.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}&modresa_jour=${day}`
         )
       ).json()
 
       for (const [id, show] of Object.entries(shows)) {
-        const linkShow = `https://www.louxor-reserver.cotecine.fr/reserver/F${movie.value}/D${id}`
+        const linkShow = `https://www.monticketstudio28.cotecine.fr/reserver/F${movie.value}/D${id}`
 
-        const hours = show.substr(0, 5)
-
-        const [showId, language] = id.split("/")
-
-        const showToInsert = {
-          avpType: "AVP",
-          cinemaId: "louxor",
-          id: showId,
-          date: dashToISODateTime(day, hours),
-          language,
-          linkMovie: `https://www.cinemalouxor.fr${movie.link}`,
-          linkShow,
-          movieId: _movie.id,
-        }
-
-        const existingShow = await getShow(showToInsert.id)
-
-        if (existingShow) {
-          console.log("🎥 Show already exists:", showToInsert.id)
-          continue
-        }
-
-        await insertShow(showToInsert)
+        console.log("🔗 Link:", linkShow)
+        console.log("ℹ️ Show:", show)
       }
       console.groupEnd()
     }
     console.groupEnd()
+
+    // const { document: docPageMovie } = parseHTML(pageMovie)
+
+    // const title = docPageMovie.querySelector(".css-zezy6m")?.textContent
+    // const director = docPageMovie.querySelector(".css-1v4g3y5")?.textContent
+    // const link = docPageMovie.querySelector(".css-12ph13l")?.href
+
+    // console.log("🎬 Movie:", title)
+    // console.log("ℹ️ Director:", director)
+    // console.log("🔗 Date:", link)
   }
 }

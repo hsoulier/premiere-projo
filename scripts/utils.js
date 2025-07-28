@@ -31,12 +31,6 @@ export const frenchToISODateTime = (
     .replace(/[\u0300-\u036f]/g, "")
     .match(regex)
 
-  console.log(
-    "French date-time:",
-    frenchDateTime.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
-    "Match:",
-    match
-  )
   if (!match) throw new Error("Invalid French date-time format")
   const day = parseInt(match[1], 10)
   const monthName = match[2].toLowerCase()
@@ -47,6 +41,29 @@ export const frenchToISODateTime = (
 
   // Construct local date object
   const date = new Date(year, month, day, hour, minute)
+
+  // Format date to ISO string with local timezone offset
+  const pad = (n) => n.toString().padStart(2, "0")
+  const offset = -date.getTimezoneOffset()
+  const sign = offset >= 0 ? "+" : "-"
+  const offsetHours = pad(Math.floor(Math.abs(offset) / 60))
+  const offsetMinutes = pad(Math.abs(offset) % 60)
+
+  const isoString =
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+      date.getSeconds()
+    )}` +
+    `${sign}${offsetHours}:${offsetMinutes}`
+
+  return isoString
+}
+
+export const dashToISODateTime = (dateString, hours) => {
+  const [year, month, day] = dateString.split("-").map(Number)
+  const [hour, minute] = hours.split("h").map(Number)
+
+  const date = new Date(year, month - 1, day, hour, minute)
 
   // Format date to ISO string with local timezone offset
   const pad = (n) => n.toString().padStart(2, "0")

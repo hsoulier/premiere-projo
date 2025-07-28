@@ -5,6 +5,7 @@ import { scrapMk2 } from "./providers/mk2.js"
 import { scrapGrandRex } from "./providers/grand-rex.js"
 import { scrapLouxor } from "./providers/louxor.js"
 import { scrapDulac } from "./providers/dulac.js"
+import { scrapStudio28 } from "./providers/studio-28.js"
 
 const init = async () => {
   console.group("🛠️ scraping Pathé")
@@ -30,6 +31,10 @@ const init = async () => {
   console.group("🛠️ scraping Delac cinemas")
   await scrapDulac()
   console.groupEnd()
+
+  // console.group("🛠️ scraping Studio 28")
+  // await scrapStudio28()
+  // console.groupEnd()
 
   await sql.end()
 }
