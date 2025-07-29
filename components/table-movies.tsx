@@ -42,6 +42,7 @@ import {
   AlertDialogPortal,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { ModalCreateMovie } from "@/components/modal-create-movie"
 
 export const TABLE_IDS = {
   CINEMAS: "17361",
@@ -236,6 +237,7 @@ export const columns: ColumnDef<Data>[] = [
 export function DataTableMovies({ data }: { data: Data[] }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [rowSelection, setRowSelection] = useState({})
+  const [openModalMovie, setOpenModalMovie] = useState<boolean>(false)
 
   const table = useReactTable({
     data,
@@ -264,6 +266,16 @@ export function DataTableMovies({ data }: { data: Data[] }) {
           }
           className="max-w-sm"
         />
+        <AlertDialog open={openModalMovie} onOpenChange={setOpenModalMovie}>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="ml-2">
+              Ajouter un film
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogPortal>
+            <ModalCreateMovie close={() => setOpenModalMovie(false)} />
+          </AlertDialogPortal>
+        </AlertDialog>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -293,7 +305,11 @@ export function DataTableMovies({ data }: { data: Data[] }) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      aria-disabled={Boolean(row.original.hide)}
+                      className="aria-disabled:opacity-50"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
