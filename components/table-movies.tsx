@@ -43,13 +43,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-const TABLE_IDS = {
+export const TABLE_IDS = {
   CINEMAS: "17361",
   MOVIES: "17366",
   SHOWS: "17373",
 }
 
-const PROJECT_ID = "ixrirhfbmbmmlsvhnccf"
+export const PROJECT_ID = "ixrirhfbmbmmlsvhnccf"
 
 export type Data = NonNullable<
   Awaited<ReturnType<typeof getShowsAggregated>>

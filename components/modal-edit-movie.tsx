@@ -37,6 +37,7 @@ import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { PROJECT_ID, TABLE_IDS } from "@/components/table-movies"
 
 const formSchema = z.object({
   director: z.string(),
@@ -259,6 +260,9 @@ export const ModalEditMovie = ({
                         <PopoverContent className="w-auto p-0" align="start">
                           <Calendar
                             mode="single"
+                            defaultMonth={
+                              field.value ? field.value : new Date()
+                            }
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={(date) => date < new Date("1900-01-01")}
@@ -286,7 +290,7 @@ export const ModalEditMovie = ({
                       <FormLabel>Synopsis</FormLabel>
                       <FormControl>
                         <textarea
-                          className="flex grow h-52 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-x-none"
+                          className="flex grow h-52 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm resize-x-none"
                           placeholder="Synopsis"
                           {...field}
                         />
@@ -300,6 +304,18 @@ export const ModalEditMovie = ({
             </div>
           </AlertDialogDescription>
           <AlertDialogFooter>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() =>
+                window.open(
+                  `https://supabase.com/dashboard/project/${PROJECT_ID}/editor/${TABLE_IDS.MOVIES}?filter=id:eq:${id}`,
+                  "_blank"
+                )
+              }
+            >
+              Voir sur Supabase
+            </Button>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <Button type="submit">Mettre à jour</Button>
           </AlertDialogFooter>
