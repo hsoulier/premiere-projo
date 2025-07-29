@@ -1,21 +1,29 @@
 import { LIST_MULTIPLEX, multiplex, SOURCE_PROVIDER } from "@/constants/mapping"
 import type { TypedSupabaseClient } from "@/types/supabase"
 
-export const getShowsAggregated = async (
-  client: TypedSupabaseClient,
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
-) => {
-  const { c, avpType, lang, q } = searchParams
-  const now = new Date().toISOString()
-
-  let query = client
+const getBaseQuery = (client: TypedSupabaseClient, isDashboard = false) => {
+  const query = client
     .from("movies")
     .select(
       `movie_id:id,title,poster,posterThumb,release,director,synopsis,duration,hide,shows(*)`
     )
-    .not("hide", "is", true)
+
+  if (isDashboard) {
+    return query
+  }
+
+  return query.not("hide", "is", true)
+}
+
+export const getShowsAggregated = async (
+  client: TypedSupabaseClient,
+  searchParams: { [key: string]: string | string[] | undefined },
+  isDashboard = false
+) => {
+  const { c, avpType, lang, q } = searchParams
+  const now = new Date().toISOString()
+
+  let query = getBaseQuery(client, isDashboard)
 
   if ("avpType" in searchParams && avpType) {
     query = query.eq("shows.avpType", avpType.toString())

@@ -5,11 +5,11 @@ import { MoonIcon, SunIcon } from "@heroicons/react/24/solid"
 import { sendGAEvent } from "@next/third-parties/google"
 
 export const ThemeSwitch = () => {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
 
   return (
     <div className="grid place-content-center size-10 shrink-0 border border-gray-100 rounded-2xl bg-gray-background">
-      {theme === "dark" && (
+      {resolvedTheme === "dark" && (
         <button
           onClick={() => {
             sendGAEvent("event", "switch_theme", { theme: "light" })
@@ -20,7 +20,7 @@ export const ThemeSwitch = () => {
           <MoonIcon className="size-5 text-gray-900" />
         </button>
       )}
-      {(theme === "light" || !theme) && (
+      {resolvedTheme === "light" && (
         <button
           onClick={() => {
             sendGAEvent("event", "switch_theme", { theme: "dark" })

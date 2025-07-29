@@ -5,16 +5,12 @@ import {
   AlertDialogDescription,
   AlertDialogContent,
   AlertDialogFooter,
-  AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { useMutation } from "@tanstack/react-query"
-import { getShowAggregated } from "@/lib/queries"
-import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 import {
   Form,
   FormControl,
@@ -37,15 +33,13 @@ import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { PROJECT_ID, TABLE_IDS } from "@/components/table-movies"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 
 const formSchema = z.object({
   director: z.string(),
   duration: z.number(),
-  id: z.number(),
-  imdbId: z.string(),
+  imdbId: z.string().min(1, {
+    message: "L'ID IMDb doit être un nombre positif",
+  }),
   poster: z.string(),
   posterThumb: z.string(),
   release: z.date().optional(),
@@ -54,39 +48,22 @@ const formSchema = z.object({
   hide: z.boolean(),
 })
 
-export const ModalEditMovie = ({
-  id,
-  close,
-}: {
-  id: number
-  close: () => void
-}) => {
+export const ModalCreateMovie = ({ close }: { close: () => void }) => {
   const router = useRouter()
   const supabase = useSupabaseBrowser()
 
-  const mutation = useMutation({
-    mutationFn: async () => await getShowAggregated(supabase, id.toString()),
-  })
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: async () => {
-      const data = await mutation.mutateAsync()
-
-      return {
-        director: data?.movie?.director || "",
-        duration: data?.movie?.duration || 0,
-        id: data?.movie?.id || 0,
-        imdbId: data?.movie?.imdbId || "",
-        poster: data?.movie?.poster || "",
-        posterThumb: data?.movie?.posterThumb || "",
-        release: data?.movie?.release
-          ? new Date(data.movie.release)
-          : undefined,
-        synopsis: data?.movie?.synopsis || "",
-        title: data?.movie?.title || "",
-        hide: data?.movie?.hide ?? false,
-      }
+    defaultValues: {
+      director: "",
+      duration: 0,
+      imdbId: "",
+      poster: "",
+      posterThumb: "",
+      release: undefined,
+      synopsis: "",
+      title: "",
+      hide: false,
     },
   })
 
@@ -96,21 +73,25 @@ export const ModalEditMovie = ({
   ) => {
     e?.preventDefault()
 
-    const toastId = toast.loading("Enregistrement des modifications...")
+    if (!values.imdbId) {
+      toast.error("L'ID Allociné est requis")
+      return
+    }
 
-    const a = await supabase
-      .from("movies")
-      .update({
-        director: values.director,
-        duration: values.duration,
-        imdbId: values.imdbId,
-        poster: values.poster,
-        release: values.release ? values.release.toISOString() : null,
-        synopsis: values.synopsis,
-        title: values.title,
-        hide: values.hide,
-      })
-      .eq("id", id)
+    const toastId = toast.loading("Création du film...")
+
+    const a = await supabase.from("movies").insert({
+      id: parseInt(values.imdbId),
+      director: values.director,
+      duration: values.duration,
+      imdbId: values.imdbId,
+      poster: values.poster,
+      posterThumb: values.posterThumb,
+      release: values.release ? values.release.toISOString() : null,
+      synopsis: values.synopsis,
+      title: values.title,
+      scrapedAt: new Date().toISOString(),
+    })
 
     console.log(a)
 
@@ -119,34 +100,12 @@ export const ModalEditMovie = ({
       duration: 2_000,
       action: {
         label: "Voir",
-        onClick: () => router.push(`/films/${values.id}`),
+        onClick: () => router.push(`/films/${values.imdbId}`),
       },
       id: toastId,
     })
 
     close()
-  }
-
-  const toggleHidden = async (checked: boolean) => {
-    await supabase.from("movies").update({ hide: checked }).eq("id", id)
-
-    toast.success(
-      `Le film a été ${checked ? "caché" : "affiché"} avec succès.`,
-      { duration: 2_000 }
-    )
-  }
-
-  if (!mutation.data) {
-    return (
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Loading...</AlertDialogTitle>
-          <VisuallyHidden.Root>
-            <AlertDialogDescription />
-          </VisuallyHidden.Root>
-        </AlertDialogHeader>
-      </AlertDialogContent>
-    )
   }
 
   return (
@@ -191,6 +150,26 @@ export const ModalEditMovie = ({
                         />
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="imdbId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Id Allociné</FormLabel>
+                      <FormControl>
+                        <Input placeholder="id allociné" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                      <FormDescription>
+                        allocine.fr/.../fichefilm_gen_cfilm=
+                        <span className="underline underline-offset-2 font-semibold">
+                          ID
+                        </span>
+                        .html
+                      </FormDescription>
                     </FormItem>
                   )}
                 />
@@ -262,7 +241,9 @@ export const ModalEditMovie = ({
                               {field.value ? (
                                 format(field.value, "PPP")
                               ) : (
-                                <span>Pick a date</span>
+                                <span className="text-muted-foreground/50">
+                                  Sélectionner une date
+                                </span>
                               )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -315,27 +296,6 @@ export const ModalEditMovie = ({
             </div>
           </AlertDialogDescription>
           <AlertDialogFooter>
-            <div className="inline-flex items-center space-x-2">
-              <Switch
-                id="hide-movie"
-                defaultChecked={mutation.data.movie?.hide || false}
-                onCheckedChange={toggleHidden}
-              />
-              <Label htmlFor="hide-movie">Masquer le film</Label>
-            </div>
-
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() =>
-                window.open(
-                  `https://supabase.com/dashboard/project/${PROJECT_ID}/editor/${TABLE_IDS.MOVIES}?filter=id:eq:${id}`,
-                  "_blank"
-                )
-              }
-            >
-              Voir sur Supabase
-            </Button>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <Button type="submit">Mettre à jour</Button>
           </AlertDialogFooter>
