@@ -15,6 +15,7 @@ import {
   providers,
   LIST_MULTIPLEX,
   type allProviders,
+  simpleProviders,
 } from "@/constants/mapping"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 import { sendGAEvent } from "@next/third-parties/google"
@@ -134,25 +135,29 @@ export const FilterCinema = () => {
             )
           })}
         </Accordion>
-        <div
-          className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2 cursor-pointer"
-          onClick={() =>
-            !cinemaQuery.includes("grand-rex")
-              ? addFilter("grand-rex")
-              : removeFilter("grand-rex")
-          }
-        >
-          <Checkbox
-            checked={cinemaQuery.includes("grand-rex")}
-            onClick={(e) => e.stopPropagation()}
-            onCheckedChange={(checked) =>
-              checked ? addFilter("grand-rex") : removeFilter("grand-rex")
+
+        {simpleProviders.map(({ value, label }) => (
+          <div
+            key={value}
+            className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2 cursor-pointer"
+            onClick={() =>
+              !cinemaQuery.includes(value)
+                ? addFilter(value)
+                : removeFilter(value)
             }
-          />
-          <span className="[[aria-checked=true]~&]:text-gray-white text-gray-700">
-            Le Grand Rex
-          </span>
-        </div>
+          >
+            <Checkbox
+              checked={cinemaQuery.includes(value)}
+              onClick={(e) => e.stopPropagation()}
+              onCheckedChange={(checked) =>
+                checked ? addFilter(value) : removeFilter(value)
+              }
+            />
+            <span className="[[aria-checked=true]~&]:text-gray-white text-gray-700">
+              {label}
+            </span>
+          </div>
+        ))}
       </PopoverContent>
     </Popover>
   )

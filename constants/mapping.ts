@@ -189,6 +189,7 @@ export const providers = [
 
 export const simpleProviders = [
   { value: "grand-rex", label: "Le Grand Rex", cinemas: [] },
+  { value: "louxor", label: "Le Louxor", cinemas: [] },
   // { value: "indy", label: "Indépendant", cinemas: [] },
 ] as const
 
