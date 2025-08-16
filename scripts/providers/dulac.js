@@ -18,44 +18,51 @@ const cinemas = {
   "0824": "reflet-medicis",
 }
 
-export const scrapDulac = async () => {
+const scrapShows = async () => {
   const movies = []
   let pageIndex = 0
 
   while (true) {
     console.group(`ℹ️ Scraping Dulac cinemas page ${pageIndex}`)
-    const res = await fetch(
-      `https://dulaccinemas.com/portail/evenements?page=${pageIndex}`
-    )
 
-    const html = await res.text()
+    try {
+      const res = await fetch(
+        `https://dulaccinemas.com/portail/evenements?page=${pageIndex}`
+      )
+      const html = await res.text()
 
-    const { document } = parseHTML(html)
+      const { document } = parseHTML(html)
 
-    const items = document.querySelectorAll(".view-content > div > ul.row > li")
+      const items = document.querySelectorAll(
+        ".view-content > div > ul.row > li"
+      )
 
-    const hasMorePages = items.length >= 16
+      const hasMorePages = items.length >= 16
 
-    for (const item of items) {
-      const title = item.querySelector(".field--name-title").textContent.trim()
-      if (!title.toLowerCase().startsWith("avant-première ")) continue
+      for (const item of items) {
+        const title = item
+          .querySelector(".field--name-title")
+          .textContent.trim()
+        if (!title.toLowerCase().startsWith("avant-première ")) continue
 
-      movies.push({
-        title,
-        link: item.querySelector("a.btn.btn-secondary.btn-invert").href,
-      })
+        movies.push({
+          title,
+          link: item.querySelector("a.btn.btn-secondary.btn-invert").href,
+        })
+      }
+      console.log(`Found ${items.length} movies on page ${pageIndex}`)
+
+      console.groupEnd()
+
+      if (!hasMorePages) break
+    } catch (error) {
+      console.error("❌ Error fetching Dulac cinemas events", error)
     }
-
-    console.log(`Found ${items.length} movies on page ${pageIndex}`)
-
-    console.groupEnd()
-
-    if (!hasMorePages) break
 
     pageIndex++
   }
 
-  const browser = await playwright.chromium.launch({ timeout: 10_000 })
+  const browser = await playwright.chromium.launch({ timeout: 5_000 })
   const context = await browser.newContext()
   const page = await context.newPage()
 
@@ -181,6 +188,14 @@ export const scrapDulac = async () => {
   }
 
   await browser.close()
+}
+
+export const scrapDulac = async () => {
+  try {
+    await scrapShows()
+  } catch (error) {
+    console.error("❌ Error scraping Dulac cinemas", error)
+  }
 }
 
 const insertCinemas = async () => {

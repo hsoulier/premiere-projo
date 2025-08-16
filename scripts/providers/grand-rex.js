@@ -49,9 +49,7 @@ const getMoviesFromEventPage = async () => {
   })
 }
 
-const scrapShow = async () => {}
-
-export const scrapGrandRex = async () => {
+const scrapShows = async () => {
   const movies = await getMoviesFromEventPage()
 
   console.log("ℹ️ Movies to scrap", movies)
@@ -316,5 +314,13 @@ export const scrapGrandRex = async () => {
         await insertShow(show)
       }
     }
+  }
+}
+
+export const scrapGrandRex = async () => {
+  try {
+    await scrapShows()
+  } catch (error) {
+    console.error("❌ Error scraping Grand Rex", error)
   }
 }

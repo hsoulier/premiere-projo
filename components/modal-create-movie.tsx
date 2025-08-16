@@ -93,8 +93,6 @@ export const ModalCreateMovie = ({ close }: { close: () => void }) => {
       scrapedAt: new Date().toISOString(),
     })
 
-    console.log(a)
-
     toast.success("Modifications enregistrées", {
       description: `Le film ${values.title} a été mis à jour.`,
       duration: 2_000,

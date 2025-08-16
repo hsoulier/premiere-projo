@@ -128,6 +128,12 @@ export const getShowAggregated = async (
   return { movie: movie.data, shows }
 }
 
+export const getCinemas = async (client: TypedSupabaseClient) => {
+  const res = await client.from("cinemas").select("*")
+
+  return res.data
+}
+
 export type ShowAggregated = NonNullable<
   Awaited<ReturnType<typeof getShowsAggregated>>
 >[number]

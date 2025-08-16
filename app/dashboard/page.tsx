@@ -1,7 +1,6 @@
 "use client"
 
-import { DataTableMovies } from "@/components/table-movies"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TableShows } from "@/components/table-shows"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { getShowsAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
@@ -53,23 +52,9 @@ const DashboardPage = () => {
   })
 
   return (
-    <Tabs defaultValue="movies" className="container mx-auto p-4">
-      <TabsList>
-        <TabsTrigger value="movies">Films</TabsTrigger>
-        <TabsTrigger value="shows">Séances</TabsTrigger>
-      </TabsList>
-      <TabsContent value="movies">
-        <DataTableMovies data={movies} />
-      </TabsContent>
-      <TabsContent value="shows">
-        <div className="container mx-auto p-4">
-          <p className="text-gray-500">
-            Shows data table will be implemented soon.
-          </p>
-          {/* <DataTableMovies data={movies} /> */}
-        </div>
-      </TabsContent>
-    </Tabs>
+    <div className="container mx-auto p-4">
+      <TableShows data={movies} />
+    </div>
   )
 }
 

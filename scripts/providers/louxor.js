@@ -10,7 +10,7 @@ import {
 } from "../db/requests.js"
 import { dashToISODateTime } from "../utils.js"
 
-export const scrapLouxor = async () => {
+export const scrapShows = async () => {
   const pageEvents = await (
     await fetch("https://www.cinemalouxor.fr/evenements/")
   ).text()
@@ -121,5 +121,13 @@ export const scrapLouxor = async () => {
       console.groupEnd()
     }
     console.groupEnd()
+  }
+}
+
+export const scrapLouxor = async () => {
+  try {
+    await scrapShows()
+  } catch (error) {
+    console.error("❌ Error scraping Louxor", error)
   }
 }

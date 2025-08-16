@@ -112,8 +112,6 @@ export const ModalEditMovie = ({
       })
       .eq("id", id)
 
-    console.log(a)
-
     toast.success("Modifications enregistrées", {
       description: `Le film ${values.title} a été mis à jour.`,
       duration: 2_000,
