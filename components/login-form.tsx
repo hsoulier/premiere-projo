@@ -21,13 +21,10 @@ export function LoginForm({ className, ...props }: ComponentProps<"div">) {
     const { data } = supabase.auth.onAuthStateChange(async (_, session) => {
       const user = session?.user
       if (!user) {
-        console.log("ℹ️ No user signed in")
         return
       }
 
       const email = user?.email || ""
-
-      console.log("ℹ️  User email:", email)
 
       if (
         email !== "anthony.reungere@gmail.com" &&

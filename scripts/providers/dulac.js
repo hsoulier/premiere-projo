@@ -24,10 +24,10 @@ export const scrapDulac = async () => {
 
   while (true) {
     console.group(`ℹ️ Scraping Dulac cinemas page ${pageIndex}`)
+
     const res = await fetch(
       `https://dulaccinemas.com/portail/evenements?page=${pageIndex}`
     )
-
     const html = await res.text()
 
     const { document } = parseHTML(html)
@@ -45,7 +45,6 @@ export const scrapDulac = async () => {
         link: item.querySelector("a.btn.btn-secondary.btn-invert").href,
       })
     }
-
     console.log(`Found ${items.length} movies on page ${pageIndex}`)
 
     console.groupEnd()
@@ -55,7 +54,7 @@ export const scrapDulac = async () => {
     pageIndex++
   }
 
-  const browser = await playwright.chromium.launch({ timeout: 10_000 })
+  const browser = await playwright.chromium.launch({ timeout: 5_000 })
   const context = await browser.newContext()
   const page = await context.newPage()
 

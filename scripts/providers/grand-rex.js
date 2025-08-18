@@ -49,8 +49,6 @@ const getMoviesFromEventPage = async () => {
   })
 }
 
-const scrapShow = async () => {}
-
 export const scrapGrandRex = async () => {
   const movies = await getMoviesFromEventPage()
 
