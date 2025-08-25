@@ -11,7 +11,17 @@ import {
 import { frenchToISODateTime } from "../utils.js"
 
 const getMoviesPage = async () => {
-  const options = { method: "GET", headers: { "Accept-Language": "fr-FR" } }
+  const headers = {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+      "AppleWebKit/537.36 (KHTML, like Gecko) " +
+      "Chrome/115.0.0.0 Safari/537.36",
+    Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "fr-FR",
+    Referer: "https://www.google.com/",
+  }
+
+  const options = { method: "GET", headers }
   const res = await fetch("https://www.legrandrex.com/cinema", options)
   const text = await res.text()
 
@@ -52,12 +62,8 @@ const getMoviesFromEventPage = async () => {
 export const scrapGrandRex = async () => {
   const movies = await getMoviesFromEventPage()
 
-  console.log("ℹ️ Movies to scrap", movies)
-
   for (const m of movies) {
     const textMovie = await (await fetch(m.link)).text()
-
-    console.log(`ℹ️ Scraping movie ${m.title} ${m.link}`)
 
     const { document: movieDoc } = parseHTML(textMovie)
 
@@ -93,24 +99,26 @@ export const scrapGrandRex = async () => {
 
     const { document: showsDoc } = parseHTML(html)
 
-    console.log(`ℹ️ has multiple shows: ${isSingleShow}`)
+    const title = showsDoc
+      .querySelector("[name=modresa_film] > option[selected=selected]")
+      ?.textContent.trim()
+
+    const movie = await getAllocineInfo({
+      title: m.title,
+      directors: [director],
+    })
+
+    if (!movie || !movie.id) {
+      console.log(`❌ Skip movie ${title} not in Allocine`)
+      continue
+    }
+
+    const existingMovie = await getMovie(movie.id)
+
+    if (!existingMovie) await insertMovie(movie)
 
     if (isSingleShow) {
       const showDoc = showsDoc
-
-      console.log(link)
-
-      const movie = await getAllocineInfo({
-        title: m.title,
-        directors: [director],
-      })
-
-      const existingMovie = await getMovie(movie.id)
-
-      if (!movie && !existingMovie) {
-        console.log(`❌ Skip movie ${title} not in Allocine`)
-        continue
-      }
 
       const errorText = showDoc.querySelector(
         "#resa-erreur .erreur"
@@ -155,8 +163,6 @@ export const scrapGrandRex = async () => {
         ?.textContent.trim()
         ?.replace("en ", "")
 
-      console.log(`${showTime} à ${showTimeHour}`)
-
       const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
 
       const show = {
@@ -187,25 +193,6 @@ export const scrapGrandRex = async () => {
       continue
     }
 
-    const title = showsDoc
-      .querySelector("[name=modresa_film] > option[selected=selected]")
-      ?.textContent.trim()
-
-    const movie = await getAllocineInfo({ title, directors: [director] })
-
-    if (!movie) {
-      console.log(`❌ Skip movie ${title} not in Allocine`)
-      continue
-    }
-
-    const existingMovie = await getMovie(movie.id)
-
-    if (!existingMovie) {
-      console.log(`Inserting movie ${movie.id} ${movie.title}`)
-
-      await insertMovie(movie)
-    }
-
     const dates = [
       ...showsDoc.querySelectorAll(
         "select[name=modresa_jour] > option:not([value=''])"
@@ -224,18 +211,12 @@ export const scrapGrandRex = async () => {
         )
       })
 
-    console.log("✨ Dates available", dates.length)
-
     for (const { label: labelDate, value } of dates) {
-      console.log(`ℹ️ Scraping show for date ${labelDate}`)
-
       const resShows = await fetch(
         `https://legrandrex.cotecine.fr/reserver/ajax/?modresa_film=${grandRexMovieId}&modresa_jour=${value}`
       )
 
       const showsAvailable = await resShows.json()
-
-      console.log(`ℹ️ Response for date ${labelDate}`, showsAvailable)
 
       for (const [value, label] of Object.entries(showsAvailable)) {
         const linkShow = link.endsWith("/D")
@@ -247,8 +228,6 @@ export const scrapGrandRex = async () => {
         const html = await res.text()
 
         const { document: showDoc } = parseHTML(html)
-
-        console.log(`ℹ️ Scraping show for date ${label} ${value}`, linkShow)
 
         const errorText = showDoc.querySelector(
           "#resa-erreur .erreur"

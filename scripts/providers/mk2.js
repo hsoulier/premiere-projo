@@ -26,118 +26,118 @@ const getDataFromPage = async (page) => {
   return JSON.parse(document.querySelector("#__NEXT_DATA__").textContent)?.props
 }
 
-const scrapAVPFestival = async () => {
-  const pages = [
-    "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
-  ]
+// const scrapAVPFestival = async () => {
+//   const pages = [
+//     "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
+//   ]
 
-  try {
-    const res = await Promise.all(pages.map((p) => fetch(p)))
+//   try {
+//     const res = await Promise.all(pages.map((p) => fetch(p)))
 
-    const data = await Promise.all(res.map((r) => r.json()))
+//     const data = await Promise.all(res.map((r) => r.json()))
 
-    const sessionsByFilmAndCinema = data.map((d) => d.sessionsByFilmAndCinema)
+//     const sessionsByFilmAndCinema = data.map((d) => d.sessionsByFilmAndCinema)
 
-    const moviesWithSession = sessionsByFilmAndCinema
-      ?.map((sessions, index) =>
-        sessions?.map((session, j) => {
-          return {
-            movie: session.film,
-            shows: session.sessions,
-            cinemaSlug: session.cinema.slug,
-          }
-        })
-      )
-      .flat()
+//     const moviesWithSession = sessionsByFilmAndCinema
+//       ?.map((sessions, index) =>
+//         sessions?.map((session, j) => {
+//           return {
+//             movie: session.film,
+//             shows: session.sessions,
+//             cinemaSlug: session.cinema.slug,
+//           }
+//         })
+//       )
+//       .flat()
 
-    if (!moviesWithSession || !moviesWithSession.length) return
+//     if (!moviesWithSession || !moviesWithSession.length) return
 
-    console.log("Found movies with sessions:", moviesWithSession)
+//     console.log("Found movies with sessions:", moviesWithSession)
 
-    for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
-      if (!movie || !shows || !cinemaSlug) {
-        console.warn(
-          "Missing data for movie or shows",
-          movie,
-          shows,
-          cinemaSlug
-        )
-        continue
-      }
-      const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
+//     for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
+//       if (!movie || !shows || !cinemaSlug) {
+//         console.warn(
+//           "Missing data for movie or shows",
+//           movie,
+//           shows,
+//           cinemaSlug
+//         )
+//         continue
+//       }
+//       const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
 
-      if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
+//       if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
 
-      const d = movie.cast.find((c) => c.personType === "Director")
+//       const d = movie.cast.find((c) => c.personType === "Director")
 
-      const m = await getAllocineInfo({
-        release: movie.openingDate,
-        title: movie.title,
-        directors: [`${d.firstName} ${d.lastName}`],
-      })
+//       const m = await getAllocineInfo({
+//         release: movie.openingDate,
+//         title: movie.title,
+//         directors: [`${d.firstName} ${d.lastName}`],
+//       })
 
-      if (movie.title === "Caravan") m.id = "48265"
+//       if (movie.title === "Caravan") m.id = "48265"
 
-      if (m?.id === "") {
-        console.warn("No ID found for movie", movie.title, movie.openingDate)
-        throw new Error(
-          `No ID found for movie: ${movie.title} (${movie.openingDate})`
-        )
-      }
+//       if (m?.id === "") {
+//         console.warn("No ID found for movie", movie.title, movie.openingDate)
+//         throw new Error(
+//           `No ID found for movie: ${movie.title} (${movie.openingDate})`
+//         )
+//       }
 
-      const existingMovie = await getMovie(m.id)
+//       const existingMovie = await getMovie(m.id)
 
-      if (!existingMovie) {
-        if (m.release) {
-          const temp = new Date(m.release)
-          temp.setDate(temp.getDate() + 1)
-          m.release = temp
-        }
+//       if (!existingMovie) {
+//         if (m.release) {
+//           const temp = new Date(m.release)
+//           temp.setDate(temp.getDate() + 1)
+//           m.release = temp
+//         }
 
-        await insertMovie({
-          ...m,
-          synopsis: movie.synopsis,
-          duration: movie.runTime || 0,
-          link: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
-          director: m?.director || [],
-        })
+//         await insertMovie({
+//           ...m,
+//           synopsis: movie.synopsis,
+//           duration: movie.runTime || 0,
+//           link: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
+//           director: m?.director || [],
+//         })
 
-        debug.movies++
-      }
+//         debug.movies++
+//       }
 
-      for (const show of shows) {
-        const foundLanguage = show.attributes.find(
-          (a) => a.id === "VS00000005"
-        )?.shortName
+//       for (const show of shows) {
+//         const foundLanguage = show.attributes.find(
+//           (a) => a.id === "VS00000005"
+//         )?.shortName
 
-        const language =
-          foundLanguage === "VOSTF" || foundLanguage === "VO" ? "vost" : "vf"
+//         const language =
+//           foundLanguage === "VOSTF" || foundLanguage === "VO" ? "vost" : "vf"
 
-        const showData = {
-          id: show.sessionId,
-          cinemaId,
-          language,
-          date: show.showTime,
-          avpType: "AVP",
-          movieId: m.id,
-          linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.sessionId}`,
-          linkMovie: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
-          festival: "Festival de Cannes",
-        }
+//         const showData = {
+//           id: show.sessionId,
+//           cinemaId,
+//           language,
+//           date: show.showTime,
+//           avpType: "AVP",
+//           movieId: m.id,
+//           linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.sessionId}`,
+//           linkMovie: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
+//           festival: "Festival de Cannes",
+//         }
 
-        const existingShow = await getShow(showData.id)
+//         const existingShow = await getShow(showData.id)
 
-        if (existingShow) continue
+//         if (existingShow) continue
 
-        await insertShow(showData)
+//         await insertShow(showData)
 
-        debug.shows++
-      }
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
+//         debug.shows++
+//       }
+//     }
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }
 
 export const scrapMk2 = async () => {
   try {
@@ -160,7 +160,7 @@ export const scrapMk2 = async () => {
       const props = await getDataFromPage(link)
 
       const sessionsByFilmAndCinema =
-        props.pageProps.event.sessionsByFilmAndCinema || []
+        props.pageProps.event?.sessionsByFilmAndCinema || []
 
       const { title, cast, synopsis, runTime, openingDate } =
         sessionsByFilmAndCinema?.[0]?.film || {}
