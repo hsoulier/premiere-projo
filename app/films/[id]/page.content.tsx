@@ -2,7 +2,7 @@
 
 import { SOURCE_PROVIDER } from "@/constants/mapping"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { getShowAggregated } from "@/lib/queries"
+import { getMovieAggregated } from "@/lib/queries"
 import { numToTime } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query"
 import { ChevronLeft, PencilIcon, UsersRound } from "lucide-react"
@@ -50,7 +50,7 @@ export const Content = () => {
   const { data, error, status, isLoading } = useQuery({
     queryKey: [`show-${id}`],
     queryFn: async () => {
-      const response = await getShowAggregated(supabase, id)
+      const response = await getMovieAggregated(supabase, id)
 
       return response
     },
@@ -81,7 +81,7 @@ export const Content = () => {
         {} as Record<
           keyof typeof SOURCE_PROVIDER,
           Awaited<
-            ReturnType<typeof getShowAggregated>
+            ReturnType<typeof getMovieAggregated>
           >["shows"][keyof typeof SOURCE_PROVIDER]
         >
       )

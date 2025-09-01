@@ -2,7 +2,7 @@
 
 import { TableShows } from "@/components/table-shows"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { getShowsAggregated } from "@/lib/queries"
+import { getMoviesAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -14,7 +14,7 @@ const DashboardPage = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: [],
-    queryFn: async () => await getShowsAggregated(supabase, {}, true),
+    queryFn: async () => await getMoviesAggregated(supabase, {}, true),
   })
 
   useEffect(() => {
