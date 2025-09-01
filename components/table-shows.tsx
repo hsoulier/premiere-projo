@@ -46,6 +46,7 @@ import {
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { useQuery } from "@tanstack/react-query"
 import { getCinemas } from "@/lib/queries"
+import { ModalEditShow } from "@/components/modal-edit-show"
 
 export const TableShows = ({ data }: { data: Data[] }) => {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -242,7 +243,8 @@ export const TableShows = ({ data }: { data: Data[] }) => {
         size: 40,
         header: () => null,
         cell: ({ row }) => {
-          const [open, setOpen] = useState<boolean>(false)
+          const [openMovieEdit, setOpenMovieEdit] = useState<boolean>(false)
+          const [openShowAdd, setOpenShowAdd] = useState<boolean>(false)
           const movie = row.original
 
           return (
@@ -284,14 +286,30 @@ export const TableShows = ({ data }: { data: Data[] }) => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <AlertDialog open={open} onOpenChange={setOpen}>
+                  <AlertDialog
+                    open={openMovieEdit}
+                    onOpenChange={setOpenMovieEdit}
+                  >
                     <AlertDialogTrigger className="w-full relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0">
                       Editer le film
                     </AlertDialogTrigger>
                     <AlertDialogPortal>
                       <ModalEditMovie
                         id={movie.movie_id}
-                        close={() => setOpen(false)}
+                        close={() => setOpenMovieEdit(false)}
+                      />
+                    </AlertDialogPortal>
+                  </AlertDialog>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <AlertDialog open={openShowAdd} onOpenChange={setOpenShowAdd}>
+                    <AlertDialogTrigger className="w-full relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0">
+                      Ajouter une séance
+                    </AlertDialogTrigger>
+                    <AlertDialogPortal>
+                      <ModalEditShow
+                        id={movie.movie_id}
+                        close={() => setOpenShowAdd(false)}
                       />
                     </AlertDialogPortal>
                   </AlertDialog>

@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useState } from "react"
-import type { getShowsAggregated } from "@/lib/queries"
+import type { getMoviesAggregated } from "@/lib/queries"
 import Link from "next/link"
 import { CheckIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline"
 import { cn } from "@/lib/utils"
@@ -53,7 +53,7 @@ export const TABLE_IDS = {
 export const PROJECT_ID = "ixrirhfbmbmmlsvhnccf"
 
 export type Data = NonNullable<
-  Awaited<ReturnType<typeof getShowsAggregated>>
+  Awaited<ReturnType<typeof getMoviesAggregated>>
 >[number] & { errors: number }
 
 export const columns: ColumnDef<Data>[] = [

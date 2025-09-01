@@ -1,6 +1,6 @@
 import { metadata } from "@/app/layout"
 import useSupabaseServer from "@/hooks/use-supabase-server"
-import { getShowAggregated } from "@/lib/queries"
+import { getMovieAggregated } from "@/lib/queries"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -23,7 +23,7 @@ export const generateMetadata = async ({
   const { id } = await params
   const supabase = useSupabaseServer(await cookies())
 
-  const response = await getShowAggregated(supabase, id)
+  const response = await getMovieAggregated(supabase, id)
 
   const shows = Object.values(response.shows).reduce((acc, show) => {
     acc += show?.length || 0
