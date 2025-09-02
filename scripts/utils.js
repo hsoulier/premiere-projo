@@ -81,3 +81,62 @@ export const dashToISODateTime = (dateString, hours) => {
 
   return isoString
 }
+
+// ex: "jeudi 04 sept. - 20h00"
+export const parseFrenchDateString = (input) => {
+  // Mapping French month abbreviations to month numbers (0-based for JS Date)
+  const monthMap = {
+    "janv.": 0,
+    "févr.": 1,
+    mars: 2,
+    "avr.": 3,
+    mai: 4,
+    juin: 5,
+    "juil.": 6,
+    août: 7,
+    "sept.": 8,
+    "oct.": 9,
+    "nov.": 10,
+    "déc.": 11,
+  }
+
+  // Trim and extract with regex
+  const regex = /(\w+)\s+(\d{2})\s+(\w+\.)\s+-\s+(\d{2})h(\d{2})/
+  const [, , day, monthAbbr, hour, minute] = input.trim().match(regex) || []
+
+  if (!monthAbbr || !(monthAbbr in monthMap)) return null
+
+  const now = new Date()
+  let year = now.getFullYear()
+  // If this year's September is past, use next year
+  if (
+    monthMap[monthAbbr] < now.getMonth() ||
+    (monthMap[monthAbbr] === now.getMonth() && parseInt(day) < now.getDate())
+  ) {
+    year += 1
+  }
+
+  const date = new Date(
+    year,
+    monthMap[monthAbbr],
+    parseInt(day),
+    parseInt(hour),
+    parseInt(minute)
+  )
+
+  // Format date to ISO string with local timezone offset
+  const pad = (n) => n.toString().padStart(2, "0")
+  const offset = -date.getTimezoneOffset()
+  const sign = offset >= 0 ? "+" : "-"
+  const offsetHours = pad(Math.floor(Math.abs(offset) / 60))
+  const offsetMinutes = pad(Math.abs(offset) % 60)
+
+  const isoString =
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+      date.getSeconds()
+    )}` +
+    `${sign}${offsetHours}:${offsetMinutes}`
+
+  return isoString
+}

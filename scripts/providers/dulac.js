@@ -8,7 +8,7 @@ import {
   insertMovie,
   insertShow,
 } from "../db/requests.js"
-import { frenchToISODateTime } from "../utils.js"
+import { frenchToISODateTime, parseFrenchDateString } from "../utils.js"
 
 const cinemas = {
   "0821": "majestic-bastille",
@@ -42,7 +42,9 @@ export const scrapDulac = async () => {
 
       movies.push({
         title,
-        link: item.querySelector("a.btn.btn-secondary.btn-invert").href,
+        link: `https://dulaccinemas.com${
+          item.querySelector("a.btn.btn-secondary.btn-invert").href
+        }`,
       })
     }
     console.log(`Found ${items.length} movies on page ${pageIndex}`)
@@ -59,10 +61,16 @@ export const scrapDulac = async () => {
   const page = await context.newPage()
 
   for (const movie of movies) {
-    console.group(`${movie.title}`)
-    const res = await fetch(`https://dulaccinemas.com${movie.link}`)
+    const res = await fetch(movie.link)
+
     const html = await res.text()
     const { document } = parseHTML(html)
+
+    const title = document.querySelector(
+      ".wrapper-horaires .movie-title"
+    )?.textContent
+
+    console.group(`${title}`)
 
     const section = document.getElementById("reservation-seances-block")
 
@@ -75,36 +83,41 @@ export const scrapDulac = async () => {
       console.warn(`Multiple days found for ${movie.title}, skipping for now.`)
     }
 
+    const mainContent = [
+      ...document.querySelectorAll(".wrapper-body .content > p"),
+    ].flatMap((p) => p.innerText.trim().split("\n"))
+
+    const director =
+      mainContent
+        .find(
+          (line) =>
+            line.includes("un film de ") ||
+            line.includes("réalisation :") ||
+            line.includes("réalisé par") ||
+            line.includes(`${title} de `)
+          // line.toLowerCase().includes(`le film ${title.toLowerCase()} de `)
+        )
+        ?.trim()
+        ?.replace("un film de ", "")
+        ?.replace(`${title} de `, "") || ""
+    // ?.replace(`le film ${title} de `, "")
+
     const dates = [
       ...section.querySelectorAll(
         ".list-horaires > .item-horaire .seance-booking-url"
       ),
     ].map((el) => el.href)
 
-    const dateShow =
-      section.querySelector("[data-seance-date]").dataset.seanceDate
-
     for (const date of dates) {
-      await page.goto(date, { waitUntil: "domcontentloaded" })
+      await page.goto(date, { waitUntil: "networkidle" })
 
-      const res = await page.waitForRequest("**/ajax/get_data_session.php")
-
-      const data = await (await res.response()).json()
-
-      const dataMovie = data?.data_movie
-
-      const dataSession = data?.data_session
-
-      if (!dataMovie || !dataSession || data?.error_label) {
-        console.warn(`No data found for ${movie.title} on ${dateShow}`)
-        continue
-      }
-
-      const title = dataMovie.title
+      const screeningDate = await page
+        .locator(".movie_info_container > .flex-column > h4")
+        .textContent()
 
       const _movie = await getAllocineInfo({
         title,
-        directors: [dataMovie.director],
+        directors: [director],
       })
 
       if (!_movie) {
@@ -112,59 +125,47 @@ export const scrapDulac = async () => {
         continue
       }
 
+      console.log("🙄 Timing", screeningDate)
+
       const existingMovie = await getMovie(_movie.id)
 
       if (!existingMovie) {
         console.log(`ℹ️ Inserting movie ${_movie.id} ${_movie.title}`)
 
-        await insertMovie({
-          ..._movie,
-          synopsis: dataMovie.synopsis,
-          director: dataMovie.director,
-          duration: dataMovie.duration,
-          imdbId: dataMovie.imdb_id,
-        })
+        await insertMovie(_movie)
       }
 
       const lang =
         (
           await page
-            .locator(".container_features_session > *[title^=Version]")
+            .locator(".features_container > *[title^=Version]")
             .getAttribute("title")
         ).toLowerCase() === "version originale"
           ? "vost"
           : "vf"
 
-      const cinemaId = new URL(page.url()).searchParams.get("nc")
+      const cinemaId = [
+        ...new URL(page.url()).searchParams.keys(),
+      ][0].substring(3)
 
-      const showTimeHour = `${dataSession.hour.substring(
-        0,
-        2
-      )}h${dataSession.hour.substring(2, 4)}`
+      const hash = page.url().substring(page.url().indexOf("#") + 1)
+      const sq = new URLSearchParams(hash.substring(hash.indexOf("?")))
 
-      const year = parseInt(dataSession.date.substring(0, 4))
-      const month = parseInt(dataSession.date.substring(4, 6)) - 1 // JS Date months are 0-based
-      const day = parseInt(dataSession.date.substring(6, 8))
-
-      const showTime = new Date(year, month, day).toLocaleDateString("fr-FR", {
-        day: "2-digit",
-        month: "long",
-        weekday: "long",
-      })
-
-      const d = frenchToISODateTime(`${showTime} à ${showTimeHour}`)
+      console.log("🙄 Cinema", cinemas[cinemaId], cinemaId)
 
       const show = {
-        id: dataSession.id,
+        id: sq.get("id"),
         cinemaId: cinemas[cinemaId],
         language: lang.toLowerCase(),
-        date: d,
+        date: parseFrenchDateString(screeningDate),
         avpType: "AVP",
         movieId: existingMovie.id,
         linkShow: page.url(),
-        linkMovie: `https://dulaccinemas.com${movie.link}`,
+        linkMovie: movie.link,
         isFull: false,
       }
+
+      console.log("🙄 Show", show)
 
       const existingShow = await getShow(show.id)
 
