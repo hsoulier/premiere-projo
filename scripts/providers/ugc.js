@@ -177,7 +177,7 @@ const retrieveAvp = async () => {
 }
 
 const retrieveAvpFestival = async () => {
-  const page = await fetch("https://www.ugc.fr/evenement_875.html")
+  const page = await fetch("https://www.ugc.fr/evenement.html?id=10")
   const html = await page.text()
   const { document } = parseHTML(html)
 
@@ -195,27 +195,12 @@ const retrieveAvpFestival = async () => {
     ].map((m, j) => {
       const text = m.textContent.trim()
 
-      const textWithoutCompetition = text.split(" | ").slice(0, -1).join(" | ")
-
-      const competition = text.split(" | ").pop().toLowerCase()
-
-      // When 2 directors the title is "TILE, Director 1, Director 2"
-      const splittedTitle = textWithoutCompetition.split(", ")
-
-      const director = splittedTitle
-        .filter((d) => d.toUpperCase() !== d)
-        .join(", ")
-        .toLowerCase()
-
-      const title = splittedTitle
-        .filter((d) => d.toUpperCase() === d)
-        .join(", ")
-        .toLowerCase()
+      const [title, director] = text.split(" de ")
 
       return {
-        title,
-        director,
-        competition,
+        title: title?.toLowerCase().trim(),
+        director: director?.toLowerCase().trim(),
+        competition: "",
         link: document.querySelector(
           `.card-body > .container > .row > .col-sm:nth-of-type(${
             i + 1
