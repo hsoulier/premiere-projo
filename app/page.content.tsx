@@ -5,7 +5,7 @@ import { MovieCard } from "@/components/movie-card"
 import { Footer } from "@/components/navigation"
 import { defaultValueOrder, keyOrder } from "@/components/sorts.order"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { getShowsAggregated } from "@/lib/queries"
+import { getMoviesAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
 import { useSearchParams } from "next/navigation"
 import { useLocalStorage } from "react-use"
@@ -31,7 +31,7 @@ export const Content = () => {
       `lang-${searchParams.get("lang") || ""}`,
       `q-${searchParams.get("q") || ""}`,
     ],
-    queryFn: async () => await getShowsAggregated(supabase, options),
+    queryFn: async () => await getMoviesAggregated(supabase, options),
   })
 
   if (!isLoading && data?.length === 0) {

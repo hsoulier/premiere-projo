@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { useMutation } from "@tanstack/react-query"
-import { getShowAggregated } from "@/lib/queries"
+import { getMovieAggregated } from "@/lib/queries"
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 import {
   Form,
@@ -65,7 +65,7 @@ export const ModalEditMovie = ({
   const supabase = useSupabaseBrowser()
 
   const mutation = useMutation({
-    mutationFn: async () => await getShowAggregated(supabase, id.toString()),
+    mutationFn: async () => await getMovieAggregated(supabase, id.toString()),
   })
 
   const form = useForm<z.infer<typeof formSchema>>({
