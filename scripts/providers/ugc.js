@@ -8,6 +8,7 @@ import {
   insertShow,
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
+import { isBefore } from "date-fns/isBefore"
 
 const TYPE_SHOWS = [
   "Avant-première avec équipe",
@@ -74,7 +75,7 @@ function urlAVPMovie(id, firstDate) {
 }
 
 const getShows = async (info) => {
-  for (const { link, id: movieId } of info) {
+  for (const { link, id: movieId, ...rest } of info) {
     const id = link.split("_").at(-1).replace(".html", "")
 
     const dates = await getDatesShows(id)
@@ -87,14 +88,17 @@ const getShows = async (info) => {
       const { document: document2 } = new JSDOM(html2).window
 
       // ? Get All show types for each projection card
-      const showTypes = document2.querySelectorAll(
+      const previews = document2.querySelectorAll(
         ".component--screening-cards li button .screening-detail"
       )
 
+      // Remove the screenings from the release date
+      if (!isBefore(firstDate, rest.release)) continue
+
       // ? Filter show types by only previews with team and previews without team
-      const previews = [...showTypes].filter((show) => {
-        return TYPE_SHOWS.includes(show?.textContent?.trim())
-      })
+      // const previews = [...showTypes].filter((show) => {
+      //   return TYPE_SHOWS.includes(show?.textContent?.trim())
+      // })
 
       for (const preview of previews) {
         const el = preview?.closest("button[type=button]")
@@ -364,6 +368,10 @@ export const scrapUGC = async () => {
         link: movie.link,
         director: m?.director || directors,
         duration,
+        ...(directors[0] === "hasan hadi" && {
+          id: "1000023006",
+          release: "2026-02-04T00:00:00.000000+02:00",
+        }),
       })
     }
 
