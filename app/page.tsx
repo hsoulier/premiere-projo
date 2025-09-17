@@ -1,6 +1,6 @@
 import { Content } from "@/app/page.content"
 import useSupabaseServer from "@/hooks/use-supabase-server"
-import { getShowsAggregated } from "@/lib/queries"
+import { getMoviesAggregated } from "@/lib/queries"
 import { getQueryClient } from "@/lib/query-client"
 import {
   dehydrate,
@@ -32,7 +32,7 @@ const Page = async ({ searchParams }: { searchParams: AwaitSearchParams }) => {
         `q-${awaitedSearchParams.q}`,
       ],
       queryFn: async () =>
-        await getShowsAggregated(supabase, awaitedSearchParams),
+        await getMoviesAggregated(supabase, awaitedSearchParams),
     })
   )
 

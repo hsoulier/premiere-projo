@@ -1,7 +1,7 @@
 "use client"
 
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { getShowsAggregated } from "@/lib/queries"
+import { getMoviesAggregated } from "@/lib/queries"
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import { useSearchParams } from "next/navigation"
 
@@ -13,7 +13,7 @@ export const Test = () => {
     queryOptions({
       queryKey: ["shows"],
       queryFn: async () => {
-        const response = await getShowsAggregated(
+        const response = await getMoviesAggregated(
           supabase,
           Object.fromEntries(searchParams)
         )

@@ -1,7 +1,7 @@
 import { metadata } from "@/app/layout"
 import { Content } from "@/app/films/[id]/page.content"
 import useSupabaseServer from "@/hooks/use-supabase-server"
-import { getShowAggregated } from "@/lib/queries"
+import { getMovieAggregated } from "@/lib/queries"
 import { getQueryClient } from "@/lib/query-client"
 import {
   HydrationBoundary,
@@ -29,7 +29,7 @@ export const generateMetadata = async ({
   const { id } = await params
   const supabase = useSupabaseServer(await cookies())
 
-  const response = await getShowAggregated(supabase, id)
+  const response = await getMovieAggregated(supabase, id)
 
   const shows = Object.values(response.shows).reduce((acc, show) => {
     acc += show?.length || 0
@@ -80,7 +80,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     queryOptions({
       queryKey: [`show-${id}`],
       queryFn: async () => {
-        const response = await getShowAggregated(supabase, id)
+        const response = await getMovieAggregated(supabase, id)
 
         return response
       },

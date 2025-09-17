@@ -108,7 +108,7 @@ export const ModalCreateMovie = ({ close }: { close: () => void }) => {
 
   return (
     <AlertDialogContent className="max-w-max max-h-[90vh] overflow-auto">
-      <AlertDialogTitle>Editer le film</AlertDialogTitle>
+      <AlertDialogTitle>Ajouter un film</AlertDialogTitle>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <AlertDialogDescription asChild>

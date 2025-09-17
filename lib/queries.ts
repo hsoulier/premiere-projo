@@ -15,7 +15,7 @@ const getBaseQuery = (client: TypedSupabaseClient, isDashboard = false) => {
   return query.not("hide", "is", true)
 }
 
-export const getShowsAggregated = async (
+export const getMoviesAggregated = async (
   client: TypedSupabaseClient,
   searchParams: { [key: string]: string | string[] | undefined },
   isDashboard = false
@@ -87,7 +87,7 @@ export const getShowsAggregated = async (
   return data
 }
 
-export const getShowAggregated = async (
+export const getMovieAggregated = async (
   client: TypedSupabaseClient,
   id: string
 ) => {
@@ -128,12 +128,28 @@ export const getShowAggregated = async (
   return { movie: movie.data, shows }
 }
 
+export const getShow = async (client: TypedSupabaseClient, id: string) => {
+  const show = await client.from("shows").select("*").eq("id", id).single()
+
+  return show.data
+}
+
 export const getCinemas = async (client: TypedSupabaseClient) => {
   const res = await client.from("cinemas").select("*")
 
   return res.data
 }
 
+export const getMovieBase = async (client: TypedSupabaseClient, id: string) => {
+  const movie = await client
+    .from("movies")
+    .select("*")
+    .eq("id", parseInt(id))
+    .single()
+
+  return movie.data
+}
+
 export type ShowAggregated = NonNullable<
-  Awaited<ReturnType<typeof getShowsAggregated>>
+  Awaited<ReturnType<typeof getMoviesAggregated>>
 >[number]
