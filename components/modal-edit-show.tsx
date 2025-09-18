@@ -58,7 +58,7 @@ export const ModalEditShow = ({
 }: {
   movieId: number
   close: () => void
-  showId?: number
+  showId?: string
 }) => {
   const router = useRouter()
   const supabase = useSupabaseBrowser()
@@ -87,6 +87,8 @@ export const ModalEditShow = ({
         movieId,
         scrapedAt: new Date(),
       }
+
+      debugger
 
       if (showId) {
         const data = await mutateAsync()
@@ -132,7 +134,7 @@ export const ModalEditShow = ({
         const updated = await supabase
           .from("shows")
           .update(row)
-          .eq("id", showId.toString())
+          .eq("id", showId)
           .select()
 
         console.log("updated", updated)
@@ -211,8 +213,8 @@ export const ModalEditShow = ({
                         </FormControl>
                         <SelectContent>
                           {[
-                            { value: "vo", label: "VO" },
-                            { value: "vf", label: "VF" },
+                            { value: "vost", label: "VO Sous-titrée" },
+                            { value: "vf", label: "Version Française" },
                           ].map((lang) => (
                             <SelectItem key={lang.value} value={lang.value}>
                               {lang.label}
@@ -289,11 +291,12 @@ export const ModalEditShow = ({
                     <FormLabel>Date de la séance</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="vendredi 20 janvier 2025 à 20h00"
+                        placeholder="20 janvier 2025 à 20h00"
                         onChange={(e) => {
                           field.onChange(
                             chrono.parseDate(e.target.value, {
-                              timezone: "CEST",
+                              instant: new Date(),
+                              timezone: "Europe/Paris",
                             })
                           )
                         }}

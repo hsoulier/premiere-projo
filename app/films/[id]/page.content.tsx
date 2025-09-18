@@ -35,6 +35,8 @@ export const providers = {
   louxor: <LouxorIcon special className="w-6 text-black dark:text-white" />,
 }
 
+export type Shows = Awaited<ReturnType<typeof getMovieAggregated>>["shows"]
+
 export const Content = () => {
   const { id } = useParams<{ id: string }>()
 
