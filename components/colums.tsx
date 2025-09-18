@@ -70,7 +70,7 @@ const RowScreening = ({
             <ModalEditShow
               close={() => setOpenShow(false)}
               movieId={show.movieId}
-              showId={parseInt(show.id)}
+              showId={show.id}
             />
           </AlertDialogPortal>
         </AlertDialog>
