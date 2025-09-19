@@ -33,7 +33,9 @@ import { Switch } from "@/components/ui/switch"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -188,6 +190,18 @@ export const ModalEditShow = ({
     )
   }
 
+  const cinemasBySource = cinemas?.reduce((acc, cinema) => {
+    if (!cinema.source) return acc
+
+    if (!acc[cinema.source]) {
+      acc[cinema.source] = []
+    }
+
+    acc[cinema.source].push(cinema)
+
+    return acc
+  }, {} as Record<string, typeof cinemas>)
+
   return (
     <AlertDialogContent className="min-w-96 w-auto max-w-none max-h-[90vh] overflow-auto">
       <AlertDialogTitle>Editer une séance</AlertDialogTitle>
@@ -243,11 +257,20 @@ export const ModalEditShow = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {cinemas?.map(({ id, name }) => (
-                          <SelectItem key={id} value={id}>
-                            {name}
-                          </SelectItem>
-                        ))}
+                        {Object.entries(cinemasBySource).map(
+                          ([source, cinemas]) => (
+                            <SelectGroup key={source} className="mb-2">
+                              <SelectLabel className="uppercase">
+                                {source}
+                              </SelectLabel>
+                              {cinemas?.map(({ id, name }) => (
+                                <SelectItem key={id} value={id}>
+                                  {name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          )
+                        )}
                       </SelectContent>
                     </Select>
                     <FormMessage />
