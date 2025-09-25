@@ -177,7 +177,7 @@ export const scrapGrandRex = async () =>
       const show = {
         id,
         cinemaId: "grand-rex",
-        language: lang.toLowerCase(),
+        language: lang?.toLowerCase() ?? "vost",
         date: d,
         avpType: "AVP",
         movieId: movie.id,
@@ -282,7 +282,7 @@ export const scrapGrandRex = async () =>
         const show = {
           id,
           cinemaId: "grand-rex",
-          language: lang.toLowerCase(),
+          language: lang?.toLowerCase() ?? "vost",
           date: d,
           avpType: "AVP",
           movieId: movie.id,
