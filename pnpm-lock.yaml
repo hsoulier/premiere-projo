@@ -12,6 +12,9 @@ importers:
 
   .:
     dependencies:
+      '@date-fns/utc':
+        specifier: ^2.1.1
+        version: 2.1.1
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -120,6 +123,9 @@ importers:
       lucide-react:
         specifier: ^0.534.0
         version: 0.534.0(react@19.1.1)
+      luxon:
+        specifier: ^3.7.2
+        version: 3.7.2
       motion:
         specifier: ^12.23.11
         version: 12.23.11(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -261,6 +267,9 @@ packages:
 
   '@date-fns/tz@1.2.0':
     resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
+
+  '@date-fns/utc@2.1.1':
+    resolution: {integrity: sha512-SlJDfG6RPeEX8wEVv6ZB3kak4MmbtyiI2qX/5zuKdordbrhB/iaJ58GVMZgJ6P1sJaM1gMgENFYYeg1JWrCFrA==}
 
   '@dnd-kit/accessibility@3.1.1':
     resolution: {integrity: sha512-2P+YgaXF+gRsIihwwY1gCsQSYnu9Zyj2py8kY5fFvUM1qm2WA2u639R6YNVfU4GWr+ZM5mqEsfHZZLoRONbemw==}
@@ -3433,6 +3442,10 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  luxon@3.7.2:
+    resolution: {integrity: sha512-vtEhXh/gNjI9Yg1u4jX/0YVPMvxzHuGgCm6tC5kZyb08yjGWGnqAjGJvcXbqQR2P3MyMEFnRbpcdFS6PBcLqew==}
+    engines: {node: '>=12'}
+
   macos-release@3.4.0:
     resolution: {integrity: sha512-wpGPwyg/xrSp4H4Db4xYSeAr6+cFQGHfspHzDUdYxswDnUW0L5Ov63UuJiSr8NMSpyaChO4u1n0MXUvVPtrN6A==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -4692,6 +4705,8 @@ snapshots:
   '@csstools/css-tokenizer@3.0.4': {}
 
   '@date-fns/tz@1.2.0': {}
+
+  '@date-fns/utc@2.1.1': {}
 
   '@dnd-kit/accessibility@3.1.1(react@19.1.1)':
     dependencies:
@@ -8243,6 +8258,8 @@ snapshots:
   lucide-react@0.534.0(react@19.1.1):
     dependencies:
       react: 19.1.1
+
+  luxon@3.7.2: {}
 
   macos-release@3.4.0: {}
 

@@ -6,6 +6,7 @@ import {
   insertShow,
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
+import { parseToDate } from "../utils.js"
 
 const TAGS_AVP = [
   "avant-première",
@@ -19,9 +20,15 @@ const specialTitles = [
   "séance all inclusive : ",
   "la séance live :",
   "horror cinéma club :",
+  "horror cinema club -",
   "la soirée des passionnés :",
   "la séance feel good : ",
   "la séance tenante : ",
+  "séance tenante : ",
+  "les rendez-vous de l'animé : ",
+  "les rendez-vous de l'anime : ",
+  "les vendredis de l’horreur :",
+  "la séance ciné-club : ",
 ]
 
 const specialTitlesSlug = [
@@ -31,19 +38,14 @@ const specialTitlesSlug = [
   "la-soiree-des-passionnes-",
   "la-soiree-feel-good-",
   "seance-tenante-",
+  "les-rendez-vous-de-l-anime-",
+  "les-vendredis-de-l-horreur-",
+  "la-seance-cine-club",
 ]
 
 const cannesFestivalTitles = ["un certain regard"]
 
-const previewsList = new Map()
-const moviesUnique = new Set()
-
-const allSlugs = []
-
-const debug = {
-  movies: 0,
-  shows: 0,
-}
+const debug = { movies: 0, shows: 0 }
 
 const CINEMAS = [
   "cinema-pathe-alesia",
@@ -66,239 +68,186 @@ const fetchData = async (url, { fr } = { fr: true }) => {
   return await res.json()
 }
 
-const getCinemaShows2 = async (cinema) => {
-  const dataCinema = await fetchData(
-    `https://www.pathe.fr/api/cinema/${cinema}/shows`
-  )
-
-  const $movies = Object.entries(dataCinema.shows).reduce((acc, [slug, v]) => {
-    const hasTagAVP = Object.values(v.days).some(({ tags }) =>
-      tags.includes("AVP")
-    )
-    if (!v.isEarlyAVP && !hasTagAVP) return acc
-
-    slug === "l-agent-secret-48144" && console.dir(v, { depth: null })
-
-    return [...acc, { ...v, slug }]
-  }, [])
-
-  $movies.map((m) => {
-    const days = Object.values(m.days)
-
-    if (days.filter((d) => d.tags.some((i) => TAGS_AVP.includes(i)))) {
-      previewsList.set(m.slug, { ...m, cinema })
-      moviesUnique.add(m.slug)
-    }
-  })
-}
-
-const getTitle = async (slug) => {
-  const specificMovieIndex = specialTitlesSlug.findIndex((s) =>
-    slug.startsWith(s)
-  )
-
-  const hasSpecial = specificMovieIndex !== -1
-
-  const requests = [`https://www.pathe.fr/api/show/${slug}`]
-
-  const specificSlug = hasSpecial
-    ? allSlugs.find((s) =>
-        s.startsWith(
-          slug
-            .replace(specialTitlesSlug[specificMovieIndex], "")
-            .split("-")
-            .slice(0, -1)
-            .join("-")
-        )
-      )
-    : slug
-
-  specificSlug &&
-    specificSlug !== slug &&
-    requests.push(`https://www.pathe.fr/api/show/${specificSlug}`)
-
-  const res = await Promise.all(requests.map(fetchData))
-
-  const data = res.length === 2 ? res?.[1] : res?.[0]
-
-  if (data.genres.includes("Courts-Métrages")) {
-    console.log(`🚫 Skip short movie (${slug})`)
-    return null
-  }
-
-  if (data.genres.includes("Documentaire")) {
-    console.log(`🚫 Skip docu (${slug})`)
-    return null
-  }
-
-  const isSpecialTitle = specialTitles.some((s) =>
-    data.title.trim().toLowerCase().includes(s)
-  )
-
-  data.title = isSpecialTitle
-    ? data.title.split(":").slice(1).join(":").trim()
-    : data.title.trim()
-
-  const movie = await getAllocineInfo({
-    title: data.title,
-    release: data.releaseAt.FR_FR,
-    directors: Array.isArray(data.directors)
-      ? data.directors
-      : [data?.directors || ""],
-  })
-
-  if (!movie || !movie.id) {
-    const { title, synopsis, directors, duration, releaseAt, posterPath } = data
-
-    return {
-      id: slug.split("-").at(-1),
-      title,
-      synopsis: synopsis?.replaceAll("<br/>", "\n") || "",
-      director: directors || "",
-      duration,
-      release: releaseAt.FR_FR,
-      imdbId: "",
-      poster: posterPath?.lg || "",
-    }
-  }
-
-  return {
-    ...movie,
-    release: movie?.release || data.releaseAt.FR_FR,
-    synopsis: data.synopsis,
-    duration: data.duration,
-    poster: movie?.poster || data.posterPath?.lg || "",
-  }
-}
-
 export const scrapPathe = async () => {
   try {
-    const { shows } = await fetchData("https://www.pathe.fr/api/shows")
+    const resShows = await fetchData("https://www.pathe.fr/api/shows")
 
-    allSlugs.push(...shows.map((s) => s.slug))
+    const allShows = resShows.shows
 
-    for (const cinema of CINEMAS) {
-      await getCinemaShows2(cinema)
-    }
+    const movieSlugs = allShows.map((s) => s.slug)
 
-    for (const slug of [...moviesUnique].filter(Boolean)) {
-      const movie = await getTitle(slug)
+    for (const cinemaSlug of CINEMAS) {
+      const currentCinema = await getCinemaBySlug(cinemaSlug)
+      const res = await fetchData(
+        `https://www.pathe.fr/api/cinema/${cinemaSlug}/shows`
+      )
 
-      if (slug === "caravane-48265") movie.id = "48265"
-      if (slug === "arc-en-ciel-dans-la-steppe-48195") movie.id = "48195"
+      const shows = Object.entries(res.shows)
 
-      if (!movie || !movie.id) continue
+      for (const [movieSlug, showData] of shows) {
+        // Skip specific movies
+        if (
+          movieSlug === "horror-cinema-club-avant-premiere-your-monster-48429"
+        )
+          continue
 
-      const existingMovie = await getMovie(movie.id)
+        const movieData = allShows.find((s) => s.slug === movieSlug)
 
-      if (!existingMovie) {
-        if (movie.release) {
-          const temp = new Date(movie.release)
-          temp.setDate(temp.getDate() + 1)
-          movie.release = temp
+        if (!movieData) continue
+
+        if (movieData.genres.includes("Courts-Métrages")) {
+          console.log(`🚫 Skip short movie (${movieSlug})`)
+          continue
         }
-        await insertMovie(movie)
 
-        debug.movies++
-      }
+        if (movieData.genres.includes("Documentaire")) {
+          console.log(`ℹ️ documentary (${movieSlug})`)
+          // console.log(`🚫 Skip docu (${movieSlug})`)
+          // continue
+        }
 
-      if (!previewsList.has(slug)) continue
-
-      const showsEl = previewsList.get(slug)
-
-      for (const day in showsEl.days) {
-        const data = await fetchData(
-          `https://www.pathe.fr/api/show/${slug}/showtimes/${showsEl.cinema}/${day}`
+        const specificMovieIndex = specialTitlesSlug.findIndex((s) =>
+          movieSlug.startsWith(s)
         )
 
-        for (const date of data) {
-          const currentCinema = await getCinemaBySlug(showsEl.cinema)
+        const hasSpecial = specificMovieIndex !== -1
 
-          if (!currentCinema) continue
-
-          if (!date.tags.some((i) => TAGS_AVP.includes(i))) {
-            console.log(
-              `🚫 Skip date ${date.refCmd} for movie ${movie.title} (${slug})`
-            )
-            continue
-          }
-
-          const [baseDate, time] = date.time.split(" ")
-
-          const [hours, ...restTime] = time.split(":")
-
-          const date1 = new Date(
-            `${baseDate} ${hours - (process.env.CI ? 2 : 0)}:${restTime.join(
-              ":"
-            )}`
-          )
-
-          const show = {
-            id: date.refCmd.split("/").at(-2),
-            cinemaId: currentCinema?.id,
-            language: date.version === "vf" ? "vf" : "vost",
-            date: date1,
-            avpType:
-              showsEl.days[day].tags.includes("avp-equipe") ||
-              showsEl.days[day].tags.includes("equipe")
-                ? "AVPE"
-                : "AVP",
-            movieId: movie.id,
-            linkShow: date.refCmd,
-            linkMovie: `https://www.pathe.fr/films/${slug}`,
-            festival: cannesFestivalTitles.some((a) =>
-              a.startsWith(
-                date?.specialShowtimeDetails?.titleScreening.toLowerCase()
+        const specialSlug = hasSpecial
+          ? movieSlugs.find((s) =>
+              s.startsWith(
+                movieSlug
+                  .replace(specialTitlesSlug[specificMovieIndex], "")
+                  .split("-")
+                  .slice(0, -1)
+                  .join("-")
               )
             )
-              ? "Festival de Cannes"
-              : null,
+          : ""
+
+        const cleanMovieSlug = hasSpecial ? specialSlug || movieSlug : movieSlug
+
+        const isSpecialTitle = specialTitles.some((s) =>
+          movieData.title.trim().toLowerCase().includes(s)
+        )
+
+        const days = Object.entries(showData.days)
+
+        const title = isSpecialTitle
+          ? movieData.title.split(":").slice(1).join(":").trim()
+          : movieData.title.trim()
+
+        const hasAVP = days.some(([_, dayData]) =>
+          TAGS_AVP.some((tag) => dayData.tags?.includes(tag))
+        )
+
+        if (!hasAVP) continue
+
+        const movie = await getAllocineInfo({
+          title,
+          release: movieData.releaseAt?.[0],
+          directors: Array.isArray(movieData.directors)
+            ? movieData.directors
+            : [movieData?.directors || ""],
+        })
+
+        const movieToInsert = { ...movie }
+
+        if (!movie || !movie.id) {
+          const {
+            title,
+            synopsis,
+            directors,
+            duration,
+            releaseAt,
+            posterPath,
+          } = movieData
+
+          movieToInsert.id = movieSlug.split("-").at(-1)
+          movieToInsert.title = title
+          movieToInsert.synopsis = synopsis?.replaceAll("<br/>", "\n") || ""
+          movieToInsert.director = directors || ""
+          movieToInsert.duration = duration || 0
+          movieToInsert.release = releaseAt?.[0]
+          movieToInsert.imdbId = ""
+          movieToInsert.poster = posterPath?.lg || ""
+        }
+
+        movieToInsert.release = movie?.release || movieData.releaseAt?.[0]
+        movieToInsert.synopsis = movieData?.synopsis || ""
+        movieToInsert.duration = movieData.duration
+        movieToInsert.poster = movie?.poster || movieData.posterPath?.lg || ""
+
+        if (!movieToInsert || !movieToInsert.id) {
+          console.log(`🚫 Skip movie (${movieSlug})`)
+          continue
+        }
+
+        const existingMovie = await getMovie(movieToInsert.id)
+
+        if (!existingMovie) {
+          await insertMovie(movieToInsert)
+          debug.movies++
+        }
+
+        for (const [day, dayData] of days) {
+          const hasAVP = TAGS_AVP.some((tag) => dayData.tags?.includes(tag))
+
+          if (!hasAVP) continue
+
+          const hasBeenReleased =
+            movieData.releaseAt?.[0] && movieData.releaseAt?.[0] < day
+
+          if (hasBeenReleased) continue
+
+          const res = await fetchData(
+            `https://www.pathe.fr/api/show/${cleanMovieSlug}/showtimes/${cinemaSlug}/${day}`
+          )
+
+          for (const show of res) {
+            const showToInsert = {
+              id: show.refCmd.split("/").at(-2),
+              cinemaId: currentCinema?.id,
+              language: show.version === "vf" ? "vf" : "vost",
+              date: parseToDate(show.time),
+              avpType:
+                show.tags.includes("avp-equipe") || show.tags.includes("equipe")
+                  ? "AVPE"
+                  : "AVP",
+              movieId: movie.id,
+              linkShow: show.refCmd,
+              linkMovie: `https://www.pathe.fr/films/${movieSlug}`,
+              festival: cannesFestivalTitles.some((a) =>
+                a.startsWith(
+                  show?.specialShowtimeDetails?.titleScreening.toLowerCase()
+                )
+              )
+                ? "Festival de Cannes"
+                : null,
+            }
+
+            if (!showToInsert.movieId) {
+              console.log(
+                `🚫 Skip show without movie ID (${movieSlug})`,
+                showToInsert
+              )
+              continue
+            }
+
+            const existingShow = await getShow(showToInsert.id)
+
+            if (existingShow) continue
+
+            await insertShow(showToInsert)
+            debug.shows++
           }
-
-          const existingShow = await getShow(show.id)
-
-          if (existingShow) continue
-
-          await insertShow(show)
-
-          debug.shows++
         }
       }
     }
+
+    console.dir(debug, { depth: null })
     console.log("✅ Pathe scrapping done", debug)
   } catch (error) {
     console.error("❌ Error while scrapping Pathé:")
     console.error(error)
-  }
-}
-
-export const getPatheTheaters = async () => {
-  const data = await fetchData("https://www.pathe.fr/api/cinemas")
-
-  const newCinemas = data.reduce((acc, cinema, index) => {
-    const isInParis = cinema.citySlug === "paris"
-    if (!isInParis) return acc
-
-    const details = cinema.theaters[0]
-
-    acc.push({
-      id: `pathe-${index + 1}`,
-      slug: cinema.slug,
-      name: cinema.name,
-      arrondissement: parseInt(details.addressZip.replace("750", "")),
-      address: `${details.addressLine1}, ${details.addressZip} ${details.addressCity}`,
-      link: `https://www.pathe.fr/cinema/${cinema.slug}`,
-      source: "pathe",
-    })
-
-    return acc
-  }, [])
-
-  for (const cinema of newCinemas) {
-    const existingCinema = await getCinemaBySlug(cinema.slug)
-
-    if (existingCinema) continue
-
-    await insertCinema(cinema)
   }
 }

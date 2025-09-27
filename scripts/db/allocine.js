@@ -1,4 +1,4 @@
-const SILENT = false
+const SILENT = true
 
 export const getAllocineInfo = async ({
   title,

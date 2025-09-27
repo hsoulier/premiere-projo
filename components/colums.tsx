@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react"
+import { UTCDate } from "@date-fns/utc"
 import Link from "next/link"
+import { format } from "date-fns"
+import { fr } from "date-fns/locale"
 import { ColumnDef } from "@tanstack/react-table"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { PROJECT_ID, TABLE_IDS, type Data } from "@/components/table-movies"
@@ -48,8 +51,8 @@ const RowScreening = ({
       <TableCell className="font-medium">{show.language}</TableCell>
       <TableCell>{show.avpType}</TableCell>
       <TableCell>
-        {new Date(show.date || "").toLocaleString("fr-FR", {
-          timeZone: "Europe/Paris",
+        {format(new UTCDate(show.date || ""), "E d MMM y à HH:mm", {
+          locale: fr,
         })}
       </TableCell>
       <TableCell>
