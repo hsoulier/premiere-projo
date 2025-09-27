@@ -1,19 +1,17 @@
 import { parseHTML } from "linkedom"
-import * as chrono from 'chrono-node/fr';
 
 import { getAllocineInfo } from "../db/allocine.js"
-import
-{
+import {
   getMovie,
   getShow,
   insertMovie,
   insertShow,
   updateAvailabilityShow,
 } from "../db/requests.js"
-import { frenchToISODateTime } from "../utils.js"
+import { parseToDate } from "../utils.js"
+import { isBefore } from "date-fns"
 
-const getMoviesPage = async () =>
-{
+const getMoviesPage = async () => {
   const headers = {
     "User-Agent":
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
@@ -33,14 +31,12 @@ const getMoviesPage = async () =>
   return document
 }
 
-const getMoviesFromEventPage = async () =>
-{
+const getMoviesFromEventPage = async () => {
   const doc = await getMoviesPage()
 
   const movies = [
     ...doc.querySelectorAll("#list-all > .row > div > .row"),
-  ].filter((m) =>
-  {
+  ].filter((m) => {
     const isAVP =
       m.querySelector(".categorie-tout")?.textContent === "Avant-premieres"
 
@@ -51,8 +47,7 @@ const getMoviesFromEventPage = async () =>
     return isAVP && !isVIP
   })
 
-  return movies.map((m) =>
-  {
+  return movies.map((m) => {
     const title = m
       .querySelector(".title-movie-tout")
       ?.textContent?.split("(AVP")[0]
@@ -65,8 +60,7 @@ const getMoviesFromEventPage = async () =>
   })
 }
 
-export const scrapGrandRex = async () =>
-{
+export const scrapGrandRex = async () => {
   const movies = await getMoviesFromEventPage()
 
   for (const m of movies) {
@@ -146,7 +140,8 @@ export const scrapGrandRex = async () =>
       if (isFull && (!existingShow || (existingShow && isFull))) {
         if (existingShow && existingShow.isFull !== isFull) {
           console.log(
-            `ℹ️ Toggle show ${existingShow.id} to status ${isFull ? "full" : "available"
+            `ℹ️ Toggle show ${existingShow.id} to status ${
+              isFull ? "full" : "available"
             }`
           )
           await updateAvailabilityShow(existingShow.id, { isFull })
@@ -169,10 +164,7 @@ export const scrapGrandRex = async () =>
         ?.textContent.trim()
         ?.replace("en ", "")
 
-
-      const d = chrono.parseDate(`${showTime} à ${showTimeHour}`, { timezone: "Europe/Paris" }, { locale: 'fr' }).toISOString()
-
-
+      const d = parseToDate(`${showTime} à ${showTimeHour}`).toISOString()
 
       const show = {
         id,
@@ -211,13 +203,12 @@ export const scrapGrandRex = async () =>
         label: o.textContent.replace(/\([^)]*\)/g, "").trim(),
         value: o.value,
       }))
-      .filter((d) =>
-      {
-        const date = new Date(frenchToISODateTime(`${d.label} à 02h00`))
+      .filter((d) => {
+        const date = parseToDate(`${d.label} à 02h00`, new Date())
 
-        return (
-          date.getTime() <
-          new Date(existingMovie?.release || movie.last_release).getTime()
+        return isBefore(
+          date,
+          new Date(existingMovie?.release || movie.last_release)
         )
       })
 
@@ -256,7 +247,8 @@ export const scrapGrandRex = async () =>
         if (isFull && (!existingShow || (existingShow && isFull))) {
           if (existingShow && existingShow.isFull !== isFull) {
             console.log(
-              `ℹ️ Toggle show ${existingShow.id} to status ${isFull ? "full" : "available"
+              `ℹ️ Toggle show ${existingShow.id} to status ${
+                isFull ? "full" : "available"
               }`
             )
             await updateAvailabilityShow(existingShow.id, { isFull })
@@ -274,10 +266,7 @@ export const scrapGrandRex = async () =>
           ?.textContent.trim()
           ?.replace("en ", "")
 
-
-
-        const d = chrono.parseDate(`${labelDate} à ${showTimeHour}`, { timezone: "Europe/Paris" }, { locale: 'fr' }).toISOString()
-
+        const d = parseToDate(`${labelDate} à ${showTimeHour}`).toISOString()
 
         const show = {
           id,

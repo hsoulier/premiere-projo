@@ -9,6 +9,7 @@ import {
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
 import { isBefore } from "date-fns/isBefore"
+import { parseToDate } from "../utils.js"
 
 const TYPE_SHOWS = [
   "Avant-première avec équipe",
@@ -132,17 +133,11 @@ const getShows = async (info) => {
               : null,
         }
 
-        const dateRaw = attributes?.seancedate?.split("/")
-        const hour = attributes?.seancehour?.split(":")
+        const dateRaw = attributes?.seancedate
+        const hour = attributes?.seancehour
 
         if (dateRaw && hour) {
-          details.date = new Date(
-            dateRaw[2],
-            dateRaw[1] - 1,
-            dateRaw[0],
-            hour[0] - (process.env.CI ? 2 : 0), // When in CI we are in UTC+0
-            hour[1]
-          )
+          details.date = parseToDate(`${dateRaw} à ${hour}`)
         }
 
         const existingShow = await getShow(details.id)
@@ -351,7 +346,7 @@ export const scrapUGC = async () => {
             Date.UTC(
               parseInt(releaseSplitted[2]),
               months.indexOf(releaseSplitted[1]),
-              parseInt(releaseSplitted[0]) - (process.env.CI ? 2 : 0) // When in CI we are in UTC+0
+              parseInt(releaseSplitted[0])
             )
           )
         : new Date()

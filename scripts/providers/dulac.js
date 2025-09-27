@@ -8,7 +8,7 @@ import {
   insertMovie,
   insertShow,
 } from "../db/requests.js"
-import { frenchToISODateTime, parseFrenchDateString } from "../utils.js"
+import { parseToDate } from "../utils.js"
 
 const cinemas = {
   "0821": "majestic-bastille",
@@ -109,11 +109,14 @@ export const scrapDulac = async () => {
     ].map((el) => el.href)
 
     for (const date of dates) {
+      console.log(date)
+
+      continue
       await page.goto(date, { waitUntil: "networkidle" })
 
-      const screeningDate = await page
-        .locator(".movie_info_container > .flex-column > h4")
-        .textContent()
+      const screeningDate = (
+        await page.locator("#text_info_session").textContent()
+      )?.split(" - ")?.[0]
 
       const _movie = await getAllocineInfo({
         title,
@@ -138,7 +141,7 @@ export const scrapDulac = async () => {
       const lang =
         (
           await page
-            .locator(".features_container > *[title^=Version]")
+            .locator(".container_features_session > *[title^=Version]")
             .getAttribute("title")
         ).toLowerCase() === "version originale"
           ? "vost"
@@ -157,7 +160,7 @@ export const scrapDulac = async () => {
         id: sq.get("id"),
         cinemaId: cinemas[cinemaId],
         language: lang.toLowerCase(),
-        date: parseFrenchDateString(screeningDate),
+        date: parseToDate(screeningDate.replaceAll(" ", " à ")),
         avpType: "AVP",
         movieId: existingMovie.id,
         linkShow: page.url(),

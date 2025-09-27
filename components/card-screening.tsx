@@ -17,6 +17,9 @@ import { useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import { ModalEditShow } from "@/components/modal-edit-show"
 import type { Shows } from "@/app/films/[id]/page.content"
+import { format } from "date-fns"
+import { UTCDate } from "@date-fns/utc"
+import { fr } from "date-fns/locale"
 
 export const providers = {
   ugc: <UGCIcon className="w-6 text-black dark:text-white" />,
@@ -38,11 +41,14 @@ export const CardScreening = ({
   const { id } = useParams<{ id: string }>()
   const [open, setOpen] = useState<boolean>(false)
 
-  const [date, time] = new Date(show.date || "")
-    .toLocaleString("fr-FR", { timeZone: "Europe/Paris" })
-    .split(" ")
+  const date = format(new UTCDate(show.date || ""), "P", {
+    locale: fr,
+  })
 
-  console.log({ show })
+  const time = format(new UTCDate(show.date || ""), "HH:mm", {
+    locale: fr,
+  })
+
   return (
     <div
       data-id={show.id}
@@ -75,7 +81,7 @@ export const CardScreening = ({
         </span>
         <span>
           <Clock className="inline size-4 text-gray-500 mr-1" />
-          {time.split(":").slice(0, 2).join(":")}
+          {time}
         </span>
       </div>
       <Link

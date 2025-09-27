@@ -24,5 +24,8 @@
     "*.jsx": "$(capture).*.ts,$(capture).*.tsx,$(capture).*.js",
     "*.tsx": "$(capture).*.ts,$(capture).*.tsx,$(capture).*.js",
     "index.tsx": "${dirname}.module.css,${dirname}.module.scss"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

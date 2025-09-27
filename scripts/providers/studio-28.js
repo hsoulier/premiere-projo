@@ -1,14 +1,6 @@
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
-import {
-  getMovie,
-  getShow,
-  insertMovie,
-  insertShow,
-  updateAvailabilityShow,
-  updateShow,
-} from "../db/requests.js"
-import { frenchToISODateTime } from "../utils.js"
+import { getMovie } from "../db/requests.js"
 
 export const scrapStudio28 = async () => {
   const pageEvents = await (

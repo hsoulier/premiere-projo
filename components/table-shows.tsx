@@ -1,11 +1,9 @@
-import { useMemo, useState } from "react"
-import Link from "next/link"
+import { useState } from "react"
 import { DataGrid, DataGridContainer } from "@/components/ui/data-grid"
 import { DataGridPagination } from "@/components/ui/data-grid-pagination"
 import { DataGridTable } from "@/components/ui/data-grid-table"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
-  ColumnDef,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -13,21 +11,8 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table"
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { PROJECT_ID, TABLE_IDS, type Data } from "@/components/table-movies"
-import { ArrowUpDown, FileWarningIcon, MoreHorizontal } from "lucide-react"
-import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { CheckIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline"
-import { cn } from "@/lib/utils"
-import { ModalEditMovie } from "@/components/modal-edit-movie"
+import { type Data } from "@/components/table-movies"
+import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogPortal,
@@ -35,24 +20,14 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { ModalCreateMovie } from "@/components/modal-create-movie"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { useQuery } from "@tanstack/react-query"
 import { getCinemas } from "@/lib/queries"
-import { ModalEditShow } from "@/components/modal-edit-show"
 import { useMovieColumns } from "@/components/colums"
 
 export const TableShows = ({ data }: { data: Data[] }) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [openModalMovie, setOpenModalMovie] = useState<boolean>(false)
-  const [opemModalScreening, setOpemModalScreening] = useState<boolean>(false)
 
   const supabase = useSupabaseBrowser()
 
