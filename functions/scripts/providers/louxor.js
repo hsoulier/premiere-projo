@@ -1,14 +1,7 @@
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
-import {
-  getMovie,
-  getShow,
-  insertMovie,
-  insertShow,
-  updateAvailabilityShow,
-  updateShow,
-} from "../db/requests.js"
-import { dashToISODateTime } from "../utils.js"
+import { getMovie, getShow, insertMovie, insertShow } from "../db/requests.js"
+import { parseToDate } from "../utils.js"
 
 export const scrapLouxor = async () => {
   const pageEvents = await (
@@ -102,7 +95,7 @@ export const scrapLouxor = async () => {
           avpType: "AVP",
           cinemaId: "louxor",
           id: showId,
-          date: dashToISODateTime(day, hours),
+          date: parseToDate(`${day} à ${hours}`),
           language,
           linkMovie: `https://www.cinemalouxor.fr${movie.link}`,
           linkShow,

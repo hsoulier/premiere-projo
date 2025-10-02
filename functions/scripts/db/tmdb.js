@@ -1,4 +1,3 @@
-import "dotenv/config"
 import { getMovieByTitle } from "./requests.js"
 
 const options = {

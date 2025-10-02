@@ -13,6 +13,9 @@ jobs:
       - name: 📂 Checkout
         uses: actions/checkout@v4
 
+      - name: Move to function folder
+        run: cd functions
+
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -28,22 +31,9 @@ jobs:
       - name: 🚚 Install dependencies
         run: pnpm install
 
-      - name: 📦 Setup Playwright
-        uses: ./.github/actions/setup-playwright
-
       - name: 📊 Scrap
-        run: pnpm run script:scrapper
+        run: node scripts/old-scrapper.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TMDB_API_KEY: ${{ secrets. TMDB_API_KEY }}
-          TMDB_ACCESS_TOKEN: ${{ secrets. TMDB_ACCESS_TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CI: true
-
-      # - name: 📊 Debug Scrap
-      #   run: node ./scripts/debug.js
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     TMDB_API_KEY: ${{ secrets. TMDB_API_KEY }}
-      #     TMDB_ACCESS_TOKEN: ${{ secrets. TMDB_ACCESS_TOKEN }}
-      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}

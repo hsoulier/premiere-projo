@@ -1,10 +1,4 @@
-import { parseHTML } from "linkedom"
-import {
-  listShows,
-  deleteShow,
-  updateMovie,
-  listMovies,
-} from "./db/requests.js"
+import { listMovies } from "./db/requests.js"
 import { sql } from "./utils.js"
 
 const init = async () => {

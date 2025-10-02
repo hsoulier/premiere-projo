@@ -1,5 +1,4 @@
 import { parseHTML } from "linkedom"
-import playwright from "playwright"
 import { getAllocineInfo } from "../db/allocine.js"
 import {
   getMovie,
@@ -8,7 +7,7 @@ import {
   insertMovie,
   insertShow,
 } from "../db/requests.js"
-import { parseToDate } from "../utils.js"
+import { initBrowser, parseToDate } from "../utils.js"
 
 const cinemas = {
   "0821": "majestic-bastille",
@@ -56,7 +55,7 @@ export const scrapDulac = async () => {
     pageIndex++
   }
 
-  const browser = await playwright.chromium.launch({ timeout: 5_000 })
+  const browser = await initBrowser()
   const context = await browser.newContext()
   const page = await context.newPage()
 
