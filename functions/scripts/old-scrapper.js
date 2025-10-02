@@ -4,8 +4,6 @@ import { scrapPathe } from "./providers/pathe.js"
 import { scrapMk2 } from "./providers/mk2.js"
 import { scrapGrandRex } from "./providers/grand-rex.js"
 import { scrapLouxor } from "./providers/louxor.js"
-import { scrapDulac } from "./providers/dulac.js"
-import { scrapStudio28 } from "./providers/studio-28.js"
 
 const init = async () => {
   console.group("🛠️ scraping Pathé")
@@ -38,13 +36,5 @@ const init = async () => {
 
   await sql.end()
 }
-
-// const getCinemas = async () => {
-//   await getMk2Theaters()
-//   await getUGCTheaters()
-//   await getPatheTheaters()
-
-//   sql.end()
-// }
 
 init()

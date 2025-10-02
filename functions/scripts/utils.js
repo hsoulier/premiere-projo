@@ -1,6 +1,7 @@
-import "dotenv/config"
 import postgres from "postgres"
 import * as chrono from "chrono-node/fr"
+import chromium from "@sparticuz/chromium"
+import playwright from "playwright-core"
 
 const connectionString = process.env.DATABASE_URL
 
@@ -30,7 +31,20 @@ export const dashToISODateTime = (dateString, hours) => {
 }
 
 export const parseToDate = (dateString) => {
-  const result = chrono.parseDate(dateString)
+  const options = process.env.CI
+    ? { timezone: "UTC" }
+    : { timezone: "Europe/Paris" }
+  const result = chrono.parseDate(dateString, options)
 
   return result
+}
+
+export const initBrowser = async () => {
+  const executablePath = await chromium.executablePath()
+  return await playwright.chromium.launch({
+    executablePath,
+    args: chromium.args,
+    headless: true,
+    timeout: 5_000,
+  })
 }
