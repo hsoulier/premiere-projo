@@ -1,4 +1,5 @@
 import { logger } from "firebase-functions"
+import "firebase-functions/logger/compat"
 import {
   getCinemaBySlug,
   getMovie,
@@ -7,7 +8,7 @@ import {
   insertShow,
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
-import { parseToDate } from "../utils.js"
+import { fetchUrl, parseToDate } from "../utils.js"
 
 const TAGS_AVP = [
   "avant-première",
@@ -65,17 +66,30 @@ const CINEMAS = [
 ]
 
 const fetchData = async (url, { fr } = { fr: true }) => {
-  const res = await fetch(`${url}?${fr ? "language=fr" : ""}`)
-  return await res.json()
+  try {
+    const res = await fetchUrl(`${url}?${fr ? "language=fr" : ""}`)
+    if (!res.ok) {
+      logger.error(`❌ Error ${res.status} while fetching ${url}`)
+      logger.error(await res.text())
+
+      throw new Error(`Error ${res.status} while fetching ${url}`)
+    }
+
+    return await res.json()
+  } catch (error) {
+    logger.error(`❌ Error while fetching ${url}:`)
+    logger.error(error)
+    return null
+  }
 }
 
 export const scrapPathe = async () => {
   try {
     const resShows = await fetchData("https://www.pathe.fr/api/shows")
 
-    const allShows = resShows.shows
+    const allShows = resShows?.shows
 
-    const movieSlugs = allShows.map((s) => s.slug)
+    const movieSlugs = allShows?.map((s) => s.slug)
 
     for (const cinemaSlug of CINEMAS) {
       const currentCinema = await getCinemaBySlug(cinemaSlug)

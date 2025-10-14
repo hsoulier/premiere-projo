@@ -2,11 +2,11 @@ import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
 import { getMovie, getShow, insertMovie, insertShow } from "../db/requests.js"
-import { parseToDate } from "../utils.js"
+import { fetchUrl, parseToDate } from "../utils.js"
 
 export const scrapLouxor = async () => {
   const pageEvents = await (
-    await fetch("https://www.cinemalouxor.fr/evenements/")
+    await fetchUrl("https://www.cinemalouxor.fr/evenements/")
   ).text()
 
   const { document: docPageEvents } = parseHTML(pageEvents)
@@ -31,7 +31,7 @@ export const scrapLouxor = async () => {
     })
 
   const pageShows = await (
-    await fetch("https://www.louxor-reserver.cotecine.fr/reserver/")
+    await fetchUrl("https://www.louxor-reserver.cotecine.fr/reserver/")
   ).text()
 
   const { document: docPageShows } = parseHTML(pageShows)
@@ -56,7 +56,7 @@ export const scrapLouxor = async () => {
 
   for (const movie of movies) {
     logger.log("🛠️ Scraping movie:", movie.title)
-    const resDays = await fetch(
+    const resDays = await fetchUrl(
       `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
     )
 
@@ -80,7 +80,7 @@ export const scrapLouxor = async () => {
       logger.log("ℹ️ Day:", day)
 
       const shows = await (
-        await fetch(
+        await fetchUrl(
           `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}&modresa_jour=${day}`
         )
       ).json()

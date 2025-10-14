@@ -2,10 +2,11 @@ import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
 import { getMovie } from "../db/requests.js"
+import { fetchUrl } from "../utils.js"
 
 export const scrapStudio28 = async () => {
   const pageEvents = await (
-    await fetch("https://www.cinema-studio28.fr/avant-premiere/")
+    await fetchUrl("https://www.cinema-studio28.fr/avant-premiere/")
   ).text()
 
   const { document: docPageEvents } = parseHTML(pageEvents)
@@ -28,7 +29,7 @@ export const scrapStudio28 = async () => {
     })
 
   const pageShows = await (
-    await fetch("https://www.monticketstudio28.cotecine.fr/reserver/")
+    await fetchUrl("https://www.monticketstudio28.cotecine.fr/reserver/")
   ).text()
 
   const { document: docPageShows } = parseHTML(pageShows)
@@ -44,7 +45,7 @@ export const scrapStudio28 = async () => {
     .map((el) => ({ value: el.value, title: el.textContent }))
 
   for (const movie of movies) {
-    const resDays = await fetch(
+    const resDays = await fetchUrl(
       `https://www.monticketstudio28.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
     )
 
@@ -68,7 +69,7 @@ export const scrapStudio28 = async () => {
       logger.log("ℹ️ Day:", day)
 
       const shows = await (
-        await fetch(
+        await fetchUrl(
           `https://www.monticketstudio28.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}&modresa_jour=${day}`
         )
       ).json()

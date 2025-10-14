@@ -1,7 +1,7 @@
 import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { listMovies, updateMovie } from "./db/requests.js"
-import { sql } from "./utils.js"
+import { fetchUrl, sql } from "./utils.js"
 
 const init = async () => {
   const movies = await listMovies()
@@ -20,7 +20,7 @@ const init = async () => {
 
     const sluggedTitle = query.toString().split("=")[1]
 
-    const moviePage = await fetch(
+    const moviePage = await fetchUrl(
       `https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.id}.html`
     )
 
@@ -43,7 +43,7 @@ const init = async () => {
 
     continue
 
-    const res = await fetch(
+    const res = await fetchUrl(
       `https://allocine.fr/_/autocomplete/mobile/movie/${sluggedTitle}`
     )
 

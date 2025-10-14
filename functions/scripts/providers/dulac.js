@@ -8,7 +8,7 @@ import {
   insertMovie,
   insertShow,
 } from "../db/requests.js"
-import { initBrowser, parseToDate } from "../utils.js"
+import { fetchUrl, initBrowser, parseToDate } from "../utils.js"
 
 const cinemas = {
   "0821": "majestic-bastille",
@@ -23,7 +23,7 @@ export const scrapDulac = async () => {
   let pageIndex = 0
 
   while (true) {
-    const res = await fetch(
+    const res = await fetchUrl(
       `https://dulaccinemas.com/portail/evenements?page=${pageIndex}`
     )
     const html = await res.text()
@@ -57,7 +57,7 @@ export const scrapDulac = async () => {
   const page = await context.newPage()
 
   for (const movie of movies) {
-    const res = await fetch(movie.link)
+    const res = await fetchUrl(movie.link)
 
     const html = await res.text()
     const { document } = parseHTML(html)
@@ -191,7 +191,7 @@ const insertCinemas = async () => {
   }
 
   for (const [id, link] of Object.entries(cinemas)) {
-    const res = await fetch(link)
+    const res = await fetchUrl(link)
     const html = await res.text()
     const { document } = parseHTML(html)
 

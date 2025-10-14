@@ -8,7 +8,7 @@ import {
   insertShow,
   updateAvailabilityShow,
 } from "../db/requests.js"
-import { parseToDate } from "../utils.js"
+import { fetchUrl, parseToDate } from "../utils.js"
 import { isBefore } from "date-fns"
 
 const getMoviesPage = async () => {
@@ -23,7 +23,7 @@ const getMoviesPage = async () => {
   }
 
   const options = { method: "GET", headers }
-  const res = await fetch("https://www.legrandrex.com/cinema", options)
+  const res = await fetchUrl("https://www.legrandrex.com/cinema", options)
   const text = await res.text()
 
   const { document } = parseHTML(text)
@@ -64,7 +64,7 @@ export const scrapGrandRex = async () => {
   const movies = await getMoviesFromEventPage()
 
   for (const m of movies) {
-    const textMovie = await (await fetch(m.link)).text()
+    const textMovie = await (await fetchUrl(m.link)).text()
 
     const { document: movieDoc } = parseHTML(textMovie)
 
@@ -92,7 +92,7 @@ export const scrapGrandRex = async () => {
 
     const grandRexMovieId = link.split("/").at(-2).substring(1)
 
-    const res = await fetch(link)
+    const res = await fetchUrl(link)
 
     const html = await res.text()
 
@@ -211,7 +211,7 @@ export const scrapGrandRex = async () => {
       })
 
     for (const { label: labelDate, value } of dates) {
-      const resShows = await fetch(
+      const resShows = await fetchUrl(
         `https://legrandrex.cotecine.fr/reserver/ajax/?modresa_film=${grandRexMovieId}&modresa_jour=${value}`
       )
 
@@ -222,7 +222,7 @@ export const scrapGrandRex = async () => {
           ? `${link}${value}`
           : `${link}/D${value}`
 
-        const res = await fetch(linkShow)
+        const res = await fetchUrl(linkShow)
 
         const html = await res.text()
 

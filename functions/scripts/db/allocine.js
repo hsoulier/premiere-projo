@@ -1,4 +1,5 @@
 import { logger } from "firebase-functions"
+import { fetchUrl } from "../utils.js"
 
 const SILENT = true
 
@@ -17,7 +18,7 @@ export const getAllocineInfo = async ({
 
     const sluggedTitle = query.toString().split("=")[1]
 
-    const res = await fetch(
+    const res = await fetchUrl(
       `https://allocine.fr/_/autocomplete/mobile/movie/${sluggedTitle}`
     )
 

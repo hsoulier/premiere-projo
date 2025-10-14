@@ -1,15 +1,6 @@
 "use client"
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, FileWarningIcon, MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -22,15 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { useState } from "react"
 import type { getMoviesAggregated } from "@/lib/queries"
 import Link from "next/link"
@@ -42,7 +24,6 @@ import {
   AlertDialogPortal,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { ModalCreateMovie } from "@/components/modal-create-movie"
 
 export const TABLE_IDS = {
   CINEMAS: "17361",
@@ -233,124 +214,3 @@ export const columns: ColumnDef<Data>[] = [
     },
   },
 ]
-
-export function DataTableMovies({ data }: { data: Data[] }) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [rowSelection, setRowSelection] = useState({})
-  const [openModalMovie, setOpenModalMovie] = useState<boolean>(false)
-
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      rowSelection,
-      pagination: { pageIndex: 0, pageSize: 30 },
-    },
-  })
-
-  return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Rechercher par titre..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <AlertDialog open={openModalMovie} onOpenChange={setOpenModalMovie}>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" className="ml-2">
-              Ajouter un film
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogPortal>
-            <ModalCreateMovie close={() => setOpenModalMovie(false)} />
-          </AlertDialogPortal>
-        </AlertDialog>
-      </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-gray-100">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      aria-disabled={Boolean(row.original.hide)}
-                      className="aria-disabled:opacity-50"
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}

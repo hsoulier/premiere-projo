@@ -9,6 +9,7 @@ import {
   insertShow,
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
+import { fetchUrl } from "../utils.js"
 
 const listAVPs = [
   "avant-premieres-et-seances-exclusives",
@@ -18,7 +19,7 @@ const listAVPs = [
 const debug = { movies: 0, shows: 0 }
 
 const getDataFromPage = async (page) => {
-  const res = await fetch(page)
+  const res = await fetchUrl(page)
 
   const data = await res.text()
 
@@ -27,118 +28,145 @@ const getDataFromPage = async (page) => {
   return JSON.parse(document.querySelector("#__NEXT_DATA__").textContent)?.props
 }
 
-// const scrapAVPFestival = async () => {
-//   const pages = [
-//     "https://prod-paris.api.mk2.com/events/reprise-quinzaine-des-cineastes-2025?cinema-group=ile-de-france",
-//   ]
+/**
+ *
+ * @param {string} urlFestival
+ */
+export const scrapMk2Festival = async (urlFestival) => {
+  const pathname = new URL(urlFestival).pathname
 
-//   try {
-//     const res = await Promise.all(pages.map((p) => fetch(p)))
+  const slugFestival = pathname.split("/").at(-1)
 
-//     const data = await Promise.all(res.map((r) => r.json()))
+  const page = `https://prod-paris.api.mk2.com/events/${slugFestival}?cinema-group=ile-de-france`
 
-//     const sessionsByFilmAndCinema = data.map((d) => d.sessionsByFilmAndCinema)
+  try {
+    console.log(
+      "Fetching festival data from:",
+      page,
+      "https://prod-paris.api.mk2.com/events/festival-cheries-cheris-2025?cinema-group=ile-de-france"
+    )
+    const res = await fetch(page)
 
-//     const moviesWithSession = sessionsByFilmAndCinema
-//       ?.map((sessions, index) =>
-//         sessions?.map((session, j) => {
-//           return {
-//             movie: session.film,
-//             shows: session.sessions,
-//             cinemaSlug: session.cinema.slug,
-//           }
-//         })
-//       )
-//       .flat()
+    if (!res.ok) {
+      const data = await res.text()
+      console.log("Response text:", data)
+      throw new Error(`Failed to fetch festival data: ${res.statusText}`)
+    }
 
-//     if (!moviesWithSession || !moviesWithSession.length) return
+    const data = await res.json()
 
-//     logger.log("Found movies with sessions:", moviesWithSession)
+    const linkedCinemas = data.linkedCinemas?.map((c) => c.id) || []
 
-//     for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
-//       if (!movie || !shows || !cinemaSlug) {
-//         logger.warn(
-//           "Missing data for movie or shows",
-//           movie,
-//           shows,
-//           cinemaSlug
-//         )
-//         continue
-//       }
-//       const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
+    const startFestival = new Date(data.startDate)
+    const endFestival = new Date(data.endDate)
+    const eventId = data.id
 
-//       if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
+    const sessionsForLinkedMovies = data.sessionsByFilmAndCinema.filter(
+      ({ cinema }) => linkedCinemas.includes(cinema.id)
+    )
 
-//       const d = movie.cast.find((c) => c.personType === "Director")
+    const moviesWithSession = sessionsForLinkedMovies
+      ?.map(({ sessions, cinema, film }) =>
+        sessions
+          ?.filter(
+            ({ showTime, globalEventId }) =>
+              new Date(showTime) > startFestival &&
+              new Date(showTime) <= endFestival &&
+              globalEventId === eventId
+          )
+          .map(() => ({
+            movie: film,
+            shows: sessions,
+            cinemaSlug: cinema.slug,
+          }))
+      )
+      .flat()
 
-//       const m = await getAllocineInfo({
-//         release: movie.openingDate,
-//         title: movie.title,
-//         directors: [`${d.firstName} ${d.lastName}`],
-//       })
+    if (!moviesWithSession || !moviesWithSession.length) return
 
-//       if (movie.title === "Caravan") m.id = "48265"
+    for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
+      if (!movie || !shows || !cinemaSlug) {
+        logger.warn("Missing data for movie or shows", movie, shows, cinemaSlug)
+        continue
+      }
 
-//       if (m?.id === "") {
-//         logger.warn("No ID found for movie", movie.title, movie.openingDate)
-//         throw new Error(
-//           `No ID found for movie: ${movie.title} (${movie.openingDate})`
-//         )
-//       }
+      const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
 
-//       const existingMovie = await getMovie(m.id)
+      if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
 
-//       if (!existingMovie) {
-//         if (m.release) {
-//           const temp = new Date(m.release)
-//           temp.setDate(temp.getDate() + 1)
-//           m.release = temp
-//         }
+      const d = movie.cast.find((c) => c.personType === "Director")
 
-//         await insertMovie({
-//           ...m,
-//           synopsis: movie.synopsis,
-//           duration: movie.runTime || 0,
-//           link: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
-//           director: m?.director || [],
-//         })
+      const m = await getAllocineInfo({
+        release: movie.openingDate,
+        title: movie.title,
+        directors: [`${d.firstName} ${d.lastName}`],
+      })
 
-//         debug.movies++
-//       }
+      if (movie.title === "Caravan") m.id = "48265"
+      if (!m.id) m.id = movie.id
 
-//       for (const show of shows) {
-//         const foundLanguage = show.attributes.find(
-//           (a) => a.id === "VS00000005"
-//         )?.shortName
+      if (m?.id === "" || !m?.id) {
+        console.warn("No ID found for movie", movie.title, movie.openingDate)
+        throw new Error(
+          `No ID found for movie: ${movie.title} (${movie.openingDate})`
+        )
+      }
 
-//         const language =
-//           foundLanguage === "VOSTF" || foundLanguage === "VO" ? "vost" : "vf"
+      const existingMovie = await getMovie(m.id)
 
-//         const showData = {
-//           id: show.sessionId,
-//           cinemaId,
-//           language,
-//           date: show.showTime,
-//           avpType: "AVP",
-//           movieId: m.id,
-//           linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.sessionId}`,
-//           linkMovie: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
-//           festival: "Festival de Cannes",
-//         }
+      if (!existingMovie) {
+        if (m.release) {
+          const temp = new Date(m.release)
+          temp.setDate(temp.getDate() + 1)
+          m.release = temp
+        }
 
-//         const existingShow = await getShow(showData.id)
+        await insertMovie({
+          ...m,
+          synopsis: movie.synopsis,
+          duration: movie.runTime || 0,
+          link: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
+          director: m?.director || [],
+        })
 
-//         if (existingShow) continue
+        debug.movies++
+      }
 
-//         await insertShow(showData)
+      for (const show of shows) {
+        const foundLanguage = show.attributes.find(
+          (a) => a.id === "VS00000005"
+        )?.shortName
 
-//         debug.shows++
-//       }
-//     }
-//   } catch (error) {
-//     logger.error(error)
-//   }
-// }
+        const language =
+          foundLanguage === "VOSTF" || foundLanguage === "VO" ? "vost" : "vf"
+
+        const showData = {
+          id: show.sessionId,
+          cinemaId,
+          language,
+          date: show.showTime,
+          avpType: "AVP",
+          movieId: m.id,
+          linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.sessionId}`,
+          linkMovie: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
+          festival: "Festival de Cannes",
+        }
+
+        const existingShow = await getShow(showData.id)
+
+        if (existingShow) continue
+
+        // await insertShow(showData)
+
+        debug.shows++
+      }
+    }
+
+    console.log("✅ Mk2 Festival scrapping done", debug)
+  } catch (error) {
+    logger.error(error)
+  }
+}
 
 export const scrapMk2 = async () => {
   try {
@@ -276,7 +304,7 @@ export const scrapMk2 = async () => {
 }
 
 export const getMk2Theaters = async () => {
-  const res = await fetch("https://www.mk2.com/salles")
+  const res = await fetchUrl("https://www.mk2.com/salles")
 
   const data = await res.text()
 

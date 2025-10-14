@@ -3,7 +3,7 @@ import "dotenv/config"
 import { sql } from "./utils.js"
 import { scrapUGC } from "./providers/ugc.js"
 import { scrapPathe } from "./providers/pathe.js"
-import { scrapMk2 } from "./providers/mk2.js"
+import { scrapMk2, scrapMk2Festival } from "./providers/mk2.js"
 import { scrapGrandRex } from "./providers/grand-rex.js"
 import { scrapLouxor } from "./providers/louxor.js"
 import { scrapDulac } from "./providers/dulac.js"
@@ -13,6 +13,7 @@ export const scraper = {
   scrapUGC,
   scrapPathe,
   scrapMk2,
+  scrapMk2Festival,
   scrapGrandRex,
   scrapLouxor,
   scrapDulac,

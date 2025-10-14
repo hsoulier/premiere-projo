@@ -13,7 +13,7 @@ export const getCinemaBySlug = async (slug) => {
 
     return data?.[0]
   } catch (error) {
-    logger.log(`select * from cinemas where slug = ${slug}`)
+    console.error(`select * from cinemas where slug = ${slug}`)
     logger.error(error.message)
   }
 }

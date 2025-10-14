@@ -1,5 +1,6 @@
 import { logger } from "firebase-functions"
 import { getMovieByTitle } from "./requests.js"
+import { fetchUrl } from "../utils.js"
 
 const options = {
   method: "GET",
@@ -23,7 +24,7 @@ const getMovieFromYears = async (title) => {
     const query = `query=${encodedTitle}&include_adult=true&language=fr-FR&page=1&year=${year}`
     const url = `https://api.themoviedb.org/3/search/movie?${query}`
 
-    const res = await fetch(url, options)
+    const res = await fetchUrl(url, options)
     const json = await res.json()
 
     if (json.total_results !== 0) {
@@ -51,12 +52,12 @@ export const getTmDbInfo = async (title) => {
 
     const id = result.id
 
-    const info = await fetch(
+    const info = await fetchUrl(
       `https://api.themoviedb.org/3/movie/${id}?append_to_response=imdb_id%2Cposter_path%2Crelease_date%2Ctitle%2Coverview%2Cruntime&language=fr-FR`,
       options
     ).then((res) => res.json())
 
-    const director = await fetch(
+    const director = await fetchUrl(
       `https://api.themoviedb.org/3/movie/${id}/credits?language=fr-FR`,
       options
     )

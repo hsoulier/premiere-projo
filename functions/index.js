@@ -43,6 +43,26 @@ export const scrapMK2 = onRequest(async (_, response) => {
   }
 })
 
+export const scrapMK2Festival = onRequest(async (req, response) => {
+  try {
+    const url = req.body?.url
+
+    if (!url) {
+      response.status(400).send("Missing 'url' in request body")
+      return
+    }
+
+    await scraper.scrapMk2Festival(url)
+
+    await scraper.close()
+    response.send("Hello from Firebase!")
+  } catch (error) {
+    await scraper.close()
+    logger.error("❌ Error while scrapping Mk2:", error)
+    response.status(500).send("Error while scrapping Mk2")
+  }
+})
+
 export const scrapGrandRex = onRequest(async (_, response) => {
   try {
     await scraper.scrapGrandRex()
