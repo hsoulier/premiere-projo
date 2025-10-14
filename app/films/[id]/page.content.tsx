@@ -113,7 +113,7 @@ export const Content = () => {
                 />
               )}
               {!movie.poster && (
-                <div className="bg-gray-100 w-64 aspect-[7/10] rounded-2xl lg:w-full grid place-items-center">
+                <div className="bg-gray-100 max-w-64 aspect-[7/10] rounded-2xl lg:w-full grid place-items-center">
                   <VideoCameraSlashIcon className="size-12 text-gray-200" />
                 </div>
               )}
