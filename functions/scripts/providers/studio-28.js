@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
 import { getMovie } from "../db/requests.js"
@@ -43,7 +44,6 @@ export const scrapStudio28 = async () => {
     .map((el) => ({ value: el.value, title: el.textContent }))
 
   for (const movie of movies) {
-    console.group("🛠️ Scraping movie:", movie.title)
     const resDays = await fetch(
       `https://www.monticketstudio28.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
     )
@@ -53,19 +53,19 @@ export const scrapStudio28 = async () => {
     const _movie = await getAllocineInfo({ title: movie.title, directors: [] })
 
     if (!_movie.id) {
-      console.error(`❌ Movie ${movie.title} not found in Allocine`)
+      logger.error(`❌ Movie ${movie.title} not found in Allocine`)
       continue
     }
 
     const existingMovie = await getMovie(_movie.id)
 
     if (!existingMovie) {
-      console.log("🎬  movie not found:", _movie.title)
+      logger.log("🎬  movie not found:", _movie.title)
       continue
     }
 
     for (const [day] of Object.entries(days)) {
-      console.group("ℹ️ Day:", day)
+      logger.log("ℹ️ Day:", day)
 
       const shows = await (
         await fetch(
@@ -76,12 +76,10 @@ export const scrapStudio28 = async () => {
       for (const [id, show] of Object.entries(shows)) {
         const linkShow = `https://www.monticketstudio28.cotecine.fr/reserver/F${movie.value}/D${id}`
 
-        console.log("🔗 Link:", linkShow)
-        console.log("ℹ️ Show:", show)
+        logger.log("🔗 Link:", linkShow)
+        logger.log("ℹ️ Show:", show)
       }
-      console.groupEnd()
     }
-    console.groupEnd()
 
     // const { document: docPageMovie } = parseHTML(pageMovie)
 
@@ -89,8 +87,8 @@ export const scrapStudio28 = async () => {
     // const director = docPageMovie.querySelector(".css-1v4g3y5")?.textContent
     // const link = docPageMovie.querySelector(".css-12ph13l")?.href
 
-    // console.log("🎬 Movie:", title)
-    // console.log("ℹ️ Director:", director)
-    // console.log("🔗 Date:", link)
+    // logger.log("🎬 Movie:", title)
+    // logger.log("ℹ️ Director:", director)
+    // logger.log("🔗 Date:", link)
   }
 }

@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { JSDOM } from "jsdom"
 import {
@@ -265,7 +266,7 @@ const retrieveAvpFestival = async () => {
       )
     })
 
-    !result && console.log("⚠️ No result in search for", movie.title)
+    !result && logger.log("⚠️ No result in search for", movie.title)
 
     return {
       ...movie,
@@ -392,10 +393,10 @@ export const scrapUGC = async () => {
 
     await getShows(newMovies)
 
-    console.log("✅ UGC scrapping done", debug)
+    logger.log("✅ UGC scrapping done", debug)
   } catch (error) {
-    console.error("❌ Error while scrapping UGC:")
-    console.error(error)
+    logger.error("❌ Error while scrapping UGC:")
+    logger.error(error)
   }
 }
 

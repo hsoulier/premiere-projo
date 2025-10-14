@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 
 const metadataMovie = async (id) => {
@@ -59,6 +60,6 @@ export const getImDbInfo = async (title, runtime) => {
 
     return res2
   } catch (error) {
-    console.error(`❌ [IMDB] ${error} ${title}`)
+    logger.error(`❌ [IMDB] ${error} ${title}`)
   }
 }

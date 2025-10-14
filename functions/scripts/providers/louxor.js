@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
 import { getMovie, getShow, insertMovie, insertShow } from "../db/requests.js"
@@ -54,7 +55,7 @@ export const scrapLouxor = async () => {
     }))
 
   for (const movie of movies) {
-    console.group("🛠️ Scraping movie:", movie.title)
+    logger.log("🛠️ Scraping movie:", movie.title)
     const resDays = await fetch(
       `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
     )
@@ -64,19 +65,19 @@ export const scrapLouxor = async () => {
     const _movie = await getAllocineInfo({ title: movie.title, directors: [] })
 
     if (!_movie.id) {
-      console.error(`❌ Movie ${movie.title} not found in Allocine`)
+      logger.error(`❌ Movie ${movie.title} not found in Allocine`)
       continue
     }
 
     const existingMovie = await getMovie(_movie.id)
 
     if (!existingMovie) {
-      console.log("🎬  movie not found:", _movie.title)
+      logger.log("🎬  movie not found:", _movie.title)
       await insertMovie(_movie)
     }
 
     for (const [day] of Object.entries(days)) {
-      console.group("ℹ️ Day:", day)
+      logger.log("ℹ️ Day:", day)
 
       const shows = await (
         await fetch(
@@ -105,14 +106,12 @@ export const scrapLouxor = async () => {
         const existingShow = await getShow(showToInsert.id)
 
         if (existingShow) {
-          console.log("🎥 Show already exists:", showToInsert.id)
+          logger.log("🎥 Show already exists:", showToInsert.id)
           continue
         }
 
         await insertShow(showToInsert)
       }
-      console.groupEnd()
     }
-    console.groupEnd()
   }
 }

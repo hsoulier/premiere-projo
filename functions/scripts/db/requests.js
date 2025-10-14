@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { sql } from "../utils.js"
 
 export const getCinemaByName = async (name) => {
@@ -12,8 +13,8 @@ export const getCinemaBySlug = async (slug) => {
 
     return data?.[0]
   } catch (error) {
-    console.log(`select * from cinemas where slug = ${slug}`)
-    console.error(error.message)
+    logger.log(`select * from cinemas where slug = ${slug}`)
+    logger.error(error.message)
   }
 }
 
@@ -66,7 +67,7 @@ export const insertMovie = async (movie) => {
 
     return data[0]
   } catch (error) {
-    console.error(movie, error)
+    logger.error(movie, error)
 
     throw error
   }
@@ -85,7 +86,7 @@ export const updateMovie = async (id, movie) => {
 
     return data[0]
   } catch (error) {
-    console.error(movie, error)
+    logger.error(movie, error)
 
     throw error
   }
@@ -112,7 +113,7 @@ export const insertShow = async (show) => {
   `
     return data[0]
   } catch (error) {
-    console.error(show, error)
+    logger.error(show, error)
 
     throw error
   }
@@ -135,7 +136,7 @@ export const insertCinema = async (cinema) => {
   `
     return data[0]
   } catch (error) {
-    console.error(cinema, error)
+    logger.error(cinema, error)
 
     throw error
   }
@@ -147,7 +148,7 @@ export const deleteShow = async (id) => {
 
     return data[0]
   } catch (error) {
-    console.error(`Error deleting show with id ${id}:`, error)
+    logger.error(`Error deleting show with id ${id}:`, error)
 
     throw error
   }
@@ -173,7 +174,7 @@ export const updateShow = async (id, show) => {
   `
     return data[0]
   } catch (error) {
-    console.error(show, error)
+    logger.error(show, error)
 
     throw error
   }
@@ -189,7 +190,7 @@ export const updateAvailabilityShow = async (id, show) => {
 
     return data[0]
   } catch (error) {
-    console.error(show, error)
+    logger.error(show, error)
 
     throw error
   }

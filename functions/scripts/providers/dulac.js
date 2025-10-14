@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
 import {
@@ -22,8 +23,6 @@ export const scrapDulac = async () => {
   let pageIndex = 0
 
   while (true) {
-    console.group(`ℹ️ Scraping Dulac cinemas page ${pageIndex}`)
-
     const res = await fetch(
       `https://dulaccinemas.com/portail/evenements?page=${pageIndex}`
     )
@@ -46,9 +45,7 @@ export const scrapDulac = async () => {
         }`,
       })
     }
-    console.log(`Found ${items.length} movies on page ${pageIndex}`)
-
-    console.groupEnd()
+    logger.log(`Found ${items.length} movies on page ${pageIndex}`)
 
     if (!hasMorePages) break
 
@@ -69,17 +66,17 @@ export const scrapDulac = async () => {
       ".wrapper-horaires .movie-title"
     )?.textContent
 
-    console.group(`${title}`)
+    logger.log(`${title}`)
 
     const section = document.getElementById("reservation-seances-block")
 
     if (!section) {
-      console.warn(`No reservation section found for ${movie.title}`)
+      logger.warn(`No reservation section found for ${movie.title}`)
       continue
     }
 
     if (section.querySelectorAll("#calendarDays > ul > li").length > 1) {
-      console.warn(`Multiple days found for ${movie.title}, skipping for now.`)
+      logger.warn(`Multiple days found for ${movie.title}, skipping for now.`)
     }
 
     const mainContent = [
@@ -108,7 +105,7 @@ export const scrapDulac = async () => {
     ].map((el) => el.href)
 
     for (const date of dates) {
-      console.log(date)
+      logger.log(date)
 
       continue
       await page.goto(date, { waitUntil: "networkidle" })
@@ -123,16 +120,16 @@ export const scrapDulac = async () => {
       })
 
       if (!_movie) {
-        console.warn(`No Allocine info found for ${movie.title}`)
+        logger.warn(`No Allocine info found for ${movie.title}`)
         continue
       }
 
-      console.log("🙄 Timing", screeningDate)
+      logger.log("🙄 Timing", screeningDate)
 
       const existingMovie = await getMovie(_movie.id)
 
       if (!existingMovie) {
-        console.log(`ℹ️ Inserting movie ${_movie.id} ${_movie.title}`)
+        logger.log(`ℹ️ Inserting movie ${_movie.id} ${_movie.title}`)
 
         await insertMovie(_movie)
       }
@@ -153,7 +150,7 @@ export const scrapDulac = async () => {
       const hash = page.url().substring(page.url().indexOf("#") + 1)
       const sq = new URLSearchParams(hash.substring(hash.indexOf("?")))
 
-      console.log("🙄 Cinema", cinemas[cinemaId], cinemaId)
+      logger.log("🙄 Cinema", cinemas[cinemaId], cinemaId)
 
       const show = {
         id: sq.get("id"),
@@ -167,19 +164,17 @@ export const scrapDulac = async () => {
         isFull: false,
       }
 
-      console.log("🙄 Show", show)
+      logger.log("🙄 Show", show)
 
       const existingShow = await getShow(show.id)
 
       if (existingShow) {
-        console.log(`ℹ️ Show ${show.id} already exists`)
+        logger.log(`ℹ️ Show ${show.id} already exists`)
         continue
       }
 
       await insertShow(show)
     }
-
-    console.groupEnd()
   }
 
   await browser.close()

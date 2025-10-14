@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import postgres from "postgres"
 
 const query = async () => {
@@ -5,11 +6,11 @@ const query = async () => {
     const sql = postgres(process.env.DATABASE_URL)
     const res = await sql`select * from cinemas`
 
-    console.log(res.length)
+    logger.log(res.length)
 
     await sql.end()
   } catch (error) {
-    console.log(error)
+    logger.log(error)
   }
 }
 
