@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { listMovies } from "./db/requests.js"
 import { sql } from "./utils.js"
 
@@ -13,7 +14,7 @@ const init = async () => {
       const poster = movie.poster
 
       if (!poster || !poster.startsWith(baseUrl)) {
-        console.log(`⏭️ movie ${movie.id} with poster: ${poster}`)
+        logger.log(`⏭️ movie ${movie.id} with poster: ${poster}`)
         continue
       }
 
@@ -26,7 +27,7 @@ const init = async () => {
 
     sql.end()
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     sql.end()
   }
 }

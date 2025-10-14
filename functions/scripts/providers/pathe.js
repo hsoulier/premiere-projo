@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import {
   getCinemaBySlug,
   getMovie,
@@ -96,13 +97,13 @@ export const scrapPathe = async () => {
         if (!movieData) continue
 
         if (movieData.genres.includes("Courts-Métrages")) {
-          console.log(`🚫 Skip short movie (${movieSlug})`)
+          logger.log(`🚫 Skip short movie (${movieSlug})`)
           continue
         }
 
         if (movieData.genres.includes("Documentaire")) {
-          console.log(`ℹ️ documentary (${movieSlug})`)
-          // console.log(`🚫 Skip docu (${movieSlug})`)
+          logger.log(`ℹ️ documentary (${movieSlug})`)
+          // logger.log(`🚫 Skip docu (${movieSlug})`)
           // continue
         }
 
@@ -178,7 +179,7 @@ export const scrapPathe = async () => {
         movieToInsert.poster = movie?.poster || movieData.posterPath?.lg || ""
 
         if (!movieToInsert || !movieToInsert.id) {
-          console.log(`🚫 Skip movie (${movieSlug})`)
+          logger.log(`🚫 Skip movie (${movieSlug})`)
           continue
         }
 
@@ -226,7 +227,7 @@ export const scrapPathe = async () => {
             }
 
             if (!showToInsert.movieId) {
-              console.log(
+              logger.log(
                 `🚫 Skip show without movie ID (${movieSlug})`,
                 showToInsert
               )
@@ -244,10 +245,10 @@ export const scrapPathe = async () => {
       }
     }
 
-    console.dir(debug, { depth: null })
-    console.log("✅ Pathe scrapping done", debug)
+    logger.log(debug, { depth: null })
+    logger.log("✅ Pathe scrapping done", debug)
   } catch (error) {
-    console.error("❌ Error while scrapping Pathé:")
-    console.error(error)
+    logger.error("❌ Error while scrapping Pathé:")
+    logger.error(error)
   }
 }
