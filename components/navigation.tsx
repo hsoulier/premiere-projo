@@ -77,9 +77,51 @@ export const Navigation = () => {
 export const Footer = () => {
   return (
     <footer className="left-1/2 -translate-x-1/2 bottom-0 absolute h-64 pt-32 flex flex-col items-stretch justify-between gap-4 pb-16 w-full  px-4 lg:px-5 max-w-screen-2xl">
-      <div className="flex items-center justify-between">
-        <Logo className="h-6" />
-        <div className="flex gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-y-8 gap-x-8 items-center justify-between relative pb-4">
+        <Logo className="h-12 mx-auto lg:mx-0" />
+        <p className="mx-auto text-center lg:mx-0 lg:text-left text-sm text-gray-800 font-light max-w-[440px]">
+          Première Projo, la première plateforme qui référence gratuitement
+          toutes les avant-premières de films dans les cinémas de Paris.
+        </p>
+        <div className="self-center grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-8 lg:col-start-2 lg:row-start-1 lg:row-span-4">
+          <Link
+            className="text-center lg:text-left lg:max-w-[203px] text-sm"
+            href="/a-propos"
+          >
+            A propos
+          </Link>
+          <Link
+            className="text-center lg:text-left lg:max-w-[203px] text-sm"
+            href="/cinemas"
+          >
+            Les cinémas
+          </Link>
+          <Link
+            className="text-center lg:text-left lg:max-w-[203px] text-sm"
+            href="/faq"
+          >
+            FAQ
+          </Link>
+          <Link
+            className="text-center lg:text-left lg:max-w-[203px] text-sm"
+            href="/comment-assister-avant-premiere"
+          >
+            Comment assister à une avant-première
+          </Link>
+          <Link
+            className="text-center lg:text-left lg:max-w-[203px] text-sm"
+            href="/mentions-legales"
+          >
+            Mentions légales
+          </Link>
+          <Link
+            className="text-center lg:text-left lg:max-w-[203px] text-sm"
+            href="/contact"
+          >
+            Nous contacter
+          </Link>
+        </div>
+        <div className="flex gap-8 col-start-1 justify-center lg:justify-start">
           <a
             aria-label="Accéder au compte X (twitter) de Premiere Projo"
             href="https://x.com/premiereprojo"
@@ -115,35 +157,28 @@ export const Footer = () => {
             </svg>
           </a>
         </div>
-      </div>
-      <div className="flex items-center justify-between text-gray-600 gap-2 md:gap-0 flex-col md:flex-row pb-4">
-        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
-          <span>
-            Concept et design par{" "}
-            <a
-              className="underline text-gray-white"
-              href="https://x.com/anthonyreungere"
-            >
-              @Antho
-            </a>
-          </span>
-          <span className="hidden md:inline-block">|</span>
-          <span>
-            Developpé par{" "}
-            <a
-              className="underline text-gray-white"
-              href="https://hsoulier.dev/"
-            >
-              @Hippo
-            </a>
-          </span>
-        </div>
-
-        <div>
-          Pour contacter{" "}
-          <a className="text-gray-white" href="mailto:contact@premiereprojo.fr">
-            Première Projo
-          </a>
+        <div className="flex items-center justify-between text-gray-600 gap-2 lg:gap-0 flex-col lg:flex-row">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-2 lg:gap-4">
+            <span>
+              Concept et design par{" "}
+              <a
+                className="underline text-gray-white"
+                href="https://x.com/anthonyreungere"
+              >
+                @Antho
+              </a>
+            </span>
+            <span className="hidden lg:inline-block">|</span>
+            <span>
+              Developpé par{" "}
+              <a
+                className="underline text-gray-white"
+                href="https://hsoulier.dev/"
+              >
+                @Hippo
+              </a>
+            </span>
+          </div>
         </div>
       </div>
     </footer>
