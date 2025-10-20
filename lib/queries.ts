@@ -36,10 +36,11 @@ export const getMoviesAggregated = async (
     query = query.ilike("title", `%${q}%`)
   }
 
-  const response = await query
-    .gte("shows.date", now)
-    .order("release")
-    .not("shows", "is", null)
+  const finalQuery = isDashboard
+    ? query.order("release")
+    : query.gte("shows.date", now).order("release").not("shows", "is", null)
+
+  const response = await finalQuery
 
   const cinemasRaw = c?.toString().split(",") || []
 
@@ -82,7 +83,7 @@ export const getMoviesAggregated = async (
 
       return { ...movie, shows }
     })
-    .filter((movie) => movie.shows.length > 0)
+    .filter((movie) => (isDashboard ? true : movie.shows.length > 0))
 
   return data
 }
