@@ -1,3 +1,7 @@
+import fetch from "node-fetch"
+import { HttpsProxyAgent } from "https-proxy-agent"
+import { logger } from "firebase-functions"
+import "firebase-functions/logger/compat"
 import {
   getCinemaBySlug,
   getMovie,
@@ -7,6 +11,9 @@ import {
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
 import { parseToDate } from "../utils.js"
+
+const proxyUrl = process.env.PROXY_URL || ""
+const agent = new HttpsProxyAgent(proxyUrl)
 
 const TAGS_AVP = [
   "avant-première",
@@ -64,17 +71,49 @@ const CINEMAS = [
 ]
 
 const fetchData = async (url, { fr } = { fr: true }) => {
-  const res = await fetch(`${url}?${fr ? "language=fr" : ""}`)
-  return await res.json()
+  try {
+    const res = await fetch(`${url}?${fr ? "language=fr" : ""}`, {
+      agent,
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Accept-Language": "en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Priority: "u=1, i",
+        Referer: "https://www.pathe.fr/",
+        "Sec-Ch-Ua":
+          '"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"macOS"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+      },
+    })
+    if (!res.ok) {
+      logger.error(`❌ Error ${res.status} while fetching ${url}`)
+      logger.error(await res.text())
+
+      throw new Error(`Error ${res.status} while fetching ${url}`)
+    }
+
+    return await res.json()
+  } catch (error) {
+    logger.error(`❌ Error while fetching ${url}:`)
+    logger.error(error)
+    return null
+  }
 }
 
 export const scrapPathe = async () => {
   try {
     const resShows = await fetchData("https://www.pathe.fr/api/shows")
 
-    const allShows = resShows.shows
+    const allShows = resShows?.shows
 
-    const movieSlugs = allShows.map((s) => s.slug)
+    const movieSlugs = allShows?.map((s) => s.slug)
 
     for (const cinemaSlug of CINEMAS) {
       const currentCinema = await getCinemaBySlug(cinemaSlug)
@@ -96,13 +135,13 @@ export const scrapPathe = async () => {
         if (!movieData) continue
 
         if (movieData.genres.includes("Courts-Métrages")) {
-          console.log(`🚫 Skip short movie (${movieSlug})`)
+          logger.log(`🚫 Skip short movie (${movieSlug})`)
           continue
         }
 
         if (movieData.genres.includes("Documentaire")) {
-          console.log(`ℹ️ documentary (${movieSlug})`)
-          // console.log(`🚫 Skip docu (${movieSlug})`)
+          logger.log(`ℹ️ documentary (${movieSlug})`)
+          // logger.log(`🚫 Skip docu (${movieSlug})`)
           // continue
         }
 
@@ -178,7 +217,7 @@ export const scrapPathe = async () => {
         movieToInsert.poster = movie?.poster || movieData.posterPath?.lg || ""
 
         if (!movieToInsert || !movieToInsert.id) {
-          console.log(`🚫 Skip movie (${movieSlug})`)
+          logger.log(`🚫 Skip movie (${movieSlug})`)
           continue
         }
 
@@ -226,7 +265,7 @@ export const scrapPathe = async () => {
             }
 
             if (!showToInsert.movieId) {
-              console.log(
+              logger.log(
                 `🚫 Skip show without movie ID (${movieSlug})`,
                 showToInsert
               )
@@ -244,10 +283,10 @@ export const scrapPathe = async () => {
       }
     }
 
-    console.dir(debug, { depth: null })
-    console.log("✅ Pathe scrapping done", debug)
+    logger.log(debug, { depth: null })
+    logger.log("✅ Pathe scrapping done", debug)
   } catch (error) {
-    console.error("❌ Error while scrapping Pathé:")
-    console.error(error)
+    logger.error("❌ Error while scrapping Pathé:")
+    logger.error(error)
   }
 }

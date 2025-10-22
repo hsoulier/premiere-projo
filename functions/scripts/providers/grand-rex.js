@@ -1,5 +1,5 @@
 import { parseHTML } from "linkedom"
-
+import { logger } from "firebase-functions"
 import { getAllocineInfo } from "../db/allocine.js"
 import {
   getMovie,
@@ -73,7 +73,7 @@ export const scrapGrandRex = async () => {
       .textContent.trim()
 
     if (!directorRow.startsWith("De ")) {
-      console.log(`Skipping movie "${m.title}" as it does not have a director`)
+      logger.log(`Skipping movie "${m.title}" as it does not have a director`)
       continue
     }
 
@@ -86,9 +86,7 @@ export const scrapGrandRex = async () => {
     const link = `${rawLink.replace("resa-part/1/", "reserver/")}`
 
     if (!link.includes("cotecine.fr")) {
-      console.log(
-        `Skipping movie "${m.title}" as it does not have a valid link`
-      )
+      logger.log(`Skipping movie "${m.title}" as it does not have a valid link`)
       continue
     }
 
@@ -110,7 +108,7 @@ export const scrapGrandRex = async () => {
     })
 
     if (!movie || !movie.id) {
-      console.log(`❌ Skip movie ${title} not in Allocine`)
+      logger.log(`❌ Skip movie ${title} not in Allocine`)
       continue
     }
 
@@ -139,7 +137,7 @@ export const scrapGrandRex = async () => {
 
       if (isFull && (!existingShow || (existingShow && isFull))) {
         if (existingShow && existingShow.isFull !== isFull) {
-          console.log(
+          logger.log(
             `ℹ️ Toggle show ${existingShow.id} to status ${
               isFull ? "full" : "available"
             }`
@@ -164,7 +162,7 @@ export const scrapGrandRex = async () => {
         ?.textContent.trim()
         ?.replace("en ", "")
 
-      const d = parseToDate(`${showTime} à ${showTimeHour}`).toISOString()
+      const d = parseToDate(`${showTime} à ${showTimeHour}`)?.toISOString()
 
       const show = {
         id,
@@ -181,7 +179,7 @@ export const scrapGrandRex = async () => {
       if (existingShow && existingShow.isFull === isFull) continue
 
       if (existingShow && existingShow.isFull !== isFull) {
-        console.log(
+        logger.log(
           `Updating show ${show.id} from ${existingShow.isFull} to ${isFull}`
         )
         await updateAvailabilityShow(id, isFull)
@@ -246,7 +244,7 @@ export const scrapGrandRex = async () => {
 
         if (isFull && (!existingShow || (existingShow && isFull))) {
           if (existingShow && existingShow.isFull !== isFull) {
-            console.log(
+            logger.log(
               `ℹ️ Toggle show ${existingShow.id} to status ${
                 isFull ? "full" : "available"
               }`
@@ -266,7 +264,12 @@ export const scrapGrandRex = async () => {
           ?.textContent.trim()
           ?.replace("en ", "")
 
-        const d = parseToDate(`${labelDate} à ${showTimeHour}`).toISOString()
+        const d = parseToDate(`${labelDate} à ${showTimeHour}`)?.toISOString()
+
+        if (!d) {
+          logger.log(`❌ Skip show ${id} as date is invalid`, d)
+          continue
+        }
 
         const show = {
           id,
@@ -283,7 +286,7 @@ export const scrapGrandRex = async () => {
         if (existingShow && existingShow.isFull === isFull) continue
 
         if (existingShow && existingShow.isFull !== isFull) {
-          console.log(
+          logger.log(
             `Updating show ${show.id} from ${existingShow.isFull} to ${isFull}`
           )
           await updateAvailabilityShow(id, isFull)

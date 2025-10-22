@@ -1,4 +1,4 @@
-import "dotenv/config"
+import { logger } from "firebase-functions"
 import { getMovieByTitle } from "./requests.js"
 
 const options = {
@@ -34,7 +34,7 @@ const getMovieFromYears = async (title) => {
     continue
   }
 
-  if (!movie) console.log(`❌ [TMDB] No movie found for ${title}`)
+  if (!movie) logger.log(`❌ [TMDB] No movie found for ${title}`)
 
   return movie
 }
@@ -74,7 +74,7 @@ export const getTmDbInfo = async (title) => {
       poster: `https://image.tmdb.org/t/p/w1280${info.poster_path}`,
     }
   } catch (error) {
-    console.error("❌ [TMDB] Error", error)
+    logger.error("❌ [TMDB] Error", error)
     return null
   }
 }

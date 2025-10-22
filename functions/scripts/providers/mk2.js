@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import {
   getMovie,
@@ -52,11 +53,11 @@ const getDataFromPage = async (page) => {
 
 //     if (!moviesWithSession || !moviesWithSession.length) return
 
-//     console.log("Found movies with sessions:", moviesWithSession)
+//     logger.log("Found movies with sessions:", moviesWithSession)
 
 //     for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
 //       if (!movie || !shows || !cinemaSlug) {
-//         console.warn(
+//         logger.warn(
 //           "Missing data for movie or shows",
 //           movie,
 //           shows,
@@ -79,7 +80,7 @@ const getDataFromPage = async (page) => {
 //       if (movie.title === "Caravan") m.id = "48265"
 
 //       if (m?.id === "") {
-//         console.warn("No ID found for movie", movie.title, movie.openingDate)
+//         logger.warn("No ID found for movie", movie.title, movie.openingDate)
 //         throw new Error(
 //           `No ID found for movie: ${movie.title} (${movie.openingDate})`
 //         )
@@ -135,7 +136,7 @@ const getDataFromPage = async (page) => {
 //       }
 //     }
 //   } catch (error) {
-//     console.error(error)
+//     logger.error(error)
 //   }
 // }
 
@@ -179,7 +180,7 @@ export const scrapMk2 = async () => {
       })
 
       !Object.keys(sessionsByFilmAndCinema?.[0]?.film || {}).length === 0 &&
-        console.warn("no film object, fallback used for", event.slug, link)
+        logger.warn("no film object, fallback used for", event.slug, link)
 
       const movie = {
         ...m,
@@ -192,7 +193,7 @@ export const scrapMk2 = async () => {
       moviesData.push(movie)
 
       if (!movie.id) {
-        console.warn("no id for", movie.title, link)
+        logger.warn("no id for", movie.title, link)
         continue
       }
 
@@ -217,12 +218,12 @@ export const scrapMk2 = async () => {
       const event = props.pageProps.event
 
       if (!movie.id) {
-        console.warn("no id for movie", movie)
+        logger.warn("no id for movie", movie)
         continue
       }
 
       if (!event.sessionsByFilmAndCinema?.length) {
-        console.warn("⚠️ no sessions for event", event.slug, movie.link)
+        logger.warn("⚠️ no sessions for event", event.slug, movie.link)
         continue
       }
 
@@ -251,7 +252,7 @@ export const scrapMk2 = async () => {
         }
 
         if (!show.movieId || !show.cinemaId) {
-          console.warn("no movie or cinema id for", show.id, show.linkShow)
+          logger.warn("no movie or cinema id for", show.id, show.linkShow)
           continue
         }
 
@@ -267,10 +268,10 @@ export const scrapMk2 = async () => {
 
     // await scrapAVPFestival()
 
-    console.log("✅ Mk2 scrapping done", debug)
+    logger.log("✅ Mk2 scrapping done", debug)
   } catch (error) {
-    console.error("❌ Error while scrapping Mk2:")
-    console.error(error)
+    logger.error("❌ Error while scrapping Mk2:")
+    logger.error(error)
   }
 }
 
