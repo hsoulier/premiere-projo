@@ -1,3 +1,5 @@
+import { logger } from "firebase-functions"
+import "firebase-functions/logger/compat"
 import {
   getCinemaBySlug,
   getMovie,
@@ -6,7 +8,7 @@ import {
   insertShow,
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
-import { parseToDate } from "../utils.js"
+import { fetchUrl, parseToDate } from "../utils.js"
 
 const TAGS_AVP = [
   "avant-première",
@@ -64,17 +66,30 @@ const CINEMAS = [
 ]
 
 const fetchData = async (url, { fr } = { fr: true }) => {
-  const res = await fetch(`${url}?${fr ? "language=fr" : ""}`)
-  return await res.json()
+  try {
+    const res = await fetchUrl(`${url}?${fr ? "language=fr" : ""}`)
+    if (!res.ok) {
+      logger.error(`❌ Error ${res.status} while fetching ${url}`)
+      logger.error(await res.text())
+
+      throw new Error(`Error ${res.status} while fetching ${url}`)
+    }
+
+    return await res.json()
+  } catch (error) {
+    logger.error(`❌ Error while fetching ${url}:`)
+    logger.error(error)
+    return null
+  }
 }
 
 export const scrapPathe = async () => {
   try {
     const resShows = await fetchData("https://www.pathe.fr/api/shows")
 
-    const allShows = resShows.shows
+    const allShows = resShows?.shows
 
-    const movieSlugs = allShows.map((s) => s.slug)
+    const movieSlugs = allShows?.map((s) => s.slug)
 
     for (const cinemaSlug of CINEMAS) {
       const currentCinema = await getCinemaBySlug(cinemaSlug)
@@ -96,13 +111,13 @@ export const scrapPathe = async () => {
         if (!movieData) continue
 
         if (movieData.genres.includes("Courts-Métrages")) {
-          console.log(`🚫 Skip short movie (${movieSlug})`)
+          logger.log(`🚫 Skip short movie (${movieSlug})`)
           continue
         }
 
         if (movieData.genres.includes("Documentaire")) {
-          console.log(`ℹ️ documentary (${movieSlug})`)
-          // console.log(`🚫 Skip docu (${movieSlug})`)
+          logger.log(`ℹ️ documentary (${movieSlug})`)
+          // logger.log(`🚫 Skip docu (${movieSlug})`)
           // continue
         }
 
@@ -178,7 +193,7 @@ export const scrapPathe = async () => {
         movieToInsert.poster = movie?.poster || movieData.posterPath?.lg || ""
 
         if (!movieToInsert || !movieToInsert.id) {
-          console.log(`🚫 Skip movie (${movieSlug})`)
+          logger.log(`🚫 Skip movie (${movieSlug})`)
           continue
         }
 
@@ -226,7 +241,7 @@ export const scrapPathe = async () => {
             }
 
             if (!showToInsert.movieId) {
-              console.log(
+              logger.log(
                 `🚫 Skip show without movie ID (${movieSlug})`,
                 showToInsert
               )
@@ -244,10 +259,10 @@ export const scrapPathe = async () => {
       }
     }
 
-    console.dir(debug, { depth: null })
-    console.log("✅ Pathe scrapping done", debug)
+    logger.log(debug, { depth: null })
+    logger.log("✅ Pathe scrapping done", debug)
   } catch (error) {
-    console.error("❌ Error while scrapping Pathé:")
-    console.error(error)
+    logger.error("❌ Error while scrapping Pathé:")
+    logger.error(error)
   }
 }

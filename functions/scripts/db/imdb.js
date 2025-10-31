@@ -1,7 +1,9 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
+import { fetchUrl } from "../utils.js"
 
 const metadataMovie = async (id) => {
-  const page = await fetch(`https://www.imdb.com/fr/title/${id}/`, {
+  const page = await fetchUrl(`https://www.imdb.com/fr/title/${id}/`, {
     method: "GET",
   })
 
@@ -34,7 +36,7 @@ export const getImDbInfo = async (title, runtime) => {
     )
     runtime && query.set("runtime", `${runtime - 5},${runtime + 5}`)
 
-    const res = await fetch(
+    const res = await fetchUrl(
       `https://www.imdb.com/search/title/?${query.toString()}`,
       { method: "GET" }
     )
@@ -59,6 +61,6 @@ export const getImDbInfo = async (title, runtime) => {
 
     return res2
   } catch (error) {
-    console.error(`❌ [IMDB] ${error} ${title}`)
+    logger.error(`❌ [IMDB] ${error} ${title}`)
   }
 }
