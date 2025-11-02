@@ -11,4 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ☁️ Trigger cinemas
-        run: curl -X GET "https://europe-west1-premiereprojo.cloudfunctions.net/scrapPathe" > /dev/null 2>&1 &
+        run: curl -X GET "https://europe-west1-premiereprojo.cloudfunctions.net/scrapAllCinemas" > /dev/null 2>&1 &

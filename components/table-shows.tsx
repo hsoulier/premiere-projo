@@ -27,10 +27,19 @@ import { useMovieColumns } from "@/components/colums"
 import { LoaderCircle } from "@/components/animate-ui/icons/loader-circle"
 import { CircleX } from "lucide-react"
 import { BadgeCheck } from "@/components/animate-ui/icons/badge-check"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { parseAsBoolean, useQueryState } from "nuqs"
+import { getQueryClient } from "@/lib/query-client"
 
 export const TableShows = ({ data }: { data: Data[] }) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [openModalMovie, setOpenModalMovie] = useState<boolean>(false)
+
+  const [displayAll, setDisplayAll] = useQueryState(
+    "all-movies",
+    parseAsBoolean.withDefault(false)
+  )
 
   const supabase = useSupabaseBrowser()
 
@@ -75,6 +84,13 @@ export const TableShows = ({ data }: { data: Data[] }) => {
     getSortedRowModel: getSortedRowModel(),
   })
 
+  const handleOnlyAvailableChange = (checked: boolean) => {
+    setDisplayAll(checked)
+    getQueryClient().invalidateQueries({
+      queryKey: [`movies-available-${!checked}`],
+    })
+  }
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
@@ -96,7 +112,16 @@ export const TableShows = ({ data }: { data: Data[] }) => {
             <ModalCreateMovie close={() => setOpenModalMovie(false)} />
           </AlertDialogPortal>
         </AlertDialog>
-        <Button
+
+        <div className="ml-4 flex items-center space-x-2">
+          <Switch
+            id="display-only-available"
+            checked={displayAll}
+            onCheckedChange={handleOnlyAvailableChange}
+          />
+          <Label htmlFor="display-only-available">Tous les films</Label>
+        </div>
+        {/* <Button
           variant="secondary"
           className="ml-auto mr-0"
           onClick={() => mutateAsync()}
@@ -108,7 +133,7 @@ export const TableShows = ({ data }: { data: Data[] }) => {
           )}
           {isPending && <LoaderCircle animate loop />}
           Forcer la mise à jour
-        </Button>
+        </Button>  */}
       </div>
       <DataGrid
         table={table}
