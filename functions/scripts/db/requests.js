@@ -1,6 +1,8 @@
 import { logger } from "firebase-functions"
 import { sql } from "../utils.js"
 
+// Cinema queries
+
 export const getCinemaByName = async (name) => {
   const data = await sql`select * from cinemas where name = ${name}`
 
@@ -18,17 +20,30 @@ export const getCinemaBySlug = async (slug) => {
   }
 }
 
-export const getShow = async (id) => {
-  const data = await sql`select * from shows where id = ${id}`
+export const insertCinema = async (cinema) => {
+  try {
+    const data = await sql`
+    insert into cinemas ${sql(
+      cinema,
+      "id",
+      "name",
+      "slug",
+      "arrondissement",
+      "address",
+      "link",
+      "source"
+    )}
+    returning *
+  `
+    return data[0]
+  } catch (error) {
+    logger.error(cinema, error)
 
-  return data?.[0]
+    throw error
+  }
 }
 
-export const getMovie = async (id) => {
-  const data = await sql`select * from movies where id = ${id}`
-
-  return data?.[0]
-}
+// Movie queries
 
 export const getMovieByTitle = async (title) => {
   const data =
@@ -37,10 +52,10 @@ export const getMovieByTitle = async (title) => {
   return data?.[0]
 }
 
-export const listShows = async () => {
-  const data = await sql`select * from shows`
+export const getMovie = async (id) => {
+  const data = await sql`select * from movies where id = ${id}`
 
-  return data
+  return data?.[0]
 }
 
 export const listMovies = async () => {
@@ -53,7 +68,7 @@ export const insertMovie = async (movie) => {
   try {
     const data = await sql`
     insert into movies ${sql(
-      movie,
+      { scrapedAt: new Date(), ...movie },
       "id",
       "title",
       "duration",
@@ -61,7 +76,8 @@ export const insertMovie = async (movie) => {
       "director",
       "release",
       "imdbId",
-      "poster"
+      "poster",
+      "scrapedAt"
     )}
     returning *`
 
@@ -92,6 +108,20 @@ export const updateMovie = async (id, movie) => {
   }
 }
 
+// Show queries
+
+export const getShow = async (id) => {
+  const data = await sql`select * from shows where id = ${id}`
+
+  return data?.[0]
+}
+
+export const listShows = async () => {
+  const data = await sql`select * from shows`
+
+  return data
+}
+
 export const insertShow = async (show) => {
   try {
     const data = await sql`
@@ -114,29 +144,6 @@ export const insertShow = async (show) => {
     return data[0]
   } catch (error) {
     logger.error(show, error)
-
-    throw error
-  }
-}
-
-export const insertCinema = async (cinema) => {
-  try {
-    const data = await sql`
-    insert into cinemas ${sql(
-      cinema,
-      "id",
-      "name",
-      "slug",
-      "arrondissement",
-      "address",
-      "link",
-      "source"
-    )}
-    returning *
-  `
-    return data[0]
-  } catch (error) {
-    logger.error(cinema, error)
 
     throw error
   }

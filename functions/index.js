@@ -52,10 +52,10 @@ export const scrapMK2Festival = onRequest(async (req, response) => {
       return
     }
 
-    await scraper.scrapMk2Festival(url)
+    const a = await scraper.scrapMk2Festival(url)
 
     await scraper.close()
-    response.send("Hello from Firebase!")
+    response.json(a)
   } catch (error) {
     await scraper.close()
     logger.error("❌ Error while scrapping Mk2:", error)

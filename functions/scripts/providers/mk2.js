@@ -40,11 +40,6 @@ export const scrapMk2Festival = async (urlFestival) => {
   const page = `https://prod-paris.api.mk2.com/events/${slugFestival}?cinema-group=ile-de-france`
 
   try {
-    console.log(
-      "Fetching festival data from:",
-      page,
-      "https://prod-paris.api.mk2.com/events/festival-cheries-cheris-2025?cinema-group=ile-de-france"
-    )
     const res = await fetch(page)
 
     if (!res.ok) {
@@ -60,111 +55,148 @@ export const scrapMk2Festival = async (urlFestival) => {
     const startFestival = new Date(data.startDate)
     const endFestival = new Date(data.endDate)
     const eventId = data.id
+    const nameFestival = data.name
 
     const sessionsForLinkedMovies = data.sessionsByFilmAndCinema.filter(
       ({ cinema }) => linkedCinemas.includes(cinema.id)
     )
 
-    const moviesWithSession = sessionsForLinkedMovies
-      ?.map(({ sessions, cinema, film }) =>
-        sessions
-          ?.filter(
-            ({ showTime, globalEventId }) =>
-              new Date(showTime) > startFestival &&
-              new Date(showTime) <= endFestival &&
-              globalEventId === eventId
-          )
-          .map(() => ({
-            movie: film,
-            shows: sessions,
-            cinemaSlug: cinema.slug,
-          }))
-      )
-      .flat()
+    const _screeningsByMovie = sessionsForLinkedMovies?.reduce((acc, curr) => {
+      const { sessions, cinema, film } = curr || {}
 
-    if (!moviesWithSession || !moviesWithSession.length) return
+      if (!sessions) return acc
 
-    for (const { movie, shows, cinemaSlug } of moviesWithSession || [{}]) {
-      if (!movie || !shows || !cinemaSlug) {
-        logger.warn("Missing data for movie or shows", movie, shows, cinemaSlug)
+      const movieId = film.id
+
+      if (!acc.has(movieId)) {
+        const director =
+          film.cast?.find((c) => c.personType === "Director") || {}
+        acc.set(movieId, {
+          movie: {
+            imdbId: "",
+            id: movieId,
+            title: film.title,
+            synopsis: film.synopsis,
+            duration: film.runTime,
+            release: film.openingDate,
+            slug: film.slug,
+            director: director
+              ? `${director.firstName} ${director.lastName}`
+              : "",
+            poster: film.graphicUrl,
+            posterThumb: film.graphicUrl,
+          },
+          screenings: [],
+        })
+      }
+
+      const screening = sessions
+        ?.filter(
+          ({ showTime, globalEventId }) =>
+            new Date(showTime) > startFestival &&
+            new Date(showTime) <= endFestival &&
+            globalEventId === eventId
+        )
+        .map((screening) => ({
+          lang:
+            (screening.attributes.find(({ id }) => id.startsWith("VS000"))
+              ?.shortName || "VO") === "VO"
+              ? "vost"
+              : "vf",
+          showTime: screening.showTime,
+          isFull: screening.isSoldOut,
+          id: screening.sessionId,
+          cinemaSlug: cinema.slug,
+          cinemaId: cinema.id,
+        }))
+
+      acc.get(movieId).screenings.push(...screening)
+
+      return acc
+    }, new Map())
+
+    const screeningsByMovie = Array.from(_screeningsByMovie.values())
+
+    console.log("🔍 Found screenings for movies:", screeningsByMovie.length)
+
+    if (!screeningsByMovie || !screeningsByMovie.length) return
+
+    for (const { movie, screenings } of screeningsByMovie || [{}]) {
+      if (!movie || !screenings?.length) {
+        logger.warn("Missing data for movie or shows", movie, screenings)
         continue
       }
 
-      const { id: cinemaId } = await getCinemaBySlug(cinemaSlug)
-
-      if (!cinemaId) throw new Error(`Cinema not found for slug: ${cinemaSlug}`)
-
-      const d = movie.cast.find((c) => c.personType === "Director")
-
       const m = await getAllocineInfo({
-        release: movie.openingDate,
+        release: movie.release,
         title: movie.title,
-        directors: [`${d.firstName} ${d.lastName}`],
+        directors: [movie.director],
       })
 
-      if (movie.title === "Caravan") m.id = "48265"
-      if (!m.id) m.id = movie.id
-
-      if (m?.id === "" || !m?.id) {
-        console.warn("No ID found for movie", movie.title, movie.openingDate)
-        throw new Error(
-          `No ID found for movie: ${movie.title} (${movie.openingDate})`
-        )
+      // ? If allocine data is empty -> use mk2 data
+      if (!m?.id) {
+        m.id = parseInt(movie.id.slice(2))
+        m.imdbId = ""
+        m.title = movie.title
+        m.synopsis = movie.synopsis
+        m.duration = movie.duration
+        m.release = new Date(movie.release)
+        m.director = movie.director
+        m.poster = movie.poster
+        m.posterThumb = movie.posterThumb
       }
 
       const existingMovie = await getMovie(m.id)
 
       if (!existingMovie) {
-        if (m.release) {
-          const temp = new Date(m.release)
-          temp.setDate(temp.getDate() + 1)
-          m.release = temp
-        }
-
-        await insertMovie({
-          ...m,
-          synopsis: movie.synopsis,
-          duration: movie.runTime || 0,
-          link: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
-          director: m?.director || [],
-        })
+        await insertMovie(m)
 
         debug.movies++
       }
 
-      for (const show of shows) {
-        const foundLanguage = show.attributes.find(
-          (a) => a.id === "VS00000005"
-        )?.shortName
+      for (const show of screenings) {
+        const { id: cinemaId } = await getCinemaBySlug(show.cinemaSlug)
 
-        const language =
-          foundLanguage === "VOSTF" || foundLanguage === "VO" ? "vost" : "vf"
+        if (!cinemaId)
+          throw new Error(`Cinema not found for slug: ${show.cinemaSlug}`)
+
+        const dateWithTimezone = new Date(show.showTime)
+
+        dateWithTimezone.setHours(dateWithTimezone.getHours() + 1)
 
         const showData = {
-          id: show.sessionId,
+          id: show.id,
           cinemaId,
-          language,
-          date: show.showTime,
+          language: show.lang,
+          date: dateWithTimezone,
           avpType: "AVP",
           movieId: m.id,
-          linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.sessionId}`,
+          linkShow: `https://www.mk2.com/panier/seance/tickets?cinemaId=${show.cinemaId}&sessionId=${show.id}`,
           linkMovie: `https://www.mk2.com/ile-de-france/evenement/${movie.slug}`,
-          festival: "Festival de Cannes",
+          festival: nameFestival,
+          isFull: show.isFull,
         }
 
+        // TODO: Check of the data has changed to full and update field (between the api data and the existing show)
         const existingShow = await getShow(showData.id)
 
-        if (existingShow) continue
+        if (existingShow) {
+          continue
 
-        // await insertShow(showData)
-
+          // ? To force update if needed
+          // await updateShow(showData.id, showData)
+        } else {
+          await insertShow(showData)
+        }
         debug.shows++
       }
     }
 
     console.log("✅ Mk2 Festival scrapping done", debug)
+
+    return debug
   } catch (error) {
-    logger.error(error)
+    console.error(error)
   }
 }
 
@@ -293,8 +325,6 @@ export const scrapMk2 = async () => {
         debug.shows++
       }
     }
-
-    // await scrapAVPFestival()
 
     logger.log("✅ Mk2 scrapping done", debug)
   } catch (error) {

@@ -1,5 +1,4 @@
-import { logger } from "firebase-functions"
-import { listMovies } from "./db/requests.js"
+import "dotenv/config"
 import { sql } from "./utils.js"
 import { scrapMk2Festival } from "./providers/mk2.js"
 
