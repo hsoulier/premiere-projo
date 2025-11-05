@@ -1,5 +1,6 @@
 "use client"
 
+import { DropdownMenuPortal } from "@/components/ui/dropdown-menu"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline"
 import { sendGAEvent } from "@next/third-parties/google"
 import {
@@ -45,33 +46,35 @@ export const FilterOrder = () => {
         Trier
         <ChevronDownIcon className="size-4 transition-transform duration-100 ease-in-out [[data-state=open]_&]:rotate-180" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        sideOffset={8}
-        collisionPadding={20}
-        className="p-2 border border-gray-200 bg-gray-background rounded-xl text-gray-700 w-fit"
-      >
-        {values.map(({ value, label }) => (
-          <DropdownMenuCheckboxItem
-            key={value}
-            checked={order === value}
-            onCheckedChange={(checked) =>
-              checked ? addFilter(value) : removeFilter()
-            }
-            className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2 hover:bg-gray-100 data-[highlight]:bg-gray-100 rounded-sm outline-none relative data-[highlight]:outline-none"
-          >
-            <DropdownMenuItemIndicator asChild>
-              <CheckIcon
-                data-state={order === value ? "checked" : "unchecked"}
-                className="absolute left-2 size-4 data-[state=unchecked]:text-transparent"
-              />
-            </DropdownMenuItemIndicator>
-            <span className="ml-8 [[aria-checked=true]~&]:text-gray-white text-gray-700 whitespace-nowrap">
-              {label}
-            </span>
-          </DropdownMenuCheckboxItem>
-        ))}
-      </DropdownMenuContent>
+      <DropdownMenuPortal>
+        <DropdownMenuContent
+          align="end"
+          sideOffset={8}
+          collisionPadding={20}
+          className="p-2 border border-gray-200 bg-gray-background rounded-xl text-gray-700 w-fit relative z-50"
+        >
+          {values.map(({ value, label }) => (
+            <DropdownMenuCheckboxItem
+              key={value}
+              checked={order === value}
+              onCheckedChange={(checked) =>
+                checked ? addFilter(value) : removeFilter()
+              }
+              className="flex flex-1 items-center justify-start gap-2 transition-all [&[data-state=open]>svg]:rotate-180 p-2 hover:bg-gray-100 data-[highlight]:bg-gray-100 rounded-sm outline-none relative data-[highlight]:outline-none"
+            >
+              <DropdownMenuItemIndicator asChild>
+                <CheckIcon
+                  data-state={order === value ? "checked" : "unchecked"}
+                  className="absolute left-2 size-4 data-[state=unchecked]:text-transparent"
+                />
+              </DropdownMenuItemIndicator>
+              <span className="ml-8 [[aria-checked=true]~&]:text-gray-white text-gray-700 whitespace-nowrap">
+                {label}
+              </span>
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenuPortal>
     </DropdownMenu>
   )
 }

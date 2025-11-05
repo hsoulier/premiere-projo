@@ -166,6 +166,7 @@ function Calendar({
         },
         ...components,
       }}
+      endMonth={new Date(2030, 0, 1)}
       {...props}
     />
   )

@@ -30,6 +30,7 @@ const Page = async ({ searchParams }: { searchParams: AwaitSearchParams }) => {
         `avpType-${awaitedSearchParams.avpType}`,
         `lang-${awaitedSearchParams.lang}`,
         `q-${awaitedSearchParams.q}`,
+        `date-${awaitedSearchParams.date}`,
       ],
       queryFn: async () =>
         await getMoviesAggregated(supabase, awaitedSearchParams),

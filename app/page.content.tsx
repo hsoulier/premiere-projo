@@ -30,6 +30,7 @@ export const Content = () => {
       `avpType-${searchParams.get("avpType") || ""}`,
       `lang-${searchParams.get("lang") || ""}`,
       `q-${searchParams.get("q") || ""}`,
+      `date-${searchParams.get("date") || ""}`,
     ],
     queryFn: async () => await getMoviesAggregated(supabase, options),
   })

@@ -3,6 +3,7 @@ import { FilterCinema } from "@/components/filters.cinema"
 import { FilterOrder } from "@/components/sorts.order"
 import { FilterShows } from "@/components/filters.shows"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { FilterDate } from "@/components/filters.date"
 
 const keysToKeep = ["q", "order"]
 
@@ -28,7 +29,7 @@ export const Filters = () => {
   if (!isHomePage) return null
 
   return (
-    <header className="flex gap-2 pb-4 lg:pb-6 relative z-30 flex-wrap mx-5">
+    <header className="flex gap-2 gap-y-4 pb-4 lg:pb-6 relative z-30 flex-wrap mx-5">
       <FilterCinema />
       <FilterShows />
       {hasFilters && (
@@ -38,6 +39,7 @@ export const Filters = () => {
       )}
 
       <FilterOrder />
+      <FilterDate />
     </header>
   )
 }

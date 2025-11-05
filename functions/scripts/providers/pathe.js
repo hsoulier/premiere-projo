@@ -68,6 +68,7 @@ const CINEMAS = [
 const fetchData = async (url, { fr } = { fr: true }) => {
   try {
     const res = await fetchUrl(`${url}?${fr ? "language=fr" : ""}`)
+
     if (!res.ok) {
       logger.error(`❌ Error ${res.status} while fetching ${url}`)
       logger.error(await res.text())
