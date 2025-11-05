@@ -1,3 +1,4 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { JSDOM } from "jsdom"
 import {
@@ -9,7 +10,7 @@ import {
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
 import { isBefore } from "date-fns/isBefore"
-import { parseToDate } from "../utils.js"
+import { fetchUrl, parseToDate } from "../utils.js"
 
 const TYPE_SHOWS = [
   "Avant-première avec équipe",
@@ -39,7 +40,7 @@ const slugify = (input) => {
 }
 
 async function getFirstDate(id) {
-  const res = await fetch(
+  const res = await fetchUrl(
     `https://www.ugc.fr/showingsFilmAjaxAction!getDaysByFilm.action?reloadShowingsTopic=reloadShowings&dayForm=dayFormDesktop&filmId=${id}&day=&regionId=1&defaultRegionId=1`
   )
   const html = await res.text()
@@ -56,7 +57,7 @@ async function getFirstDate(id) {
 }
 
 async function getDatesShows(id) {
-  const res = await fetch(
+  const res = await fetchUrl(
     `https://www.ugc.fr/showingsFilmAjaxAction!getDaysByFilm.action?reloadShowingsTopic=reloadShowings&dayForm=dayFormDesktop&filmId=${id}&day=&regionId=1&defaultRegionId=1`
   )
   const html = await res.text()
@@ -82,7 +83,7 @@ const getShows = async (info) => {
     const dates = await getDatesShows(id)
 
     for (const firstDate of dates) {
-      const res2 = await fetch(urlAVPMovie(id, firstDate), {
+      const res2 = await fetchUrl(urlAVPMovie(id, firstDate), {
         headers: { "Content-Language": "fr-FR" },
       })
       const html2 = await res2.text()
@@ -153,7 +154,7 @@ const getShows = async (info) => {
 }
 
 const retrieveAvp = async () => {
-  const $pathe = await fetch(
+  const $pathe = await fetchUrl(
     "https://www.ugc.fr/filmsAjaxAction!getFilmsAndFilters.action?filter=onPreview&page=30010&cinemaId=&reset=false&"
   )
   const html = await $pathe.text()
@@ -176,7 +177,7 @@ const retrieveAvp = async () => {
 }
 
 const retrieveAvpFestival = async () => {
-  const page = await fetch("https://www.ugc.fr/evenement.html?id=10")
+  const page = await fetchUrl("https://www.ugc.fr/evenement.html?id=10")
   const html = await page.text()
   const { document } = parseHTML(html)
 
@@ -231,7 +232,7 @@ const retrieveAvpFestival = async () => {
     })
 
   const getMoviePage = async (movie) => {
-    const page = await fetch(
+    const page = await fetchUrl(
       `https://www.ugc.fr/searchAjaxAction!getPreviewResults.action?page=30004&searchKey=${encodeURIComponent(
         removeAccents(movie.title.toUpperCase())
       )}`
@@ -265,7 +266,7 @@ const retrieveAvpFestival = async () => {
       )
     })
 
-    !result && console.log("⚠️ No result in search for", movie.title)
+    !result && logger.log("⚠️ No result in search for", movie.title)
 
     return {
       ...movie,
@@ -290,7 +291,7 @@ export const scrapUGC = async () => {
     const newMovies = []
 
     for (const movie of moviesWithAVP) {
-      const page = await fetch(movie.link)
+      const page = await fetchUrl(movie.link)
 
       const html = await page.text()
       const { document } = parseHTML(html)
@@ -392,15 +393,15 @@ export const scrapUGC = async () => {
 
     await getShows(newMovies)
 
-    console.log("✅ UGC scrapping done", debug)
+    logger.log("✅ UGC scrapping done", debug)
   } catch (error) {
-    console.error("❌ Error while scrapping UGC:")
-    console.error(error)
+    logger.error("❌ Error while scrapping UGC:")
+    logger.error(error)
   }
 }
 
 export const getUGCTheaters = async () => {
-  const $cinema = await fetch(
+  const $cinema = await fetchUrl(
     "https://www.ugc.fr/cinemasAjaxAction!getCinemasList.action?id=1&latitude=&longitude="
   )
   const html = await $cinema.text()

@@ -1,4 +1,7 @@
+import { logger } from "firebase-functions"
 import { sql } from "../utils.js"
+
+// Cinema queries
 
 export const getCinemaByName = async (name) => {
   const data = await sql`select * from cinemas where name = ${name}`
@@ -12,22 +15,35 @@ export const getCinemaBySlug = async (slug) => {
 
     return data?.[0]
   } catch (error) {
-    console.log(`select * from cinemas where slug = ${slug}`)
-    console.error(error.message)
+    console.error(`select * from cinemas where slug = ${slug}`)
+    logger.error(error.message)
   }
 }
 
-export const getShow = async (id) => {
-  const data = await sql`select * from shows where id = ${id}`
+export const insertCinema = async (cinema) => {
+  try {
+    const data = await sql`
+    insert into cinemas ${sql(
+      cinema,
+      "id",
+      "name",
+      "slug",
+      "arrondissement",
+      "address",
+      "link",
+      "source"
+    )}
+    returning *
+  `
+    return data[0]
+  } catch (error) {
+    logger.error(cinema, error)
 
-  return data?.[0]
+    throw error
+  }
 }
 
-export const getMovie = async (id) => {
-  const data = await sql`select * from movies where id = ${id}`
-
-  return data?.[0]
-}
+// Movie queries
 
 export const getMovieByTitle = async (title) => {
   const data =
@@ -36,10 +52,10 @@ export const getMovieByTitle = async (title) => {
   return data?.[0]
 }
 
-export const listShows = async () => {
-  const data = await sql`select * from shows`
+export const getMovie = async (id) => {
+  const data = await sql`select * from movies where id = ${id}`
 
-  return data
+  return data?.[0]
 }
 
 export const listMovies = async () => {
@@ -52,7 +68,7 @@ export const insertMovie = async (movie) => {
   try {
     const data = await sql`
     insert into movies ${sql(
-      movie,
+      { scrapedAt: new Date(), ...movie },
       "id",
       "title",
       "duration",
@@ -60,13 +76,14 @@ export const insertMovie = async (movie) => {
       "director",
       "release",
       "imdbId",
-      "poster"
+      "poster",
+      "scrapedAt"
     )}
     returning *`
 
     return data[0]
   } catch (error) {
-    console.error(movie, error)
+    logger.error(movie, error)
 
     throw error
   }
@@ -85,10 +102,24 @@ export const updateMovie = async (id, movie) => {
 
     return data[0]
   } catch (error) {
-    console.error(movie, error)
+    logger.error(movie, error)
 
     throw error
   }
+}
+
+// Show queries
+
+export const getShow = async (id) => {
+  const data = await sql`select * from shows where id = ${id}`
+
+  return data?.[0]
+}
+
+export const listShows = async () => {
+  const data = await sql`select * from shows`
+
+  return data
 }
 
 export const insertShow = async (show) => {
@@ -112,30 +143,7 @@ export const insertShow = async (show) => {
   `
     return data[0]
   } catch (error) {
-    console.error(show, error)
-
-    throw error
-  }
-}
-
-export const insertCinema = async (cinema) => {
-  try {
-    const data = await sql`
-    insert into cinemas ${sql(
-      cinema,
-      "id",
-      "name",
-      "slug",
-      "arrondissement",
-      "address",
-      "link",
-      "source"
-    )}
-    returning *
-  `
-    return data[0]
-  } catch (error) {
-    console.error(cinema, error)
+    logger.error(show, error)
 
     throw error
   }
@@ -147,7 +155,7 @@ export const deleteShow = async (id) => {
 
     return data[0]
   } catch (error) {
-    console.error(`Error deleting show with id ${id}:`, error)
+    logger.error(`Error deleting show with id ${id}:`, error)
 
     throw error
   }
@@ -173,7 +181,7 @@ export const updateShow = async (id, show) => {
   `
     return data[0]
   } catch (error) {
-    console.error(show, error)
+    logger.error(show, error)
 
     throw error
   }
@@ -189,7 +197,7 @@ export const updateAvailabilityShow = async (id, show) => {
 
     return data[0]
   } catch (error) {
-    console.error(show, error)
+    logger.error(show, error)
 
     throw error
   }

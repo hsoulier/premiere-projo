@@ -1,18 +1,12 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { getAllocineInfo } from "../db/allocine.js"
-import {
-  getMovie,
-  getShow,
-  insertMovie,
-  insertShow,
-  updateAvailabilityShow,
-  updateShow,
-} from "../db/requests.js"
-import { dashToISODateTime } from "../utils.js"
+import { getMovie, getShow, insertMovie, insertShow } from "../db/requests.js"
+import { fetchUrl, parseToDate } from "../utils.js"
 
 export const scrapLouxor = async () => {
   const pageEvents = await (
-    await fetch("https://www.cinemalouxor.fr/evenements/")
+    await fetchUrl("https://www.cinemalouxor.fr/evenements/")
   ).text()
 
   const { document: docPageEvents } = parseHTML(pageEvents)
@@ -37,7 +31,7 @@ export const scrapLouxor = async () => {
     })
 
   const pageShows = await (
-    await fetch("https://www.louxor-reserver.cotecine.fr/reserver/")
+    await fetchUrl("https://www.louxor-reserver.cotecine.fr/reserver/")
   ).text()
 
   const { document: docPageShows } = parseHTML(pageShows)
@@ -61,8 +55,8 @@ export const scrapLouxor = async () => {
     }))
 
   for (const movie of movies) {
-    console.group("🛠️ Scraping movie:", movie.title)
-    const resDays = await fetch(
+    logger.log("🛠️ Scraping movie:", movie.title)
+    const resDays = await fetchUrl(
       `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}`
     )
 
@@ -71,22 +65,22 @@ export const scrapLouxor = async () => {
     const _movie = await getAllocineInfo({ title: movie.title, directors: [] })
 
     if (!_movie.id) {
-      console.error(`❌ Movie ${movie.title} not found in Allocine`)
+      logger.error(`❌ Movie ${movie.title} not found in Allocine`)
       continue
     }
 
     const existingMovie = await getMovie(_movie.id)
 
     if (!existingMovie) {
-      console.log("🎬  movie not found:", _movie.title)
+      logger.log("🎬  movie not found:", _movie.title)
       await insertMovie(_movie)
     }
 
     for (const [day] of Object.entries(days)) {
-      console.group("ℹ️ Day:", day)
+      logger.log("ℹ️ Day:", day)
 
       const shows = await (
-        await fetch(
+        await fetchUrl(
           `https://www.louxor-reserver.cotecine.fr/reserver/ajax/?modresa_film=${movie.value}&modresa_jour=${day}`
         )
       ).json()
@@ -102,7 +96,7 @@ export const scrapLouxor = async () => {
           avpType: "AVP",
           cinemaId: "louxor",
           id: showId,
-          date: dashToISODateTime(day, hours),
+          date: parseToDate(`${day} à ${hours}`),
           language,
           linkMovie: `https://www.cinemalouxor.fr${movie.link}`,
           linkShow,
@@ -112,14 +106,12 @@ export const scrapLouxor = async () => {
         const existingShow = await getShow(showToInsert.id)
 
         if (existingShow) {
-          console.log("🎥 Show already exists:", showToInsert.id)
+          logger.log("🎥 Show already exists:", showToInsert.id)
           continue
         }
 
         await insertShow(showToInsert)
       }
-      console.groupEnd()
     }
-    console.groupEnd()
   }
 }

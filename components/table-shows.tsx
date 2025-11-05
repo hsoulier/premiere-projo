@@ -21,19 +21,52 @@ import {
 import { Input } from "@/components/ui/input"
 import { ModalCreateMovie } from "@/components/modal-create-movie"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { getCinemas } from "@/lib/queries"
 import { useMovieColumns } from "@/components/colums"
+import { LoaderCircle } from "@/components/animate-ui/icons/loader-circle"
+import { CircleX } from "lucide-react"
+import { BadgeCheck } from "@/components/animate-ui/icons/badge-check"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { parseAsBoolean, useQueryState } from "nuqs"
+import { getQueryClient } from "@/lib/query-client"
 
 export const TableShows = ({ data }: { data: Data[] }) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [openModalMovie, setOpenModalMovie] = useState<boolean>(false)
+
+  const [displayAll, setDisplayAll] = useQueryState(
+    "all-movies",
+    parseAsBoolean.withDefault(false)
+  )
 
   const supabase = useSupabaseBrowser()
 
   const { data: cinemas } = useQuery({
     queryKey: ["cinemas"],
     queryFn: async () => await getCinemas(supabase),
+  })
+
+  const { isPending, mutateAsync, isSuccess, isError } = useMutation({
+    mutationKey: ["force-scrap-movies"],
+    mutationFn: async () => {
+      try {
+        const res = await fetch(
+          // "https://europe-west1-premiereprojo.cloudfunctions.net/scrapAllCinemas"
+          "https://europe-west1-premiereprojo.cloudfunctions.net/scrapPathe"
+        )
+
+        if (!res?.ok) {
+          throw new Error("Erreur lors de la mise à jour des films")
+        }
+
+        return {}
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    },
   })
 
   const columns = useMovieColumns(cinemas ?? [])
@@ -50,6 +83,13 @@ export const TableShows = ({ data }: { data: Data[] }) => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
+
+  const handleOnlyAvailableChange = (checked: boolean) => {
+    setDisplayAll(checked)
+    getQueryClient().invalidateQueries({
+      queryKey: [`movies-available-${!checked}`],
+    })
+  }
 
   return (
     <div className="w-full">
@@ -72,6 +112,28 @@ export const TableShows = ({ data }: { data: Data[] }) => {
             <ModalCreateMovie close={() => setOpenModalMovie(false)} />
           </AlertDialogPortal>
         </AlertDialog>
+
+        <div className="ml-4 flex items-center space-x-2">
+          <Switch
+            id="display-only-available"
+            checked={displayAll}
+            onCheckedChange={handleOnlyAvailableChange}
+          />
+          <Label htmlFor="display-only-available">Tous les films</Label>
+        </div>
+        {/* <Button
+          variant="secondary"
+          className="ml-auto mr-0"
+          onClick={() => mutateAsync()}
+          disabled={isPending}
+        >
+          {isError && <CircleX className="text-red-500" />}
+          {isSuccess && !isPending && (
+            <BadgeCheck animateOnView className="text-green-500" />
+          )}
+          {isPending && <LoaderCircle animate loop />}
+          Forcer la mise à jour
+        </Button>  */}
       </div>
       <DataGrid
         table={table}

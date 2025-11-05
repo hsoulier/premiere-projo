@@ -1,6 +1,7 @@
+import { logger } from "firebase-functions"
 import { parseHTML } from "linkedom"
 import { listMovies, updateMovie } from "./db/requests.js"
-import { sql } from "./utils.js"
+import { fetchUrl, sql } from "./utils.js"
 
 const init = async () => {
   const movies = await listMovies()
@@ -11,7 +12,7 @@ const init = async () => {
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1)
 
     if (movie.release && new Date(movie.release) < oneMonthAgo) {
-      console.log(`❌ ${movie.title} is already released`)
+      logger.log(`❌ ${movie.title} is already released`)
       continue
     }
 
@@ -19,7 +20,7 @@ const init = async () => {
 
     const sluggedTitle = query.toString().split("=")[1]
 
-    const moviePage = await fetch(
+    const moviePage = await fetchUrl(
       `https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.id}.html`
     )
 
@@ -34,7 +35,7 @@ const init = async () => {
       .filter((a) => a.length > 0)
     // .at(-1)
 
-    console.log(
+    logger.log(
       movie.title,
       `https://www.allocine.fr/film/fichefilm_gen_cfilm=${movie.id}.html`,
       synopsis
@@ -42,7 +43,7 @@ const init = async () => {
 
     continue
 
-    const res = await fetch(
+    const res = await fetchUrl(
       `https://allocine.fr/_/autocomplete/mobile/movie/${sluggedTitle}`
     )
 
@@ -53,7 +54,7 @@ const init = async () => {
     const info = results.find(({ entity_id }) => movie.id === entity_id)
 
     if (!info) {
-      console.error(`❌ No results for ${movie.title}`)
+      logger.error(`❌ No results for ${movie.title}`)
       continue
     }
 
@@ -71,11 +72,11 @@ const init = async () => {
     }
 
     if (Object.keys(updatedData).length === 0) {
-      console.log(`❌ No updates for ${movie.title}`)
+      logger.log(`❌ No updates for ${movie.title}`)
       continue
     }
 
-    console.log(`✅ Updating ${movie.title}`)
+    logger.log(`✅ Updating ${movie.title}`)
 
     await updateMovie(movie.id, updatedData)
   }

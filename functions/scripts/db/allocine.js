@@ -1,3 +1,5 @@
+import { logger } from "firebase-functions"
+
 const SILENT = true
 
 export const getAllocineInfo = async ({
@@ -19,17 +21,23 @@ export const getAllocineInfo = async ({
       `https://allocine.fr/_/autocomplete/mobile/movie/${sluggedTitle}`
     )
 
+    if (!res.ok) {
+      !SILENT && logger.error(`❌ [ALLOCINE] HTTP error! status: ${res.status}`)
+
+      return { id: null }
+    }
+
     const json = await res.json()
 
     const results = json?.results
 
     if (!results?.length) {
-      !SILENT && console.error(`❌ [ALLOCINE] No results for ${title}`)
+      !SILENT && logger.error(`❌ [ALLOCINE] No results for ${title}`)
       return { id: null }
     }
 
     if (results.length === 1) {
-      !SILENT && console.log(`✅ [ALLOCINE] Only one result found for ${title}`)
+      !SILENT && logger.log(`✅ [ALLOCINE] Only one result found for ${title}`)
       const movie = results[0]
 
       return {
@@ -96,7 +104,7 @@ export const getAllocineInfo = async ({
       (rankedResultsByOccurrences?.[1]?.count || 0)
     ) {
       !SILENT &&
-        console.log(
+        logger.log(
           `✅ [ALLOCINE] Best match for ${title} is ${rankedResultsByOccurrences[0].entity_id}`
         )
 
@@ -137,17 +145,16 @@ export const getAllocineInfo = async ({
     }
 
     if (rankedResultsByOccurrences.length > 1) {
-      !SILENT &&
-        console.log(`⚠️ [ALLOCINE] Multiple matches found for ${title}`)
+      !SILENT && logger.log(`⚠️ [ALLOCINE] Multiple matches found for ${title}`)
     }
 
     if (rankedResultsByOccurrences.length === 1) {
       !SILENT &&
-        console.log("✅ [ALLOCINE] All movies have entity_id", sluggedTitle)
+        logger.log("✅ [ALLOCINE] All movies have entity_id", sluggedTitle)
     }
 
     if (rankedResultsByOccurrences.length === 0) {
-      !SILENT && console.error(`❌ [ALLOCINE] No results for ${title}`)
+      !SILENT && logger.error(`❌ [ALLOCINE] No results for ${title}`)
       return { id: null }
     }
 
@@ -166,7 +173,7 @@ export const getAllocineInfo = async ({
         : "",
     }
   } catch (error) {
-    !SILENT && console.error(`❌ [ALLOCINE] ${title}`)
-    !SILENT && console.error(error)
+    !SILENT && logger.error(`❌ [ALLOCINE] ${title}`)
+    !SILENT && logger.error(error)
   }
 }

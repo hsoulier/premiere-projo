@@ -193,14 +193,14 @@ export const useMovieColumns = (
       {
         accessorKey: "duration",
         size: 70,
-        header: () => <div className="text-right">Durée du film</div>,
+        header: () => <div className="text-center">Durée du film</div>,
         cell: ({ row }) => {
           return (
             <div className="text-center font-medium">
               {row.getValue("duration") ? (
                 row.getValue("duration")
               ) : (
-                <FileWarningIcon />
+                <FileWarningIcon className="inline-block mx-auto text-gray-200" />
               )}
             </div>
           )

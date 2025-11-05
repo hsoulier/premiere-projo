@@ -5,6 +5,7 @@ import useSupabaseBrowser from "@/hooks/use-supabase-browser"
 import { getMoviesAggregated } from "@/lib/queries"
 import { useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { parseAsBoolean, useQueryState } from "nuqs"
 import { useEffect } from "react"
 
 const DashboardPage = () => {
@@ -12,9 +13,14 @@ const DashboardPage = () => {
 
   const supabase = useSupabaseBrowser()
 
+  const [displayAll] = useQueryState(
+    "all-movies",
+    parseAsBoolean.withDefault(false)
+  )
+
   const { data, isLoading } = useQuery({
-    queryKey: [],
-    queryFn: async () => await getMoviesAggregated(supabase, {}, true),
+    queryKey: ["movie-aggregated", `movies-available-${displayAll}`],
+    queryFn: async () => await getMoviesAggregated(supabase, {}, displayAll),
   })
 
   useEffect(() => {
