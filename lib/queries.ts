@@ -1,7 +1,6 @@
 import { LIST_MULTIPLEX, SOURCE_PROVIDER } from "@/constants/mapping"
 import type { TypedSupabaseClient } from "@/types/supabase"
-import { parseDate } from "chrono-node/fr"
-import { isSameDay } from "date-fns"
+import { parse } from "date-fns"
 
 const getBaseQuery = (client: TypedSupabaseClient, isDashboard = false) => {
   const query = client
@@ -30,6 +29,7 @@ export const getMoviesAggregated = async (
   if ("avpType" in searchParams && avpType) {
     query = query.eq("shows.avpType", avpType.toString())
   }
+
   if ("lang" in searchParams && lang) {
     query = query.eq("shows.language", lang.toString())
   }
@@ -41,35 +41,13 @@ export const getMoviesAggregated = async (
   if ("date" in searchParams && searchParams.date) {
     const dateParam = searchParams.date.toString()
 
-    const getParsedRange = () => {
-      if (dateParam === "aujourd'hui") {
-        const now = new Date()
-        const start = new Date(now.setHours(0, 0, 0, 0))
-        const end = new Date(now.setHours(24, 0, 0, 0))
-        return { start, end }
-      }
+    const parsed = parse(dateParam, "dd MM uuuu", new Date())
 
-      if (dateParam === "demain") {
-        const now = new Date()
-        const tomorrow = new Date(now)
-        tomorrow.setDate(tomorrow.getDate() + 1)
-        const start = new Date(tomorrow.setHours(0, 0, 0, 0))
-        const end = new Date(tomorrow.setHours(24, 0, 0, 0))
-        return { start, end }
-      }
+    const start = new Date(parsed)
+    start.setHours(0, 0, 0, 0)
 
-      const parsed = parseDate(dateParam, new Date())
-
-      const start = new Date(parsed)
-      start.setHours(0, 0, 0, 0)
-
-      const end = new Date(parsed)
-      end.setHours(24, 0, 0, 0)
-
-      return { start, end }
-    }
-
-    const { start, end } = getParsedRange()
+    const end = new Date(parsed)
+    end.setDate(end.getDate() + 1)
 
     query = query
       .gte("shows.date", start.toISOString())

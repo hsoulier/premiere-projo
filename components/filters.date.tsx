@@ -8,6 +8,7 @@ import {
   endOfMonth,
   format,
   isSameDay,
+  parse,
   startOfMonth,
 } from "date-fns"
 import { parseAsString, useQueryState } from "nuqs"
@@ -83,6 +84,8 @@ const DateElement = ({ className, ...props }: ComponentProps<"button">) => {
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
+const rawFormatDate = (date: Date) => format(date, "dd MM uuuu", { locale: fr })
+
 const formatDate = (date: Date) => {
   const formatted = format(date, "eee dd LLL", { locale: fr }).replace(
     /\./g,
@@ -138,14 +141,14 @@ export const FilterDate = () => {
           <span className="capitalize md:lowercase">{month}</span>
         </>
       ),
-      value: day.toLowerCase(),
+      value: rawFormatDate(date),
       disabled: hasShow.length === 0,
       count: hasShow.length,
     }
   })
 
   const handleDateSelect = (e: MouseEvent<HTMLButtonElement>) => {
-    const date = (e.currentTarget.value || formatDate(new Date())).toLowerCase()
+    const date = e.currentTarget.value || rawFormatDate(new Date())
 
     if (date === "tout") return setSelectedDate("tout")
 
@@ -192,11 +195,11 @@ export const FilterDate = () => {
         </DateElement>
 
         {next2WeeksDays.map(({ value, day, disabled }) => {
-          const isToday = formatDate(new Date()).toLowerCase()
+          const isToday = rawFormatDate(new Date())
 
           const _isTomorrow = new Date()
           _isTomorrow.setDate(_isTomorrow.getDate() + 1)
-          const isTomorrow = formatDate(_isTomorrow).toLowerCase()
+          const isTomorrow = rawFormatDate(_isTomorrow)
 
           const dayLabel =
             isToday === value
@@ -211,7 +214,7 @@ export const FilterDate = () => {
               key={value}
               aria-disabled={disabled}
               aria-pressed={selectedDate === value}
-              value={value.toLowerCase()}
+              value={value}
             >
               {isMobile ? day : dayLabel}
             </DateElement>
@@ -224,16 +227,19 @@ export const FilterDate = () => {
             className="shrink-0 w-14 h-auto px-0 md:w-10 ml-auto mr-0 [&_svg]:size-6 md:[&_svg]:size-5 rounded-xl bg-gray-100 border-gray-100 md:bg-gray-200 md:border-gray-200"
             variant="outline"
           >
-            <CalendarIcon className="" />
+            <CalendarIcon />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="end">
+        <PopoverContent
+          className=" border-gray-200 rounded-xl w-auto overflow-hidden p-0 bg-gray-background"
+          align="end"
+        >
           <Calendar
             mode="single"
-            selected={parseDate(selectedDate, new Date())}
+            selected={parse(selectedDate, "dd MM uuuu", new Date())}
             captionLayout="dropdown"
             onSelect={(date) => {
-              setSelectedDate(date ? formatDate(date).toLowerCase() : "tout")
+              setSelectedDate(date ? rawFormatDate(date) : "tout")
               setOpen(false)
             }}
             startMonth={startMonth}
