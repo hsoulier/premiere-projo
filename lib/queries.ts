@@ -1,5 +1,7 @@
-import { LIST_MULTIPLEX, multiplex, SOURCE_PROVIDER } from "@/constants/mapping"
+import { LIST_MULTIPLEX, SOURCE_PROVIDER } from "@/constants/mapping"
 import type { TypedSupabaseClient } from "@/types/supabase"
+import { parseDate } from "chrono-node/fr"
+import { isSameDay } from "date-fns"
 
 const getBaseQuery = (client: TypedSupabaseClient, isDashboard = false) => {
   const query = client
@@ -36,9 +38,50 @@ export const getMoviesAggregated = async (
     query = query.ilike("title", `%${q}%`)
   }
 
+  if ("date" in searchParams && searchParams.date) {
+    const dateParam = searchParams.date.toString()
+
+    const getParsedRange = () => {
+      if (dateParam === "aujourd'hui") {
+        const now = new Date()
+        const start = new Date(now.setHours(0, 0, 0, 0))
+        const end = new Date(now.setHours(24, 0, 0, 0))
+        return { start, end }
+      }
+
+      if (dateParam === "demain") {
+        const now = new Date()
+        const tomorrow = new Date(now)
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        const start = new Date(tomorrow.setHours(0, 0, 0, 0))
+        const end = new Date(tomorrow.setHours(24, 0, 0, 0))
+        return { start, end }
+      }
+
+      const parsed = parseDate(dateParam, new Date())
+
+      const start = new Date(parsed)
+      start.setHours(0, 0, 0, 0)
+
+      const end = new Date(parsed)
+      end.setHours(24, 0, 0, 0)
+
+      return { start, end }
+    }
+
+    const { start, end } = getParsedRange()
+
+    query = query
+      .gte("shows.date", start.toISOString())
+      .lt("shows.date", end.toISOString())
+  } else {
+    // By default, only show upcoming shows
+    query = query.gte("shows.date", now)
+  }
+
   const finalQuery = isDashboard
     ? query.order("release")
-    : query.gte("shows.date", now).order("release").not("shows", "is", null)
+    : query.order("release").not("shows", "is", null)
 
   const response = await finalQuery
 
@@ -149,6 +192,17 @@ export const getMovieBase = async (client: TypedSupabaseClient, id: string) => {
     .single()
 
   return movie.data
+}
+
+export const getDatesOfShows = async (client: TypedSupabaseClient) => {
+  const { data } = await client
+    .from("shows")
+    .select("date, movieId!inner(hide)")
+    .gte("date", new Date().toISOString())
+    .not("movieId.hide", "is", true)
+    .order("date", { ascending: true })
+
+  return data
 }
 
 export type ShowAggregated = NonNullable<

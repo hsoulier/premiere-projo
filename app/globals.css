@@ -107,6 +107,16 @@ html::-webkit-scrollbar {
   }
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 .thumb {
   background: var(--img);
   mask: linear-gradient(
