@@ -33,6 +33,7 @@ import {
 } from "motion/react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { fr } from "date-fns/locale"
+import { sendGAEvent } from "@next/third-parties/google"
 
 const left = `0%`
 const right = `100%`
@@ -150,6 +151,8 @@ export const FilterDate = () => {
   const handleDateSelect = (e: MouseEvent<HTMLButtonElement>) => {
     const date = e.currentTarget.value || rawFormatDate(new Date())
 
+    sendGAEvent("event", "apply_filter", { name: "date", value: date })
+
     if (date === "tout") return setSelectedDate("tout")
 
     if (date === selectedDate) return setSelectedDate("tout")
@@ -239,7 +242,9 @@ export const FilterDate = () => {
             selected={parse(selectedDate, "dd MM uuuu", new Date())}
             captionLayout="dropdown"
             onSelect={(date) => {
-              setSelectedDate(date ? rawFormatDate(date) : "tout")
+              const d = date ? rawFormatDate(date) : "tout"
+              sendGAEvent("event", "apply_filter", { name: "date", value: d })
+              setSelectedDate(d)
               setOpen(false)
             }}
             startMonth={startMonth}
