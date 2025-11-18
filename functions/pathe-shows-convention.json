@@ -1,0 +1,3327 @@
+{
+  "days": {
+    "2025-11-20": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-21": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-22": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "arabella-met-47335"
+      }
+    },
+    "2025-11-23": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-24": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-25": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-26": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "tag",
+        "showSlug": "la-voix-de-hind-rajab-49679"
+      }
+    },
+    "2025-11-27": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "teresa-48646"
+      }
+    },
+    "2025-11-28": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-29": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-11-30": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-01": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-02": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "magnifique-martinique-une-ile-et-son-peuple-49404"
+      }
+    },
+    "2025-12-03": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "tag",
+        "showSlug": "dites-lui-que-je-l-aime-47788"
+      }
+    },
+    "2025-12-04": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-07": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "les-rendez-vous-de-l-anime-jujutsu-kaisen-execution-50114"
+      }
+    },
+    "2025-12-11": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-13": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "andrea-chenier-met-47336"
+      }
+    },
+    "2025-12-14": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "casse-noisette-opera-national-de-paris-48919"
+      }
+    },
+    "2025-12-17": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-18": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-19": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-20": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-21": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-22": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2025-12-23": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2026-01-06": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "namibie-sur-la-route-des-hereros-49406"
+      }
+    },
+    "2026-01-10": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "les-puritains-met-47337"
+      }
+    },
+    "2026-02-08": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "un-bal-masque-opera-national-de-paris-48920"
+      }
+    },
+    "2026-02-10": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "gr37-coeur-de-bretagne-49403"
+      }
+    },
+    "2026-03-01": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2026-03-03": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "inde-kerala-sur-la-route-du-pays-de-dieu-49402"
+      }
+    },
+    "2026-03-15": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "le-parc-2026-opera-national-de-paris-48921"
+      }
+    },
+    "2026-03-21": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "tristan-et-isolde-met-47338"
+      }
+    },
+    "2026-04-07": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "japon-l-ile-de-kyushu-et-le-bushido-49401"
+      }
+    },
+    "2026-04-12": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "tosca-opera-national-de-paris-48922"
+      }
+    },
+    "2026-04-26": {
+      "upsell": null,
+      "highlightedShowtime": null
+    },
+    "2026-05-02": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "eugene-oneguine-met-47339"
+      }
+    },
+    "2026-05-30": {
+      "upsell": null,
+      "highlightedShowtime": {
+        "type": "specialShowtimeCinema",
+        "showSlug": "le-dernier-reve-de-frida-et-diego-metropolitan-opera-47340"
+      }
+    },
+    "2026-06-07": {
+      "upsell": null,
+      "highlightedShowtime": null
+    }
+  },
+  "shows": {
+    "magnifique-martinique-une-ile-et-son-peuple-49404": {
+      "days": {
+        "2025-12-02": {
+          "tags": [
+            "AVP",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Avant-première",
+          "flagColor": "4",
+          "cineOrder": 3,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": true,
+      "cineOrder": 3,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 168,
+      "cineEntertainmentOrder": 129,
+      "cineEntertainmentOrder2": 92,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "hamlet-comedie-francaise-50207": {
+      "days": {
+        "2026-06-07": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 7,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 7,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 104,
+      "cineEntertainmentOrder": 215,
+      "cineEntertainmentOrder2": 155,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "le-dernier-reve-de-frida-et-diego-metropolitan-opera-47340": {
+      "days": {
+        "2026-05-30": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 11,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 11,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 138,
+      "cineEntertainmentOrder": 212,
+      "cineEntertainmentOrder2": 150,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "eugene-oneguine-met-47339": {
+      "days": {
+        "2026-05-02": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 15,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 15,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 97,
+      "cineEntertainmentOrder": 208,
+      "cineEntertainmentOrder2": 146,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "le-cid-comedie-francaise-50206": {
+      "days": {
+        "2026-04-26": {
+          "tags": [
+            "DEFAULT",
+            "live",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 19,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 19,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 135,
+      "cineEntertainmentOrder": 202,
+      "cineEntertainmentOrder2": 145,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "tosca-opera-national-de-paris-48922": {
+      "days": {
+        "2026-04-12": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 23,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 23,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 192,
+      "cineEntertainmentOrder": 197,
+      "cineEntertainmentOrder2": 138,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "namibie-sur-la-route-des-hereros-49406": {
+      "days": {
+        "2026-01-06": {
+          "tags": [
+            "AVP",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Avant-première",
+          "flagColor": "4",
+          "cineOrder": 26,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": true,
+      "cineOrder": 26,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 180,
+      "cineEntertainmentOrder": 166,
+      "cineEntertainmentOrder2": 108,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "tristan-et-isolde-met-47338": {
+      "days": {
+        "2026-03-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 30,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 30,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 197,
+      "cineEntertainmentOrder": 190,
+      "cineEntertainmentOrder2": 131,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "le-parc-2026-opera-national-de-paris-48921": {
+      "days": {
+        "2026-03-15": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 34,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 34,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 142,
+      "cineEntertainmentOrder": 187,
+      "cineEntertainmentOrder2": 127,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "les-femmes-savantes-comedie-francaise-50205": {
+      "days": {
+        "2026-03-01": {
+          "tags": [
+            "DEFAULT",
+            "live",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 38,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 38,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 151,
+      "cineEntertainmentOrder": 181,
+      "cineEntertainmentOrder2": 121,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "les-enfants-de-la-resistance-43495": {
+      "days": {
+        "2025-11-23": {
+          "tags": [
+            "AVP",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Avant-première",
+          "flagColor": "4",
+          "cineOrder": 42,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 42,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 147,
+      "cineEntertainmentOrder": 110,
+      "cineEntertainmentOrder2": 86,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "un-bal-masque-opera-national-de-paris-48920": {
+      "days": {
+        "2026-02-08": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 46,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 46,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 202,
+      "cineEntertainmentOrder": 175,
+      "cineEntertainmentOrder2": 115,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "les-legendaires-le-film-35360": {
+      "days": {
+        "2025-11-23": {
+          "tags": [
+            "AVP",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Avant-première",
+          "flagColor": "4",
+          "cineOrder": 51,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 51,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 154,
+      "cineEntertainmentOrder": 103,
+      "cineEntertainmentOrder2": 84,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "les-puritains-met-47337": {
+      "days": {
+        "2026-01-10": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 55,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 55,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 159,
+      "cineEntertainmentOrder": 168,
+      "cineEntertainmentOrder2": 109,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "avatar-de-feu-et-de-cendres-11387": {
+      "days": {
+        "2025-12-17": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        },
+        "2025-12-18": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        },
+        "2025-12-19": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        },
+        "2025-12-20": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        },
+        "2025-12-21": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        },
+        "2025-12-22": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        },
+        "2025-12-23": {
+          "tags": [
+            "3d",
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 62,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "3D"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 62,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 70,
+      "cineEntertainmentOrder": 159,
+      "cineEntertainmentOrder2": 213,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "casse-noisette-opera-national-de-paris-48919": {
+      "days": {
+        "2025-12-14": {
+          "tags": [
+            "DEFAULT",
+            "muet",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 66,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 66,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 74,
+      "cineEntertainmentOrder": 156,
+      "cineEntertainmentOrder2": 103,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "andrea-chenier-met-47336": {
+      "days": {
+        "2025-12-13": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 70,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 70,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 58,
+      "cineEntertainmentOrder": 151,
+      "cineEntertainmentOrder2": 98,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "mission-pere-noel-49019": {
+      "days": {
+        "2025-11-23": {
+          "tags": [
+            "AVP",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Avant-première",
+          "flagColor": "4",
+          "cineOrder": 74,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 74,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 176,
+      "cineEntertainmentOrder": 95,
+      "cineEntertainmentOrder2": 78,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "les-rendez-vous-de-l-anime-jujutsu-kaisen-execution-50114": {
+      "days": {
+        "2025-12-07": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 79,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 79,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 164,
+      "cineEntertainmentOrder": 140,
+      "cineEntertainmentOrder2": 93,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "gr37-coeur-de-bretagne-49403": {
+      "days": {
+        "2026-02-10": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 82,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 82,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 100,
+      "cineEntertainmentOrder": 176,
+      "cineEntertainmentOrder2": 117,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "dites-lui-que-je-l-aime-47788": {
+      "days": {
+        "2025-12-03": {
+          "tags": [
+            "DEFAULT",
+            "equipe",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Avec l'équipe du film",
+          "flagColor": "4",
+          "cineOrder": 86,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 86,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 82,
+      "cineEntertainmentOrder": 133,
+      "cineEntertainmentOrder2": 209,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "teresa-48646": {
+      "days": {
+        "2025-11-27": {
+          "tags": [
+            "AVP",
+            "avp-equipe",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "Avant premiere + équipe",
+          "flagColor": "4",
+          "cineOrder": 90,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": true,
+      "cineOrder": 90,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 191,
+      "cineEntertainmentOrder": 126,
+      "cineEntertainmentOrder2": 70,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "la-voix-de-hind-rajab-49679": {
+      "days": {
+        "2025-11-26": {
+          "tags": [
+            "DEFAULT",
+            "equipe",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": "Avec l'équipe du film",
+          "flagColor": "4",
+          "cineOrder": 95,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 95,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 130,
+      "cineEntertainmentOrder": 118,
+      "cineEntertainmentOrder2": 204,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "zootopie-2-38256": {
+      "days": {
+        "2025-11-26": {
+          "tags": [
+            "3d",
+            "DEFAULT",
+            "GRETA",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-27": {
+          "tags": [
+            "DEFAULT",
+            "GRETA",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-28": {
+          "tags": [
+            "DEFAULT",
+            "GRETA",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-29": {
+          "tags": [
+            "3d",
+            "DEFAULT",
+            "GRETA",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-30": {
+          "tags": [
+            "3d",
+            "DEFAULT",
+            "GRETA",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": "3D",
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-12-01": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-12-02": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 101,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": true,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 101,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 216,
+      "cineEntertainmentOrder": 113,
+      "cineEntertainmentOrder2": 58,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "arabella-met-47335": {
+      "days": {
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 105,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": true,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 105,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 61,
+      "cineEntertainmentOrder": 91,
+      "cineEntertainmentOrder2": 54,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "inde-kerala-sur-la-route-du-pays-de-dieu-49402": {
+      "days": {
+        "2026-03-03": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 108,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": true,
+      "isComingSoon": false,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 108,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 120,
+      "cineEntertainmentOrder": 183,
+      "cineEntertainmentOrder2": 125,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "dossier-137-47367": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Coup de Cœur",
+          "flagColor": "5",
+          "cineOrder": 113,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Coup de Cœur",
+          "flagColor": "5",
+          "cineOrder": 113,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Coup de Cœur",
+          "flagColor": "5",
+          "cineOrder": 113,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Coup de Cœur",
+          "flagColor": "5",
+          "cineOrder": 113,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Coup de Cœur",
+          "flagColor": "5",
+          "cineOrder": 113,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Coup de Cœur",
+          "flagColor": "5",
+          "cineOrder": 113,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": true,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 113,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 86,
+      "cineEntertainmentOrder": 5,
+      "cineEntertainmentOrder2": 159,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 6
+    },
+    "des-preuves-d-amour-48019": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 118,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 118,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 118,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 118,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 118,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 118,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": true,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 118,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 76,
+      "cineEntertainmentOrder": 33,
+      "cineEntertainmentOrder2": 170,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 6
+    },
+    "eleanor-the-great-48262": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 124,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 124,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 124,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 124,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 124,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 124,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": true,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 124,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 90,
+      "cineEntertainmentOrder": 6,
+      "cineEntertainmentOrder2": 168,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 6
+    },
+    "wicked-partie-ii-18743": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 131,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 131,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 131,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf",
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 131,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 131,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 131,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": true,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 131,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 204,
+      "cineEntertainmentOrder": 38,
+      "cineEntertainmentOrder2": 180,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 4
+    },
+    "les-aigles-de-la-republique-47775": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 136,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-21": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 136,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-22": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 136,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-23": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 136,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-24": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 136,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-25": {
+          "tags": [
+            "atmos",
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 136,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 136,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 34,
+      "cineEntertainmentOrder": 20,
+      "cineEntertainmentOrder2": 20,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 5
+    },
+    "les-reveurs-43760": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 141,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 141,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 141,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 141,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 141,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 141,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 141,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 38,
+      "cineEntertainmentOrder": 56,
+      "cineEntertainmentOrder2": 40,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 3
+    },
+    "on-vous-croit-48408": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 146,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 146,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 146,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 146,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 146,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 146,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 146,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 43,
+      "cineEntertainmentOrder": 68,
+      "cineEntertainmentOrder2": 29,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 2
+    },
+    "six-jours-ce-printemps-la-48876": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 151,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 151,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 151,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 151,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 151,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 151,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 151,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 53,
+      "cineEntertainmentOrder": 53,
+      "cineEntertainmentOrder2": 9,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 1
+    },
+    "japon-l-ile-de-kyushu-et-le-bushido-49401": {
+      "days": {
+        "2026-04-07": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 154,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 154,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 122,
+      "cineEntertainmentOrder": 194,
+      "cineEntertainmentOrder2": 135,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "l-inconnu-de-la-grande-arche-48206": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 159,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 159,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 159,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 159,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 159,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 159,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 159,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 22,
+      "cineEntertainmentOrder": 30,
+      "cineEntertainmentOrder2": 41,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 4
+    },
+    "deux-procureurs-48048": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 164,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 164,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 164,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 164,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 164,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 164,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 164,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 51,
+      "cineEntertainmentOrder": 59,
+      "cineEntertainmentOrder2": 185,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 1
+    },
+    "le-roi-des-rois-47830": {
+      "days": {
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 170,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 170,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 170,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 31,
+      "cineEntertainmentOrder": 82,
+      "cineEntertainmentOrder2": 48,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "ma-mini-seance-shaun-le-mouton-la-ferme-en-folie-49371": {
+      "days": {
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 174,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 174,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 174,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 173,
+      "cineEntertainmentOrder": 85,
+      "cineEntertainmentOrder2": 190,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "la-femme-la-plus-riche-du-monde-47368": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 179,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 179,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 179,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 179,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 179,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 179,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 179,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 6,
+      "cineEntertainmentOrder": 16,
+      "cineEntertainmentOrder2": 11,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 5
+    },
+    "l-etranger-48872": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 184,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 184,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 184,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 184,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 184,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "L'Autre Regard",
+          "flagColor": "5",
+          "cineOrder": 184,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": "HEART"
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 184,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 12,
+      "cineEntertainmentOrder": 26,
+      "cineEntertainmentOrder2": 1,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 4
+    },
+    "kaamelott-deuxieme-volet-partie-1-43639": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 189,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 189,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 189,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 189,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 189,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 189,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 189,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 2,
+      "cineEntertainmentOrder": 76,
+      "cineEntertainmentOrder2": 24,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 1
+    },
+    "arco-48244": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 194,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-21": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 194,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-22": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 194,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 194,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-24": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 194,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-11-25": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 194,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 194,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 17,
+      "cineEntertainmentOrder": 46,
+      "cineEntertainmentOrder2": 75,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 1
+    },
+    "la-seance-cine-hits-retour-vers-le-futur-iii-49755": {
+      "days": {
+        "2025-11-20": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 198,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 198,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 124,
+      "cineEntertainmentOrder": 69,
+      "cineEntertainmentOrder2": 189,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 1
+    },
+    "il-etait-une-fois-le-parrain-2e-partie-16675": {
+      "days": {
+        "2025-12-11": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 204,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 204,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 115,
+      "cineEntertainmentOrder": 144,
+      "cineEntertainmentOrder2": 64,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "il-etait-une-fois-le-parrain": {
+      "days": {
+        "2025-12-04": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 209,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        },
+        "2025-12-07": {
+          "tags": [
+            "DEFAULT",
+            "pmr"
+          ],
+          "bookable": true,
+          "versions": [
+            "vost"
+          ],
+          "flag": null,
+          "flagColor": null,
+          "cineOrder": 209,
+          "specialEvent": null,
+          "specialShowtime": false,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": true,
+      "isEarlyBookable": true,
+      "isEarlyAVP": false,
+      "cineOrder": 209,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 111,
+      "cineEntertainmentOrder": 137,
+      "cineEntertainmentOrder2": 34,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    },
+    "pompoko": {
+      "days": {
+        "2025-11-23": {
+          "tags": [
+            "DEFAULT",
+            "pmr",
+            "cinekids"
+          ],
+          "bookable": true,
+          "versions": [
+            "vf"
+          ],
+          "flag": "Famille",
+          "flagColor": "3",
+          "cineOrder": 216,
+          "specialEvent": null,
+          "specialShowtime": true,
+          "labelCategory": null
+        }
+      },
+      "bookable": true,
+      "isBookable": true,
+      "isNew": false,
+      "isComingSoon": false,
+      "isEarlyVisible": false,
+      "isEarlyBookable": false,
+      "isEarlyAVP": false,
+      "cineOrder": 216,
+      "cineSpecialOrder": null,
+      "cineKidsOrder": null,
+      "cineUpcomingOrder": 181,
+      "cineEntertainmentOrder": 101,
+      "cineEntertainmentOrder2": 195,
+      "specialEvent": false,
+      "isKids": false,
+      "next24ShowtimesCount": 0
+    }
+  }
+}

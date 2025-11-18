@@ -12,7 +12,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { type Data } from "@/components/table-movies"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogPortal,
@@ -21,16 +21,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { ModalCreateMovie } from "@/components/modal-create-movie"
 import useSupabaseBrowser from "@/hooks/use-supabase-browser"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { getCinemas } from "@/lib/queries"
 import { useMovieColumns } from "@/components/colums"
-import { LoaderCircle } from "@/components/animate-ui/icons/loader-circle"
-import { CircleX } from "lucide-react"
-import { BadgeCheck } from "@/components/animate-ui/icons/badge-check"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { parseAsBoolean, useQueryState } from "nuqs"
 import { getQueryClient } from "@/lib/query-client"
+import { ModalScrapMovies } from "@/components/modal-scrap-movies"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 export const TableShows = ({ data }: { data: Data[] }) => {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -46,27 +46,6 @@ export const TableShows = ({ data }: { data: Data[] }) => {
   const { data: cinemas } = useQuery({
     queryKey: ["cinemas"],
     queryFn: async () => await getCinemas(supabase),
-  })
-
-  const { isPending, mutateAsync, isSuccess, isError } = useMutation({
-    mutationKey: ["force-scrap-movies"],
-    mutationFn: async () => {
-      try {
-        const res = await fetch(
-          // "https://europe-west1-premiereprojo.cloudfunctions.net/scrapAllCinemas"
-          "https://europe-west1-premiereprojo.cloudfunctions.net/scrapPathe"
-        )
-
-        if (!res?.ok) {
-          throw new Error("Erreur lors de la mise à jour des films")
-        }
-
-        return {}
-      } catch (error) {
-        console.error(error)
-        throw error
-      }
-    },
   })
 
   const columns = useMovieColumns(cinemas ?? [])
@@ -121,19 +100,22 @@ export const TableShows = ({ data }: { data: Data[] }) => {
           />
           <Label htmlFor="display-only-available">Tous les films</Label>
         </div>
-        {/* <Button
-          variant="secondary"
-          className="ml-auto mr-0"
-          onClick={() => mutateAsync()}
-          disabled={isPending}
-        >
-          {isError && <CircleX className="text-red-500" />}
-          {isSuccess && !isPending && (
-            <BadgeCheck animateOnView className="text-green-500" />
+
+        <Link
+          href="/dashboard/scrap"
+          className={cn(
+            buttonVariants({ variant: "secondary" }),
+            "ml-auto mr-0"
           )}
-          {isPending && <LoaderCircle animate loop />}
-          Forcer la mise à jour
-        </Button>  */}
+        >
+          Scraper les films
+        </Link>
+        <AlertDialog>
+          <AlertDialogTrigger asChild></AlertDialogTrigger>
+          <AlertDialogPortal>
+            <ModalScrapMovies />
+          </AlertDialogPortal>
+        </AlertDialog>
       </div>
       <DataGrid
         table={table}

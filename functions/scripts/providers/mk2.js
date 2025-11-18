@@ -7,6 +7,7 @@ import {
   insertCinema,
   insertMovie,
   insertShow,
+  getCurrentFestival,
 } from "../db/requests.js"
 import { getAllocineInfo } from "../db/allocine.js"
 import { fetchUrl } from "../utils.js"
@@ -324,6 +325,14 @@ export const scrapMk2 = async () => {
 
         debug.shows++
       }
+    }
+
+    const festivals = getCurrentFestival(new Date(), "mk2")
+
+    console.log("🔍 Found festivals to scrape:", festivals.length)
+
+    for (const festival of festivals) {
+      await scrapMk2Festival(festival.festival_url)
     }
 
     logger.log("✅ Mk2 scrapping done", debug)

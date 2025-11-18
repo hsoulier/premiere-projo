@@ -202,3 +202,15 @@ export const updateAvailabilityShow = async (id, show) => {
     throw error
   }
 }
+
+// Festival queries
+export const getCurrentFestival = async (date, provider) => {
+  try {
+    const data =
+      await sql`select * from festivals where start_at <= ${date} and end_at >= ${date} and specific_to_provider = ${provider}`
+
+    return data
+  } catch (error) {
+    logger.error(error.message)
+  }
+}
