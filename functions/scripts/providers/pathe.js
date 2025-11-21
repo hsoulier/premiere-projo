@@ -84,11 +84,34 @@ const fetchData = async (url, { fr } = { fr: true }) => {
   }
 }
 
-export const scrapPathe = async () => {
+/**
+ *
+ * @param {import("firebase-functions/https").CallableRequest} request
+ * @param {import("firebase-functions/https").CallableResponse} response
+ */
+export const scrapPathe = async (request, response) => {
   try {
+    if (request.acceptsStreaming) {
+      response.sendChunk({
+        message: "Starting Pathe scrapping",
+        type: "INFO",
+        date: new Date().toLocaleTimeString(),
+        id: "start",
+      })
+    }
+
     const resShows = await fetchData("https://www.pathe.fr/api/shows")
 
     const allShows = resShows?.shows
+
+    if (request.acceptsStreaming) {
+      response.sendChunk({
+        message: `Found ${allShows?.length || 0} movies`,
+        type: "INFO",
+        date: new Date().toLocaleTimeString(),
+        id: "fetched-all-shows",
+      })
+    }
 
     const movieSlugs = allShows?.map((s) => s.slug)
 
@@ -194,6 +217,14 @@ export const scrapPathe = async () => {
         movieToInsert.poster = movie?.poster || movieData.posterPath?.lg || ""
 
         if (!movieToInsert || !movieToInsert.id) {
+          if (request.acceptsStreaming) {
+            response.sendChunk({
+              message: "🚫 Skip movie without ID (" + movieSlug + ")",
+              type: "WARNING",
+              date: new Date().toLocaleTimeString(),
+              id: `skip-movie-without-id-${Date.now() + Math.random()}`,
+            })
+          }
           logger.log(`🚫 Skip movie (${movieSlug})`)
           continue
         }
@@ -202,6 +233,15 @@ export const scrapPathe = async () => {
 
         if (!existingMovie) {
           await insertMovie(movieToInsert)
+          if (request.acceptsStreaming) {
+            response.sendChunk({
+              message: `➕ Inserted movie ${movieToInsert.title}`,
+              type: "INFO",
+              date: new Date().toLocaleTimeString(),
+              id: `insert-movie-${Date.now() + Math.random()}`,
+            })
+          }
+
           debug.movies++
         }
 
@@ -246,12 +286,32 @@ export const scrapPathe = async () => {
                 `🚫 Skip show without movie ID (${movieSlug})`,
                 showToInsert
               )
+
+              if (request.acceptsStreaming) {
+                response.sendChunk({
+                  message: "🚫 Skip show without movie ID (" + movieSlug + ")",
+                  type: "WARNING",
+                  date: new Date().toLocaleTimeString(),
+                  id: `skip-show-without-id-${Date.now() + Math.random()}`,
+                })
+              }
               continue
             }
 
             const existingShow = await getShow(showToInsert.id)
 
             if (existingShow) continue
+
+            if (request.acceptsStreaming) {
+              response.sendChunk({
+                message: `➕ Inserted show for movie ${
+                  movieToInsert.title
+                } on ${showToInsert.date.toISOString()}`,
+                type: "SUCCESS",
+                date: new Date().toLocaleTimeString(),
+                id: `insert-screening-${Date.now() + Math.random()}`,
+              })
+            }
 
             await insertShow(showToInsert)
             debug.shows++
@@ -263,7 +323,16 @@ export const scrapPathe = async () => {
     logger.log(debug, { depth: null })
     logger.log("✅ Pathe scrapping done", debug)
   } catch (error) {
-    logger.error("❌ Error while scrapping Pathé:")
-    logger.error(error)
+    if (request.acceptsStreaming) {
+      response.sendChunk({
+        message: "🚫 Error while scrapping Pathe",
+        data: error.message,
+        type: "WARNING",
+        date: new Date().toLocaleTimeString(),
+        id: `global-error`,
+      })
+    }
+
+    logger.error("❌ Error while scrapping Pathé:", error)
   }
 }
